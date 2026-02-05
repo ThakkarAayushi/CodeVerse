@@ -52,44 +52,67 @@
                 <%-- Action points to a Spring PostMapping --%>
                 <form action="save-hackathon" method="POST">
                     
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Event Title</label>
-                        <input type="text" name="title" placeholder="e.g., CyberSprint 2026" required 
-                               style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Full Description & Rules</label>
-                        <textarea name="description" rows="4" placeholder="Themes, eligibility, and rules..." required 
-                                  style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px; resize: vertical;"></textarea>
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        
+                        <div class="form-group" style="flex: 2;">
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Event Title</label>
+                            <input type="text" name="title" placeholder="e.g., CyberSprint 2026" required 
+                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                        </div>
                     </div>
 
                     <div style="display: flex; gap: 20px; margin-bottom: 20px;">
                         <div class="form-group" style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Start Date</label>
-                            <input type="datetime-local" name="startDate" required 
-                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Status</label>
+                            <select name="status" style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                                <option value="LIVE">Live</option>
+                                <option value="EXPIRED">Expired</option>
+                                <option value="CLOSED">Closed</option>
+                            </select>
                         </div>
                         <div class="form-group" style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">End Date</label>
-                            <input type="datetime-local" name="endDate" required 
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Event Type</label>
+                            <select name="eventType" style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                                <option value="ONLINE">Online</option>
+                                <option value="OFFLINE">Offline</option>
+                                <option value="HYBRID">Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Payment</label>
+                            <select name="payment" style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                                <option value="FREE">Free</option>
+                                <option value="PAID">Paid</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                       
+                        <div class="form-group" style="flex: 1;">
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">User Type</label>
+                            <input type="text" name="userType" placeholder="e.g., Students" 
                                    style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
                         </div>
                     </div>
 
-                    <hr style="border: 0; border-top: 1px solid #30363d; margin: 30px 0;">
-
-                    <h3 style="color: #f8fafc; margin-bottom: 15px;">Problem Statement</h3>
                     <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Problem Title </label>
-                        <input type="text" name="problemTitle" placeholder="e.g., Secure Banking API" required 
+                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Location</label>
+                        <input type="text" name="location" placeholder="Remote or City, Country" 
                                style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Detailed Problem Requirements </label>
-                        <textarea name="problemDescription" rows="4" placeholder="Constraints, expected output, etc." required 
-                                  style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px; resize: vertical;"></textarea>
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Registration Start Date</label>
+                            <input type="date" name="registrationStartDate" required 
+                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Registration End Date</label>
+                            <input type="date" name="registrationEndDate" required 
+                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
+                        </div>
                     </div>
 
                     <div style="margin-top: 30px;">

@@ -1,13 +1,21 @@
 package com.Grownited.controller;
+import com.Grownited.repository.HackathonRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.Grownited.entity.HackathonEntity;
+
 @Controller
 public class AdminController {
+
+    @Autowired
+	HackathonRepository hackathonRepository;
+
 	
 	 @GetMapping("/dashboard")
 	    public String showDashboard(Model model) {
@@ -41,15 +49,11 @@ public class AdminController {
 	    }
 
 	    @PostMapping("/save-hackathon")
-	    public String saveHackathon(@RequestParam String title, 
-	                                @RequestParam String description,
-	                                @RequestParam String startDate,
-	                                @RequestParam String endDate,
-	                                @RequestParam String problemTitle,
-	                                @RequestParam String problemDescription) {
-	        // 1. Create Hackathon entity/object
-	        // 2. Save to database via HackathonRepository
-	        // 3. Redirect back to the management list
+	    public String saveHackathon(HackathonEntity hackathonEntity) {
+		    
+		    System.out.println(hackathonEntity.getTitle());
+		    
+		    hackathonRepository.save(hackathonEntity);
 	        return "redirect:/admin/manage-hackathons";
 	    }
 	    

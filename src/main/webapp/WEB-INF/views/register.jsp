@@ -77,7 +77,7 @@
 
                 <div class="form-group">
                     <label>Profile Picture URL</label>
-                    <input type="url" name="profilePicURL" placeholder="https://image-link.com/photo.jpg">
+                    <input type="file" name="profilePicURL" placeholder="https://image-link.com/photo.jpg">
                 </div>
 
                 <div class="form-group">
