@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,6 +58,17 @@
                     <label>Qualification</label>
                     <input type="text" name="qualification" placeholder="e.g. B.Tech Computer Science" required>
                 </div>
+                
+                <div class="form-group">
+                    <label>User Type</label>
+                   <select name="userTypeId" class="form-control" required style="width: 100%; padding: 10px; border-radius: 6px; background: #0b0f19; color: white; border: 1px solid #30363d;">
+                        <option value="-1">---Select User Type---</option>
+                        <c:forEach items="${allUserType}" var="ut">
+                            <option value="${ut.userTypeId}">${ut.userType}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                
 
                 <%-- Added Location Fields --%>
                 <div class="form-group">

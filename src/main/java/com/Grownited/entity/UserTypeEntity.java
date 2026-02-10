@@ -12,20 +12,21 @@ public class UserTypeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer user_type_id;
-	private String user_type;
-	public Integer getUser_type_id() {
-		return user_type_id;
+	private Integer userTypeId;
+	private String userType;
+	public Integer getUserTypeId() {
+		return userTypeId;
 	}
-	public void setUser_type_id(Integer user_type_id) {
-		this.user_type_id = user_type_id;
+	public void setUserTypeId(Integer userTypeId) {
+		this.userTypeId = userTypeId;
 	}
-	public String getUser_type() {
-		return user_type;
+	public String getUserType() {
+		return userType;
 	}
-	public void setUser_type(String user_type) {
-		this.user_type = user_type;
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
+	
 	
 	
 }

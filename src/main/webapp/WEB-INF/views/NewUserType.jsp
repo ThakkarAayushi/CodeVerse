@@ -40,51 +40,20 @@
             <div class="card" style="max-width: 700px; margin-top: 20px;">
                 <form action="saveUserType" method="POST">
                     
-                    <div class="form-group-row" style="display: flex; gap: 15px; margin-bottom: 20px;">
-                        <div style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">First Name</label>
-                            <input type="text" name="firstName" placeholder="First Name" required 
-                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                        </div>
-                        <div style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Last Name</label>
-                            <input type="text" name="LastName" placeholder="Last Name" required 
-                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Email Address</label>
-                        <input type="email" name="email" placeholder="email@example.com" required 
-                               style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                    </div>
+                 
 
                     <div class="form-group-row" style="display: flex; gap: 15px; margin-bottom: 20px;">
                         <div style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Role</label>
-                            <select name="user_type" style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                                <option value="participant">Participant</option>
-                                <option value="organizer">Organizer</option>
-                                <option value="judge">Judge</option>
-                                <option value="admin">Admin</option>
-                            </select>
+                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">User Type</label>
+							<input type="text" name="userType" class="form-control" placeholder="Enter user type"   required>
+							
+							</div>
                         </div>
-                        <div style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Contact Number</label>
-                            <input type="text" name="contactNum" placeholder="Phone Number" required 
-                                   style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label style="color: #94a3b8; display: block; margin-bottom: 8px;">Temporary Password</label>
-                        <input type="password" name="password" placeholder="Set a temp password" required 
-                               style="background: #0b0f19; color: white; border: 1px solid #30363d; padding: 12px; width: 100%; border-radius: 6px;">
-                    </div>
+                      
 
                     <div style="margin-top: 30px; display: flex; gap: 15px;">
                         <button type="submit" class="btn-primary" style="flex: 1; padding: 12px; border-radius: 6px; cursor: pointer;">
-                            🚀 Add User
+                            🚀 Add User Type
                         </button>
                         <button type="button" onclick="location.href='dashboard'" 
                                 style="flex: 1; background: #161b22; color: #f8fafc; border: 1px solid #30363d; padding: 12px; border-radius: 6px; cursor: pointer;">

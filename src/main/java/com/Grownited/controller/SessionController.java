@@ -1,24 +1,32 @@
 package com.Grownited.controller;
+import com.Grownited.repository.UserDetailRepository;
 import com.Grownited.repository.UserRepository;
+import com.Grownited.repository.UserTypeRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.Grownited.entity.UserDetailEntity;
 import com.Grownited.entity.UserEntity;
+import com.Grownited.entity.UserTypeEntity;
 
 @Controller
 public class SessionController {
 
+
 	@Autowired
     UserRepository userRepository;
+	
+	@Autowired
+	UserDetailRepository userDetailRepository;
+	
+	@Autowired
+	UserTypeRepository userTypeRepository;
 
 	@GetMapping("/signup")
 	public String openSignupPage() {
@@ -34,7 +42,12 @@ public class SessionController {
 
     // Routes to the registration page
     @GetMapping("/register")
-    public String showRegisterPage() {
+    public String showRegisterPage(Model model) {
+    	
+    	List<UserTypeEntity> allUserType = userTypeRepository.findAll(); 
+		//userType -> send Signup->
+		model.addAttribute("allUserType",allUserType);
+    	
         return "register"; // Refers to register.jsp
     }
     @PostMapping("/stored")
@@ -47,7 +60,10 @@ public class SessionController {
     		userEntity.setRole("participant");
     		userEntity.setActive(true);
     		userEntity.setCreateAtDate(LocalDate.now());
+    		
     		userRepository.save(userEntity);
+    		userDetailEntity.setUserId(userEntity.getUserId());
+    		userDetailRepository.save(userDetailEntity);
     		
         return "login"; // Refers to register.jsp
     }
@@ -61,13 +77,7 @@ public class SessionController {
         return "participant-submission";
     }
 
-   //Processes registration data
-    /*@PostMapping("/register")
-    public String handleRegistration(@RequestParam String fullName, @RequestParam String role,Model model) {
-        // Logic to save user to database
-        return "redirect:/login";
-    }*/
-   
+  
    
    
 }
