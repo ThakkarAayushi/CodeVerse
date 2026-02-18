@@ -1,68 +1,133 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New User | CodeVerse</title>
-    <%-- Standard CSS pathing for STS project structure --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}dashboard.css">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Add User Type | CodeVerse Admin</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/nalika-icon.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/meanmenu.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/metisMenu/metisMenu.min.css">
+    <link rel="stylesheet" href="css/metisMenu/metisMenu-vertical.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
+
 <body>
-    <div class="dashboard">
-        <aside class="sidebar">
-            <div class="logo">Code<span>Verse</span></div>
-            <nav>
-                <a href="dashboard" class="nav-item">📊 Dashboard Overview</a>
-                <a href="manage-hackathons" class="nav-item">🏆 Manage Hackathons</a>
-                <a href="newUserType" class="nav-item active">👤 Add New User</a>
-                <a href="settings" class="nav-item">⚙️ Settings</a>
-            </nav>
-            <div class="logout-section">
-                <a href="${pageContext.request.contextPath}/logout" class="nav-item logout">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline>
-                        <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </aside>
+    <jsp:include page="AdminSidebar.jsp"></jsp:include>
 
-        <main class="content">
-            <header class="header">
-                <h1 style="color: #f8fafc;">Register New User</h1>
-                <p style="color: #94a3b8;">Create a manual account for the platform.</p>
-            </header>
+    <div class="all-content-wrapper">
+       
 
-            <div class="card" style="max-width: 700px; margin-top: 20px;">
-                <form action="saveUserType" method="POST">
-                    
-                 
-
-                    <div class="form-group-row" style="display: flex; gap: 15px; margin-bottom: 20px;">
-                        <div style="flex: 1;">
-                            <label style="color: #94a3b8; display: block; margin-bottom: 8px;">User Type</label>
-							<input type="text" name="userType" class="form-control" placeholder="Enter user type"   required>
-							
-							</div>
+        <div class="header-advance-area">
+            <div class="breadcome-area">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="breadcome-list">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="breadcomb-wp">
+                                            <div class="breadcomb-icon">
+                                                <i class="icon nalika-settings"></i>
+                                            </div>
+                                            <div class="breadcomb-ctn">
+                                                <h2>Configuration</h2>
+                                                <p>Manage roles and permissions for <span class="bread-ntd">CodeVerse</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="breadcomb-report">
+                                            <button data-toggle="tooltip" title="Back to Dashboard" class="btn" onclick="location.href='dashboard'"><i class="icon nalika-home"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      
-
-                    <div style="margin-top: 30px; display: flex; gap: 15px;">
-                        <button type="submit" class="btn-primary" style="flex: 1; padding: 12px; border-radius: 6px; cursor: pointer;">
-                            🚀 Add User Type
-                        </button>
-                        <button type="button" onclick="location.href='dashboard'" 
-                                style="flex: 1; background: #161b22; color: #f8fafc; border: 1px solid #30363d; padding: 12px; border-radius: 6px; cursor: pointer;">
-                            ✖ Cancel
-                        </button>
                     </div>
-                </form>
+                </div>
             </div>
-        </main>
+        </div>
+
+        <div class="single-product-tab-area mg-b-30">
+            <div class="single-pro-review-area">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="review-tab-pro-inner">
+                                <ul id="myTab3" class="tab-review-design">
+                                    <li class="active"><a href="#add_type"><i class="icon nalika-edit" aria-hidden="true"></i> New User Type</a></li>
+                                </ul>
+                                <div id="myTabContent" class="tab-content custom-product-edit">
+                                    <div class="product-tab-list tab-pane fade active in" id="add_type">
+                                        <form action="saveUserType" method="POST">
+                                            <div class="row">
+                                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 col-lg-offset-2">
+                                                    <div class="review-content-section">
+                                                        <label style="color: #94a3b8; margin-bottom: 10px; display: block;">Define Role Name</label>
+                                                        <div class="input-group mg-b-pro-edt">
+                                                            <span class="input-group-addon"><i class="icon nalika-user" aria-hidden="true"></i></span>
+                                                            <input type="text" name="userType" class="form-control" placeholder="e.g. Mentor, Organizer, Participant" required>
+                                                        </div>
+                                                        
+                                                        <p style="color: #616a78; font-size: 12px; margin-bottom: 20px;">
+                                                            * This role will be immediately available in the user registration dropdown.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <div class="text-center custom-pro-edt-ds">
+                                                        <button type="submit" class="btn btn-ctl-bt waves-effect waves-light m-r-10">🚀 Add User Type</button>
+                                                        <button type="button" onclick="location.href='dashboard'" class="btn btn-ctl-bt waves-effect waves-light">✖ Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-copyright-area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer-copy-right">
+                            <p>Copyright © 2026 CodeVerse. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/metisMenu/metisMenu.min.js"></script>
+    <script src="js/metisMenu/metisMenu-active.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

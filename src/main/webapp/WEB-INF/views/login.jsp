@@ -15,7 +15,7 @@
             <p>Login to your CodeVerse dashboard.</p>
             
             <%-- Form action should point to your Login Servlet --%>
-            <form action="forgetPassw" method="POST">
+            <form action="authenticate" method="POST">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" name="email" required>

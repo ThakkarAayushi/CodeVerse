@@ -31,7 +31,7 @@ public class CategoryController {
 		
 		categoryEntity.setActive(true);
 		categoryRepository.save(categoryEntity);
-		return "admin-dashbord";
+		return "redirect:/listCategory";
 		
 	}
 	
@@ -46,6 +46,11 @@ public class CategoryController {
 		
 	}
 		
-	
+	@GetMapping("deleteCategory")
+	public String deleteCategory(Integer categoryId) {
+		categoryRepository.deleteById(categoryId);
+		
+		return "redirect:/listCategory";//do not open jsp , open another url -> listHackathon
+	}
 	
 }

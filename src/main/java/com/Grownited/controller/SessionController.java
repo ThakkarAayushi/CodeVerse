@@ -3,9 +3,13 @@ import com.Grownited.repository.UserDetailRepository;
 import com.Grownited.repository.UserRepository;
 import com.Grownited.repository.UserTypeRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+//import org.hibernate.sql.model.ast.builder.CollectionRowDeleteByUpdateSetNullBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,8 +41,36 @@ public class SessionController {
 	// Routes to the login page
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login"; // Refers to login.jsp
+        return "Login"; // Refers to login.jsp
     }
+    
+    @PostMapping("/authenticate")
+	public String authenticate(String email, String password,Model model,HttpSession session) {
+		Optional<UserEntity> op = userRepository.findByEmail(email);
+
+		if (op.isPresent()) {
+			UserEntity dbUser = op.get();
+			session.setAttribute("user", dbUser);
+			if (dbUser.getPassword().equals(password))
+			{
+				if (dbUser.getRole().equals("admin")) {
+					System.out.println("demo");
+					return "redirect:/dashboard";// url '
+				} 
+				else if (dbUser.getRole().equals("participant")) {
+					System.out.println("demo");
+					return "redirect:/dashboard";// url '
+				}
+				else if (dbUser.getRole().equals("judge")) {
+					return "redirect:/judge-dashboard";
+				}
+			}
+		}
+		
+		model.addAttribute("error","Invalid Credentials");
+		return "Login";
+	}
+
 
     // Routes to the registration page
     @GetMapping("/register")
@@ -77,7 +109,11 @@ public class SessionController {
         return "participant-submission";
     }
 
-  
+	@GetMapping("logout")
+	public String logout(HttpSession session) {
+		session.invalidate(); 
+		return "Login";
+	}
    
    
 }

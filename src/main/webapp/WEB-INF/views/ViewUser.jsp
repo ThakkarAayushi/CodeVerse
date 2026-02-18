@@ -1,113 +1,176 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html class="no-js" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Profile | CodeVerse</title>
-    <%-- Standard CSS pathing for your CodeVerse project --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/dashboard.css">
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>User Profile | CodeVerse Admin</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/nalika-icon.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/meanmenu.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/metisMenu/metisMenu.min.css">
+    <link rel="stylesheet" href="css/metisMenu/metisMenu-vertical.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <style>
+        .profile-info-label { color: #94a3b8; font-size: 11px; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
+        .profile-info-value { color: #fff; font-size: 16px; margin-bottom: 15px; }
+        .profile-card-custom { background: #152036; border-radius: 8px; padding: 30px; margin-top: 20px; }
+        .profile-main-img { width: 150px; height: 150px; border-radius: 50%; border: 4px solid #24caa1; object-fit: cover; }
+    </style>
+
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
+
 <body>
-    <div class="dashboard">
-        <aside class="sidebar">
-            <div class="logo">Code<span>Verse</span></div>
-            <nav class="nav-menu">
-                <a href="dashboard" class="nav-item">📊 Dashboard</a>
-                <a href="listUser" class="nav-item">👥 User List</a>
-                <a href="register" class="nav-item">👤 Add New</a>
-            </nav>
-            <div class="logout-section">
-                <a href="${pageContext.request.contextPath}/logout" class="nav-item logout">
-                    <span>Logout</span>
-                </a>
-            </div>
-        </aside>
+    <jsp:include page="AdminSidebar.jsp"></jsp:include>
 
-        <main class="content">
-            <header class="header">
-                <h1 style="color: #f8fafc;">User Profile Details</h1>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-primary" onclick="location.href='editUser?userId=${user.userId}'">✏️ Edit Profile</button>
-                    <button style="background: #161b22; color: #f8fafc; border: 1px solid #30363d; padding: 10px 20px; border-radius: 6px; cursor: pointer;" 
-                            onclick="location.href='listUser'">⬅️ Back to List</button>
-                </div>
-            </header>
+    <div class="all-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                
+        </div>
 
-            <div class="card" style="max-width: 1000px; margin-top: 20px; background: #0d1117; border: 1px solid #30363d; padding: 30px;">
-                <div style="display: flex; gap: 40px; align-items: flex-start;">
-                    
-                    <%-- Left Sidebar: Profile Identity --%>
-                    <div style="flex: 1; text-align: center; border-right: 1px solid #30363d; padding-right: 40px;">
-                        <img src="${not empty user.profilePicURL ? user.profilePicURL : 'https://via.placeholder.com/150'}" 
-                             style="width: 160px; height: 160px; border-radius: 50%; border: 3px solid #38bdf8; object-fit: cover; margin-bottom: 20px;">
-                        
-                        <h2 style="color: #f8fafc; margin-bottom: 5px;">${user.firstName} ${user.lastName}</h2>
-                        <div style="margin-bottom: 15px;">
-                            <span class="badge" style="background: #1e293b; color: #38bdf8; text-transform: capitalize; padding: 6px 12px; border-radius: 20px;">
-                                ${user.role}
-                            </span>
-                        </div>
-                        
-                        <c:choose>
-                            <c:when test="${user.active}">
-                                <div style="color: #22c55e; font-size: 0.9rem; font-weight: 600;">● Account Active</div>
-                            </c:when>
-                            <c:otherwise>
-                                <div style="color: #ef4444; font-size: 0.9rem; font-weight: 600;">● Account Inactive</div>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
-
-                    <%-- Right Content: Detailed Data Grid --%>
-                    <div style="flex: 2;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
-                            
-                            <%-- Personal Info Group --%>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">User ID</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">#${user.userId}</div>
+        <div class="header-advance-area">
+            <div class="breadcome-area">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="breadcome-list">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="breadcomb-wp">
+                                            <div class="breadcomb-icon">
+                                                <i class="icon nalika-user"></i>
+                                            </div>
+                                            <div class="breadcomb-ctn">
+                                                <h2>User Profile</h2>
+                                                <p>Viewing details for <span class="bread-ntd">${user.firstName}</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="breadcomb-report">
+                                            <!-- button data-toggle="tooltip" title="Edit This User" class="btn" onclick="location.href='edit-user?userId=${user.userId}'">
+                                                <i class="icon nalika-edit"></i>
+                                            </button-->
+                                            <button data-toggle="tooltip" title="Back to Directory" class="btn" onclick="location.href='listUser'">
+                                                <i class="fa fa-arrow-left"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Email Address</label>
-                                <div style="color: #38bdf8; font-size: 1.1rem; padding-top: 4px;">${user.email}</div>
-                            </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Contact Number</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">${user.contactNum}</div>
-                            </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Gender / Year</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">${user.gender} (${user.birthYear})</div>
-                            </div>
-
-                            <%-- Location Info Group (From UserDetail) --%>
-                            <div style="grid-column: span 2; margin-top: 15px; border-top: 1px solid #30363d; padding-top: 20px;">
-                                <h3 style="color: #f8fafc; font-size: 1.2rem; margin-bottom: 15px;">Location & Education</h3>
-                            </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">City / State</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">${userDetail.city}, ${userDetail.state}</div>
-                            </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Country</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">${userDetail.country}</div>
-                            </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Qualification</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">${userDetail.qualification}</div>
-                            </div>
-                            <div>
-                                <label style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase;">Member Since</label>
-                                <div style="color: #f8fafc; font-size: 1.1rem; padding-top: 4px;">${user.createAtDate}</div>
-                            </div>
-
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <div class="single-product-tab-area mg-b-30">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="profile-card-custom">
+                            <div class="row">
+                                <%-- Left Section: Avatar & Identity --%>
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center" style="border-right: 1px solid #2b354a;">
+                                    <img src="${not empty user.profilePicURL ? user.profilePicURL : 'img/contact/1.jpg'}" 
+                                         class="profile-main-img" alt="User Profile">
+                                    <h2 style="color: #fff; margin-top: 15px;">${user.firstName} ${user.lastName}</h2>
+                                    <p style="color: #24caa1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${user.role}</p>
+                                    
+                                    <div style="margin-top: 20px;">
+                                      <c:choose>
+			                            <c:when test="${user.active}">
+			                                <div style="color: #22c55e; font-size: 0.9rem; font-weight: 600;">● Account Active</div>
+			                            </c:when>
+			                            <c:otherwise>
+			                                <div style="color: #ef4444; font-size: 0.9rem; font-weight: 600;">● Account Inactive</div>
+			                            </c:otherwise>
+			                        </c:choose>
+                                    </div>
+                                </div>
+
+                                <%-- Right Section: Data Grid --%>
+                                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                    <div style="padding-left: 20px;">
+                                        <h3 style="color: #fff; margin-bottom: 25px; border-bottom: 1px solid #2b354a; padding-bottom: 10px;">General Information</h3>
+                                        
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <p class="profile-info-label">User ID</p>
+                                                <p class="profile-info-value">#${user.userId}</p>
+                                                
+                                                <p class="profile-info-label">Email Address</p>
+                                                <p class="profile-info-value" style="color: #38bdf8;">${user.email}</p>
+                                                
+                                                <p class="profile-info-label">Contact Number</p>
+                                                <p class="profile-info-value">${user.contactNum}</p>
+                                                
+                                                <p class="profile-info-label">Member Since</p>
+                                                <p class="profile-info-value">${user.createAtDate}</p>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                <p class="profile-info-label">Gender / YOB</p>
+                                                <p class="profile-info-value">${user.gender} (${user.birthYear})</p>
+                                                
+                                                <p class="profile-info-label">Qualification</p>
+                                                <p class="profile-info-value">${userDetail.qualification}</p>
+                                                
+                                                <p class="profile-info-label">Location</p>
+                                                <p class="profile-info-value">${userDetail.city}, ${userDetail.state}</p>
+                                                
+                                                <p class="profile-info-label">Country</p>
+                                                <p class="profile-info-value">${userDetail.country}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-right" style="margin-top: 20px;">
+                                            <button type="button" class="btn btn-ctl-bt waves-effect waves-light" 
+                                                    onclick="location.href='edit-user?userId=${user.userId}'">
+                                                <i class="fa fa-pencil"></i> Edit User Data
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-copyright-area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer-copy-right">
+                            <p>Copyright © 2026 CodeVerse. All rights reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/metisMenu/metisMenu.min.js"></script>
+    <script src="js/metisMenu/metisMenu-active.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

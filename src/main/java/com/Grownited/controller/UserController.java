@@ -56,4 +56,11 @@ public class UserController {
 	
 	}
 	
+	 @GetMapping("deleteUser")
+		public String deletUser(Integer userId) {
+			userRepository.deleteById(userId);
+			
+			return "redirect:/listUser";//do not open jsp , open another url -> listHackathon
+		}
+	
 }

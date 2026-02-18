@@ -1,5 +1,8 @@
 package com.Grownited.controller;
 import com.Grownited.repository.HackathonRepository;
+import com.Grownited.repository.UserTypeRepository;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.Grownited.entity.HackathonEntity;
+import com.Grownited.entity.UserTypeEntity;
 
 @Controller
 public class AdminController {
 
-    @Autowired
-	HackathonRepository hackathonRepository;
+  
 
 	
 	 @GetMapping("/dashboard")
@@ -24,7 +27,7 @@ public class AdminController {
 	        model.addAttribute("pendingCount", 8);
 	        model.addAttribute("userCount", 2405);
 	        
-	        return "/admin/admin-dashboard"; // Maps to /WEB-INF/views/admin-dashboard.jsp
+	        return "AdminDashboard"; // Maps to /WEB-INF/views/admin-dashboard.jsp
 	    }
 	 
 	 /**
@@ -43,20 +46,7 @@ public class AdminController {
 	    
 	 // Inside AdminController.java
 
-	    @GetMapping("/create-hackathon")
-	    public String showCreateHackathonPage() {
-	        return "/admin/create-hackathons";
-	    }
-
-	    @PostMapping("/save-hackathon")
-	    public String saveHackathon(HackathonEntity hackathonEntity) {
-		    
-		    System.out.println(hackathonEntity.getTitle());
-		    
-		    hackathonRepository.save(hackathonEntity);
-	        return "redirect:/admin/manage-hackathons";
-	    }
-	    
+	   
 	    @GetMapping("/reports")
 	    public String showReports(Model model) {
 	        model.addAttribute("totalSubmissions", 1240);
