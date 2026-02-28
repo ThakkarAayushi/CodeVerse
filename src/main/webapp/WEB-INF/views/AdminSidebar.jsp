@@ -7,8 +7,13 @@
             </div>
 			<div class="nalika-profile">
 				<div class="profile-dtl">
-					<a href="#"><img src="img/notification/4.jpg" alt="" /></a>
-					<h2>Lakian <span class="min-dtn">Das</span></h2>
+					<!--  a href="#"--> 
+                    <img src= ${sessionScope.user.profilePicURL}
+						     alt="Profile Image" 
+						     width="50" 
+						     height="50" 
+						      style="border-radius:50%; object-fit:cover;"></a>
+					<h2><span class="min-dtn"> ${sessionScope.user.firstName} ${sessionScope.user.lastName}</span></h2>
 				</div>
 				<!-- div class="profile-social-dtl">
 					<ul class="dtl-social">
@@ -75,7 +80,7 @@
                                 <li><a title="listHackathon" href="listHackathon"><span class="mini-sub-pro">List Hackathon</span></a></li>
                                  </ul>
                         </li>
-                        <li>
+                        <!--li>
                             <a class="has-arrow" href="mailbox.html" aria-expanded="false"><i class="icon nalika-pie-chart icon-wrap"></i> <span class="mini-click-non">Miscellaneous</span></a>
                             <ul class="submenu-angle" aria-expanded="false">
                                 <li><a title="File Manager" href="file-manager.html"><span class="mini-sub-pro">File Manager</span></a></li>
@@ -134,7 +139,7 @@
                                 <li><a title="Lock" href="lock.html"><span class="mini-sub-pro">Lock</span></a></li>
                                 <li><a title="Password Recovery" href="password-recovery.html"><span class="mini-sub-pro">Password Recovery</span></a></li>
                             </ul>
-                        </li>
+                        </li-->
                     </ul>
                 </nav>
             </div>

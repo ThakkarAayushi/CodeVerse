@@ -18,12 +18,15 @@ import com.Grownited.entity.UserTypeEntity;
 public class AdminController {
 
   
-
+     @Autowired
+     HackathonRepository hackathonRepository;
 	
 	 @GetMapping("/dashboard")
 	    public String showDashboard(Model model) {
 	        // You can later replace these hardcoded values with Service calls
-	        model.addAttribute("activeCount", 14);
+		    long totalHackathon = hackathonRepository.count();
+		     
+	        model.addAttribute("totalHackathon", totalHackathon);
 	        model.addAttribute("pendingCount", 8);
 	        model.addAttribute("userCount", 2405);
 	        

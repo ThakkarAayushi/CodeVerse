@@ -12,7 +12,7 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <h2>Reset <span>Password</span></h2>
+            <h2><span>Forgot Password</span></h2>
             <p>Enter your email address to recover your account.</p>
             
             <%-- Feedback Messages from Spring Controller --%>
@@ -27,13 +27,13 @@
                 </div>
             </c:if>
 
-            <form action="${pageContext.request.contextPath}/forgot-password" method="POST">
+            <form action="resetPassword" method="POST">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" name="email" placeholder="name@example.com" required>
                 </div>
                 
-                <button type="submit" class="btn-auth">Send Reset Link</button>
+                <button type="submit" class="btn-auth">Send OTP</button>
             </form>
             
             <p class="auth-footer">

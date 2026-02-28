@@ -78,7 +78,7 @@
                                 </ul>
                                 <div id="myTabContent" class="tab-content custom-product-edit">
                                     <div class="product-tab-list tab-pane fade active in" id="registration">
-                                        <form action="stored" method="POST">
+                                        <form action="stored" method="POST" enctype="multipart/form-data">>
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <div class="review-content-section">
@@ -141,6 +141,12 @@
                                                             <span class="input-group-addon"><i class="fa fa-globe" aria-hidden="true"></i></span>
                                                             <input type="text" name="country" class="form-control" placeholder="Country" required>
                                                         </div>
+                                                        <!-- Profile Pic URL -->
+														<div class="input-group mg-b-pro-edt">
+															<label class="input-group-addon">Profile Picture</label> <input
+																type="file" name="profilePic" class="form-control">
+														</div>
+							                                                        
                                                     </div>
                                                 </div>
                                             </div>

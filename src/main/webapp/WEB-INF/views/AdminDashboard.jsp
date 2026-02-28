@@ -78,18 +78,16 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                             <div class="admin-content analysis-progrebar-ctn res-mg-t-15">
-                                <h4 class="text-left text-uppercase"><b>Active Hackathons</b></h4>
+                                <h4 class="text-left text-uppercase"><b>Total Hackathons</b></h4>
                                 <div class="row vertical-center-box vertical-center-box-tablet">
                                     <div class="col-xs-3 mar-bot-15 text-left">
-                                        <label class="label bg-green">Live <i class="fa fa-level-up" aria-hidden="true"></i></label>
+                                        
                                     </div>
                                     <div class="col-xs-9 cus-gh-hd-pro">
-                                        <h2 class="text-right no-margin">14</h2>
+                                        <h2 class="text-right no-margin">${totalHackathon}</h2>
                                     </div>
                                 </div>
-                                <div class="progress progress-mini">
-                                    <div style="width: 70%;" class="progress-bar bg-green"></div>
-                                </div>
+                              
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
