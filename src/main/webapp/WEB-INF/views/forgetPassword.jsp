@@ -6,31 +6,191 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password | CodeVerse</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/style.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/auth.css">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #edf2f7;
+        }
+
+        .auth-card h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .auth-card p {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* Message styles */
+        .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .message.error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fee2e2;
+        }
+        .message.success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #dcfce7;
+        }
+        .message i {
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: 0.2s;
+        }
+        .input-group:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        .input-group-icon {
+            padding: 0 15px;
+            color: #3b82f6;
+            font-size: 1.1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px 14px 0;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: #1e293b;
+            background: transparent;
+        }
+        .input-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(59,130,246,0.3);
+        }
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59,130,246,0.4);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .auth-footer a {
+            color: #3b82f6;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 30px 20px;
+            }
+            .auth-card h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <h2><span>Forgot Password</span></h2>
+            <h2>Forgot Password</h2>
             <p>Enter your email address to recover your account.</p>
             
             <%-- Feedback Messages from Spring Controller --%>
             <c:if test="${not empty error}">
-                <div style="color: #ef4444; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid #ef4444;">
-                    ${error}
+                <div class="message error">
+                    <i class="fas fa-exclamation-circle"></i> ${error}
                 </div>
             </c:if>
             <c:if test="${not empty success}">
-                <div style="color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; border: 1px solid #10b981;">
-                    ${success}
+                <div class="message success">
+                    <i class="fas fa-check-circle"></i> ${success}
                 </div>
             </c:if>
 
             <form action="resetPassword" method="POST">
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" name="email" placeholder="name@example.com" required>
+                    <div class="input-group">
+                        <span class="input-group-icon"><i class="fas fa-envelope"></i></span>
+                        <input type="email" name="email" placeholder="name@example.com" required>
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn-auth">Send OTP</button>

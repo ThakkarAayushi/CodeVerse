@@ -12,41 +12,45 @@ public class HackathonTeamEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer hackathon_team_id;
-	private Integer hackathon_id;
-	private Integer team_leader_id;
-	private Integer teamName;
-	private Integer teamStatus;
-	public Integer getHackathon_team_id() {
-		return hackathon_team_id;
+	private Integer hackathonTeamId;  // instead of hackathon_team_id
+
+    private Integer hackathonId;      // instead of hackathon_id
+    private Integer teamLeaderId;     // instead of team_leader_id
+    private String teamName;
+    private String teamStatus;
+	public Integer getHackathonTeamId() {
+		return hackathonTeamId;
 	}
-	public void setHackathon_team_id(Integer hackathon_team_id) {
-		this.hackathon_team_id = hackathon_team_id;
+	public void setHackathonTeamId(Integer hackathonTeamId) {
+		this.hackathonTeamId = hackathonTeamId;
 	}
-	public Integer getHackathon_id() {
-		return hackathon_id;
+	public Integer getHackathonId() {
+		return hackathonId;
 	}
-	public void setHackathon_id(Integer hackathon_id) {
-		this.hackathon_id = hackathon_id;
+	public void setHackathonId(Integer hackathonId) {
+		this.hackathonId = hackathonId;
 	}
-	public Integer getTeam_leader_id() {
-		return team_leader_id;
+	public Integer getTeamLeaderId() {
+		return teamLeaderId;
 	}
-	public void setTeam_leader_id(Integer team_leader_id) {
-		this.team_leader_id = team_leader_id;
+	public void setTeamLeaderId(Integer teamLeaderId) {
+		this.teamLeaderId = teamLeaderId;
 	}
-	public Integer getTeamName() {
+	public String getTeamName() {
 		return teamName;
 	}
-	public void setTeamName(Integer teamName) {
+	public void setTeamName(String teamName) {
 		this.teamName = teamName;
 	}
-	public Integer getTeamStatus() {
+	public String getTeamStatus() {
 		return teamStatus;
 	}
-	public void setTeamStatus(Integer teamStatus) {
+	public void setTeamStatus(String teamStatus) {
 		this.teamStatus = teamStatus;
 	}
+	
+    
+	
 	
 
 }

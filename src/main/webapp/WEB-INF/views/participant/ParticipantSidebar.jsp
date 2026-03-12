@@ -1,84 +1,240 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<div class="left-sidebar-pro">
-    <nav id="sidebar" class="">
-        <div class="sidebar-header">
-            <a href="participant-dashboard">
-                <img class="main-logo" src="${pageContext.request.contextPath}/img/logo/logo.png" alt="CodeVerse" />
-            </a>
-            <strong><img src="img/logo/logosn.png" alt="CV" /></strong>
-        </div>
+<style>
+  .logo-icon-img {
+    height: 70px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-        <div class="nalika-profile">
-            <div class="profile-dtl">
-                <a href="viewProfile">
-                    <img src="${not empty sessionScope.user.profilePicURL ? sessionScope.user.profilePicURL : 'img/notification/4.jpg'}" alt="Profile" />
-                </a>
-                <h2>${sessionScope.user.firstName} <span class="min-dtn">Participant</span></h2>
-            </div>
-        </div>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fb;
+    color: #1e293b;
+  }
 
-        <div class="left-custom-menu-adp-wrap comment-scrollbar">
-            <nav class="sidebar-nav left-sidebar-menu-pro">
-                <ul class="metismenu" id="menu1">
-                    
-                    <li class="active">
-                        <a title="Workspace" href="participant-dashboard">
-                            <i class="fa fa-th-large icon-wrap"></i>
-                            <span class="mini-click-non">Workspace</span>
-                        </a>
-                    </li>
+  /* Layout */
+  .app-wrapper {
+    display: flex;
+    min-height: 100vh;
+  }
 
-                    <li>
-                        <a class="has-arrow" href="#" aria-expanded="false">
-                            <i class="fa fa-rocket icon-wrap"></i> 
-                            <span class="mini-click-non">Hackathons</span>
-                        </a>
-                        <ul class="submenu-angle collapse" aria-expanded="false">
-                            <li><a title="Browse All" href="browse-hackathons"><span class="mini-sub-pro">Explore Events</span></a></li>
-                            <li><a title="My Registrations" href="my-hackathons"><span class="mini-sub-pro">My Participations</span></a></li>
-                            <li><a title="Past Events" href="past-events"><span class="mini-sub-pro">Past History</span></a></li>
-                        </ul>
-                    </li>
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    transition: width 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+  }
 
-                    <li>
-                        <a title="My Team" href="manage-teams" aria-expanded="false">
-                            <i class="fa fa-users icon-wrap"></i> 
-                            <span class="mini-click-non">Team Workspace</span>
-                        </a>
-                    </li>
+  .sidebar.collapsed {
+    width: 80px;
+  }
 
-                    <li>
-                        <a class="has-arrow" href="#" aria-expanded="false">
-                            <i class="icon nalika-diamond icon-wrap"></i> 
-                            <span class="mini-click-non">Rewards</span>
-                        </a>
-                        <ul class="submenu-angle collapse" aria-expanded="false">
-                            <li><a title="Certificates" href="my-certificates"><span class="mini-sub-pro">Certificate Vault</span></a></li>
-                            <li><a title="Badges" href="my-badges"><span class="mini-sub-pro">Skill Badges</span></a></li>
-                            <li><a title="Leaderboard" href="global-leaderboard"><span class="mini-sub-pro">Global Ranking</span></a></li>
-                        </ul>
-                    </li>
+  .sidebar-header {
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
 
-                    <li>
-                        <a class="has-arrow" href="#" aria-expanded="false">
-                            <i class="icon nalika-user icon-wrap"></i> 
-                            <span class="mini-click-non">Account</span>
-                        </a>
-                        <ul class="submenu-angle collapse" aria-expanded="false">
-                            <li><a title="My Profile" href="viewProfile"><span class="mini-sub-pro">View Profile</span></a></li>
-                            <li><a title="Edit Profile" href="editUser?userId=${sessionScope.user.userId}"><span class="mini-sub-pro">Update Info</span></a></li>
-                        </ul>
-                    </li>
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-                    <li>
-                        <a title="Logout" href="${pageContext.request.contextPath}/logout" style="color: #fe5e5e;">
-                            <i class="fa fa-sign-out icon-wrap"></i>
-                            <span class="mini-click-non">Sign Out</span>
-                        </a>
-                    </li>
+  .logo-icon {
+    background: #3b82f6;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+  }
 
-                </ul>
-            </nav>
-        </div>
-    </nav>
-</div>
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .sidebar.collapsed .logo-text {
+    display: none;
+  }
+
+  .toggle-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: #cbd5e1;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .toggle-btn:hover {
+    background: rgba(255,255,255,0.2);
+    color: white;
+  }
+
+  .sidebar.collapsed .toggle-btn i {
+    transform: rotate(180deg);
+  }
+
+  /* Sidebar Menu */
+  .sidebar-menu {
+    flex: 1;
+    padding: 20px 0;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    margin: 4px 8px;
+    border-radius: 12px;
+    color: #cbd5e1;
+    transition: 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .menu-item i {
+    font-size: 1.25rem;
+    min-width: 36px;
+  }
+
+  .menu-item span {
+    margin-left: 8px;
+    font-weight: 500;
+  }
+
+  .menu-item:hover,
+  .menu-item.active {
+    background: rgba(59, 130, 246, 0.2);
+    color: white;
+  }
+
+  .sidebar.collapsed .menu-item span {
+    display: none;
+  }
+
+  .sidebar.collapsed .menu-item {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .menu-item a {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* No submenus for participant, so we can remove related styles if desired */
+</style>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-area">
+      <img alt="CodeVerse Logo" src="img/logo/logo1.png" class="logo-icon-img">
+      <span class="logo-text">CodeVerse</span>
+    </div>
+    <button class="toggle-btn" id="toggleSidebar">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-menu">
+    <!-- Dashboard -->
+    <div class="menu-item active">
+      <a href="/participant/participant-dashboard">
+        <i class="fas fa-th-large"></i>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+    <!-- My Hackathons -->
+    <div class="menu-item">
+      <a href="/participant/my-hackathons">
+        <i class="fas fa-calendar-alt"></i>
+        <span>My Hackathons</span>
+      </a>
+    </div>
+
+    <!-- My Team -->
+    <div class="menu-item">
+      <a href="/participant/my-team">
+        <i class="fas fa-users"></i>
+        <span>My Team</span>
+      </a>
+    </div>
+
+    <!-- Profile -->
+    <div class="menu-item">
+      <a href="/participant/profile">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+    </div>
+
+    <!-- Logout -->
+    <div class="menu-item">
+      <a href="/logout">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="sidebar-footer" style="padding: 20px;">
+    <!-- optional -->
+  </div>
+</aside>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleSidebar');
+
+  // Sidebar collapse/expand
+  toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    const icon = toggleBtn.querySelector('i');
+    if (sidebar.classList.contains('collapsed')) {
+      icon.classList.remove('fa-chevron-left');
+      icon.classList.add('fa-chevron-right');
+    } else {
+      icon.classList.remove('fa-chevron-right');
+      icon.classList.add('fa-chevron-left');
+    }
+  });
+</script>

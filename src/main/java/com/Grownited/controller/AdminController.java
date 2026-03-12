@@ -38,7 +38,7 @@ public class AdminController {
 	 
 	 /**
 	     * Form Processing: Handles approval or rejection of organizers/judges.
-	     */
+	     
 	    @PostMapping("/approvals")
 	    public String processApproval(@RequestParam("userId") Long userId, 
 	                                  @RequestParam("action") String action) {
@@ -71,6 +71,6 @@ public class AdminController {
 	        return "/admin/manage-hackathons";
 	    }
 	    
-	   
+	   */
 
 }

@@ -16,6 +16,8 @@ public class HackathonEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer	hackthon_id;
 	private String title;
+	String description; 
+	private String hackathonPosterURL;
 	private String status;
 	private String event_type;
 	private String payment;
@@ -98,6 +100,19 @@ public class HackathonEntity {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getHackathonPosterURL() {
+		return hackathonPosterURL;
+	}
+	public void setHackathonPosterURL(String hackathonPosterURL) {
+		this.hackathonPosterURL = hackathonPosterURL;
+	}
+	
 		
 
 }

@@ -23,7 +23,7 @@ public class UserTypeController {
 	public String saveUserType(UserTypeEntity userTypeEntity) {
 		
 		userTypeRepository.save(userTypeEntity);
-		return "admin-dashboard";
+		return "AdminDashboard";
 		
 	}
 }

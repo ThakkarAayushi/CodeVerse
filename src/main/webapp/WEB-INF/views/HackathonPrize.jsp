@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Create Hackathon | CodeVerse Admin</title>
+    <title>Hackathon Prize | CodeVerse Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <!-- Fonts & Icons -->
@@ -144,6 +144,8 @@
             background: white;
             border-radius: 24px;
             padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
             box-shadow: 0 8px 30px rgba(0,0,0,0.02);
             border: 1px solid #edf2f7;
         }
@@ -152,7 +154,12 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card-header i {
+            color: #3b82f6;
+            font-size: 1.4rem;
         }
 
         .card-header h3 {
@@ -161,20 +168,8 @@
             color: #0f172a;
         }
 
-        .card-header i {
-            color: #3b82f6;
-            font-size: 1.4rem;
-        }
-
-        /* Form grid */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
@@ -182,7 +177,7 @@
             font-size: 0.9rem;
             font-weight: 500;
             color: #64748b;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .input-group {
@@ -206,7 +201,6 @@
         }
 
         .input-group input,
-        .input-group select,
         .input-group textarea {
             width: 100%;
             padding: 14px 15px 14px 0;
@@ -221,16 +215,12 @@
         .input-group textarea {
             min-height: 100px;
             resize: vertical;
-            padding-top: 14px;
         }
 
-        .input-group select {
-            padding-right: 35px;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 15px center;
-            background-size: 16px;
+        .helper-text {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 8px;
         }
 
         .action-buttons {
@@ -290,8 +280,8 @@
             .content-area {
                 padding: 20px;
             }
-            .form-grid {
-                grid-template-columns: 1fr;
+            .form-card {
+                padding: 20px;
             }
             .action-buttons {
                 flex-direction: column;
@@ -302,11 +292,34 @@
                 max-width: 300px;
             }
         }
+        /* Add or update this rule to include select */
+			.input-group input,
+			.input-group textarea,
+			.input-group select {
+			    width: 100%;
+			    padding: 14px 15px 14px 0;
+			    border: none;
+			    outline: none;
+			    font-size: 1rem;
+			    color: #1e293b;
+			    background: transparent;
+			    font-family: 'Inter', sans-serif;
+			}
+			
+			/* Specific styling for select (custom arrow) */
+			.input-group select {
+			    -webkit-appearance: none;
+			    -moz-appearance: none;
+			    appearance: none;
+			    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 15px center;
+			    background-size: 16px;
+			}
     </style>
 </head>
 <body>
     <div class="app-wrapper">
         <jsp:include page="AdminSidebar.jsp"></jsp:include>
+
         <!-- Main Content -->
         <div class="main-content">
             <!-- Header -->
@@ -315,7 +328,7 @@
                     <button class="mobile-menu-btn" id="mobileMenuBtn">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <span class="page-title">Create Hackathon</span>
+                    <span class="page-title">Add Hackathon Prize</span>
                 </div>
                 <div class="header-right">
                     <div class="notification-icon">
@@ -338,147 +351,47 @@
             <div class="content-area">
                 <div class="form-card">
                     <div class="card-header">
-                        <i class="fas fa-rocket"></i>
-                        <h3>Event Details</h3>
+                        <i class="fas fa-trophy"></i>
+                        <h3>Prize Details</h3>
                     </div>
 
-                    <form action="save-hackathon" method="POST"enctype="multipart/form-data">
-                        <div class="form-grid">
-                            <!-- Left Column -->
-                            <div class="form-col">
-                                <!-- Event Title -->
-                                <div class="form-group">
-                                    <label>Event Title</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-trophy"></i></span>
-                                        <input type="text" name="title" placeholder="e.g. CyberSprint 2026" required>
-                                    </div>
-                                </div>
-
-                                <!-- Status -->
-                                <div class="form-group">
-                                    <label>Status</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-toggle-on"></i></span>
-                                        <select name="status" required>
-                                            <option value="LIVE">Live</option>
-                                            <option value="UPCOMING">Upcoming</option>
-                                            <option value="EXPIRED">Expired</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Event Type -->
-                                <div class="form-group">
-                                    <label>Event Type</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-globe"></i></span>
-                                        <select name="event_type" required>
-                                            <option value="ONLINE">Online</option>
-                                            <option value="OFFLINE">Offline</option>
-                                            <option value="HYBRID">Hybrid</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Payment -->
-                                <div class="form-group">
-                                    <label>Entry Fee</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-credit-card"></i></span>
-                                        <select name="payment" required>
-                                            <option value="FREE">Free (No Entry Fee)</option>
-                                            <option value="PAID">Paid (Entry Fee Applies)</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Location -->
-                                <div class="form-group">
-                                    <label>Location</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-map-marker-alt"></i></span>
-                                        <input type="text" name="location" placeholder="Remote or Venue Address" required>
-                                    </div>
-                                </div>
-
-                                <!-- Description (new) -->
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-align-left"></i></span>
-                                        <textarea name="description" placeholder="Detailed description of the hackathon..." required></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Column -->
-                            <div class="form-col">
-                                <!-- Min Team Size -->
-                                <div class="form-group">
-                                    <label>Min Team Size</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-users"></i></span>
-                                        <input type="number" name="minTeamSize" placeholder="Min team members" min="1" required>
-                                    </div>
-                                </div>
-
-                                <!-- Max Team Size -->
-                                <div class="form-group">
-                                    <label>Max Team Size</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-user-plus"></i></span>
-                                        <input type="number" name="maxTeamSize" placeholder="Max team members" min="1" required>
-                                    </div>
-                                </div>
-
-                                <!-- Allowed User Type -->
-                                <div class="form-group">
-                                    <label>Allowed User Type</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-user-tag"></i></span>
-                                        <select name="userType" required>
-                                            <option value="">-- Select --</option>
-                                            <c:forEach items="${allUserType}" var="ut">
-                                                <option value="${ut.userType}">${ut.userType}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Registration Start Date -->
-                                <div class="form-group">
-                                    <label>Registration Start</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-calendar-check"></i></span>
-                                        <input type="date" name="registrationStartDate" required>
-                                    </div>
-                                </div>
-
-                                <!-- Registration End Date -->
-                                <div class="form-group">
-                                    <label>Registration End</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-calendar-times"></i></span>
-                                        <input type="date" name="registrationEndDate" required>
-                                    </div>
-                                </div>
-
-                                <!-- Hackathon Poster URL (new) -->
-                                <div class="form-group">
-                                    <label>Hackathon Poster </label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-image"></i></span>
-                                        <input type="file" name="hackathonPoster" placeholder="https://example.com/poster.jpg">
-                                    </div>
-                                </div>
+                    <form action="/savePrize" method="POST">
+                        <!-- Hidden field for hackathon ID (passed from calling page) -->
+                        <!-- input type="hidden" name="hackathon_id" value="${param.hackathon_id}"-->
+						<div class="form-group">
+						    <label>Hackathon</label>
+						    <div class="input-group">
+						        <span class="input-group-icon"><i class="fas fa-user-tag"></i></span>
+						        <select name="hackathon_id" required>
+						            <option value="">-- Select --</option>
+						            <c:forEach items="${allhackathons}" var="hk">
+						                <option value="${hk.hackthon_id}">${hk.title}</option>
+						            </c:forEach>
+						        </select>
+						    </div>
+						</div>
+						                        <div class="form-group">
+                            <label>Prize Title</label>
+                            <div class="input-group">
+                                <span class="input-group-icon"><i class="fas fa-medal"></i></span>
+                                <input type="text" name="prizeTitle" placeholder="e.g. First Prize, Runner Up" required>
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
+                        <div class="form-group">
+                            <label>Prize Description</label>
+                            <div class="input-group">
+                                <span class="input-group-icon"><i class="fas fa-align-left"></i></span>
+                                <textarea name="prizeDescription" placeholder="Describe the prize (e.g. cash amount, gadgets, etc.)" required></textarea>
+                            </div>
+                            <div class="helper-text">
+                                <i class="fas fa-info-circle"></i> Include details like cash prize, trophies, or special mentions.
+                            </div>
+                        </div>
+
                         <div class="action-buttons">
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-rocket"></i> Launch Hackathon</button>
-                            <button type="button" onclick="location.href='manage-hackathons'" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Prize</button>
+                            <button type="button" class="btn btn-secondary" onclick="history.back()"><i class="fas fa-times"></i> Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -486,7 +399,7 @@
 
             <!-- Footer -->
             <footer class="footer">
-                &copy; 2025 CodeVerse. All rights reserved. Empowering hackathons.
+                &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
             </footer>
         </div>
     </div>

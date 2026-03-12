@@ -1,192 +1,319 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!doctype html>
-<html class="no-js" lang="en">
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Participant Dashboard | CodeVerse</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/font-awesome.min.css">
-    <link rel="stylesheet" href="../css/nalika-icon.css">
-    <link rel="stylesheet" href="../css/animate.css">
-    <link rel="stylesheet" href="../css/normalize.css">
-    <link rel="stylesheet" href="../css/meanmenu.min.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/metisMenu/metisMenu.min.css">
-    <link rel="stylesheet" href="../css/metisMenu/metisMenu-vertical.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/font-awesome.min.css">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/style.css">
-    
-    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+        }
+
+        /* Layout */
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar styles are in ParticipantSidebar.jsp, but we include basic layout */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8fafc;
+        }
+
+        /* Header */
+        .top-header {
+            background: white;
+            padding: 16px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border-bottom: 1px solid #e9eef2;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 1.25rem;
+            color: #475569;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 5px;
+            border-radius: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .user-info {
+                display: block;
+            }
+            .user-info .name {
+                font-weight: 600;
+                font-size: 0.95rem;
+                color: #1e293b;
+            }
+            .user-info .role {
+                font-size: 0.75rem;
+                color: #64748b;
+            }
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 30px;
+            flex: 1;
+        }
+
+        /* Hackathon cards */
+        .hackathon-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            border-radius: 20px;
+        }
+        .hackathon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .badge-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        .card-footer {
+            background: transparent;
+            border-top: 1px solid #f1f1f1;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            padding: 20px 30px;
+            border-top: 1px solid #e9eef2;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            .top-header {
+                padding: 16px 20px;
+            }
+            .content-area {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <jsp:include page="ParticipantSidebar.jsp"></jsp:include>
+    <div class="app-wrapper">
+        <!-- Include Sidebar -->
+        <jsp:include page="ParticipantSidebar.jsp" />
 
-    <div class="all-content-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="logo-pro">
-                           <!--img class="main-logo" src="${pageContext.request.contextPath}/img/logo/logo.png" alt="CodeVerse" /-->
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="page-title">Available Hackathons</span>
+                </div>
+                <div class="header-right">
+                    <div class="notification-icon">
+                        <i class="far fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <c:out value="${sessionScope.user.firstName.charAt(0)}" />
+                        </div>
+                        <div class="user-info">
+                            <div class="name"><c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}" /></div>
+                            <div class="role">Participant</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </header>
 
-        <div class="header-advance-area">
-            <div class="breadcome-area">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="breadcome-list">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                        <div class="breadcomb-wp">
-                                            <div class="breadcomb-icon">
-                                                <i class="fa fa-rocket"></i>
-                                            </div>
-                                            <div class="breadcomb-ctn">
-                                                <h2>Participant Workspace</h2>
-                                                <p>Welcome back, <span class="bread-ntd">${sessionScope.user.firstName}</span></p>
-                                            </div>
+            <!-- Content Area -->
+            <div class="content-area">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Available Hackathons</h3>
+                    <span class="badge bg-primary fs-6">${hackathons.size()} Events Found</span>
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <c:forEach var="hack" items="${hackathons}">
+                        <div class="col">
+                            <div class="card h-100 hackathon-card shadow-sm">
+                                <span class="badge badge-status ${hack.status == 'LIVE' ? 'bg-success' : hack.status == 'UPCOMING' ? 'bg-warning' : 'bg-secondary'} text-white">
+                                    ${hack.status}
+                                </span>
+
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary fw-bold mb-3 text-truncate">${hack.title}</h5>
+                                    
+                                    <div class="mb-2">
+                                        <small class="text-muted"><i class="fas fa-map-marker-alt me-2"></i>${hack.location} (${hack.event_type})</small>
+                                    </div>
+                                    
+                                    <div class="mb-2">
+                                        <small class="text-muted"><i class="fas fa-wallet me-2"></i>Payment: <strong>${hack.payment}</strong></small>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-6 border-end">
+                                            <p class="mb-0 small text-uppercase fw-bold text-muted">Team Size</p>
+                                            <p class="mb-0">${hack.minTeamSize} - ${hack.maxTeamSize} Members</p>
+                                        </div>
+                                        <div class="col-6 ps-3">
+                                            <p class="mb-0 small text-uppercase fw-bold text-muted">Deadline</p>
+                                            <p class="mb-0 text-danger small">${hack.registrationEndDate}</p>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
-                                        <button class="btn btn-success" onclick="location.href='browse-hackathons'">Find New Hackathons</button>
-                                    </div>
+                                </div>
+
+                                <div class="card-footer d-grid">
+                                    <a href="<c:url value='/participant/home?hackathon_id=${hack.hackthon_id}'/>" class="btn btn-outline-primary rounded-pill">
+                                        View Details
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </c:forEach>
 
-        <div class="section-admin container-fluid">
-            <div class="row admin text-center">
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="admin-content analysis-progrebar-ctn res-mg-t-15">
-                        <h4 class="text-left"><b>My Hackathons</b></h4>
-                        <h2 class="text-right no-margin" style = "color:#ffffff;">04</h2>
-                        <div class="progress progress-mini"><div style="width: 60%;" class="progress-bar bg-green"></div></div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="admin-content analysis-progrebar-ctn res-mg-t-15">
-                        <h4 class="text-left"><b>Rank</b></h4>
-                        <h2 class="text-right no-margin"style = "color:#ffffff;">#124</h2>
-                        <div class="progress progress-mini"><div style="width: 40%;" class="progress-bar bg-blue"></div></div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="admin-content analysis-progrebar-ctn res-mg-t-15">
-                        <h4 class="text-left"><b>Certificates</b></h4>
-                        <h2 class="text-right no-margin"style = "color:#ffffff;">02</h2>
-                        <div class="progress progress-mini"><div style="width: 30%;" class="progress-bar bg-purple"></div></div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <div class="admin-content analysis-progrebar-ctn res-mg-t-15">
-                        <h4 class="text-left"><b>XP Gained</b></h4>
-                        <h2 class="text-right no-margin"style = "color:#ffffff;">1,250</h2>
-                        <div class="progress progress-mini"><div style="width: 75%;" class="progress-bar bg-red"></div></div>
-                    </div>
+                    <c:if test="${empty hackathons}">
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <p class="lead">No hackathons available at the moment.</p>
+                        </div>
+                    </c:if>
                 </div>
             </div>
-        </div>
 
-        <div class="product-status mg-b-30" style="margin-top: 30px;">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="product-status-wrap">
-                            <h4>My Active Competitions</h4>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Hackathon</th>
-                                        <th>Role/Team</th>
-                                        <th>Deadline</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <%-- Example Row --%>
-                                    <tr>
-                                        <td style="color: #fff; font-weight: 600;">Global AI Challenge 2026</td>
-                                        <td>Team Lead (Solo)</td>
-                                        <td>March 15, 2026</td>
-                                        <td><button class="pd-setting">Active</button></td>
-                                        <td>
-                                            <button data-toggle="tooltip" title="View Details" class="pd-setting-ed"><i class="fa fa-eye"></i></button>
-                                            <button data-toggle="tooltip" title="Submit Project" class="pd-setting-ed"><i class="fa fa-upload"></i></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="product-sales-area mg-tb-30">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                        <div class="product-sales-chart">
-                            <div class="portlet-title">
-                                <h4 style = "color:#ffffff;">Growth Analytics (Skill XP)</h4>
-                            </div>
-                            <div id="curved-line-chart" class="flot-chart-sts flot-chart curved-chart-statistic"></div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                        <div class="white-box analytics-info-cs mg-b-30">
-                            <h3 class="box-title">Global Standing</h3>
-                            <ul class="list-inline two-part-sp">
-                                <li><div id="sparklinedash"></div></li>
-                                <li class="text-right sp-cn-r"><i class="fa fa-level-up"></i> <span class="counter sales-sts-ctn">Top 5%</span></li>
-                            </ul>
-                        </div>
-                        <div class="white-box analytics-info-cs">
-                            <h3 class="box-title">Next Milestone</h3>
-                            <p style="color: #94a3b8;">Reach 2,000 XP to unlock "Senior Coder" badge.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-copyright-area">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="footer-copy-right">
-                            <p>Copyright © 2026 CodeVerse. All rights reserved.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Footer -->
+            <footer class="footer">
+                &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
+            </footer>
         </div>
     </div>
 
-    <script src="js/vendor/jquery-1.12.4.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/metisMenu/metisMenu.min.js"></script>
-    <script src="js/metisMenu/metisMenu-active.js"></script>
-    <script src="js/main.js"></script>
+    <!-- JavaScript for Sidebar Toggle (if not already in sidebar) -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                const icon = toggleBtn.querySelector('i');
+                if (sidebar.classList.contains('collapsed')) {
+                    icon.classList.remove('fa-chevron-left');
+                    icon.classList.add('fa-chevron-right');
+                } else {
+                    icon.classList.remove('fa-chevron-right');
+                    icon.classList.add('fa-chevron-left');
+                }
+            });
+        }
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.add('mobile-open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-open');
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
