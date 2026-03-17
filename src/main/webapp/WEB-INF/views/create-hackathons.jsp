@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
+        /* (Keep all existing CSS exactly as before) */
         * {
             margin: 0;
             padding: 0;
@@ -25,13 +26,11 @@
             color: #1e293b;
         }
 
-        /* Layout */
         .app-wrapper {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Main Content */
         .main-content {
             flex: 1;
             display: flex;
@@ -39,7 +38,6 @@
             background: #f8fafc;
         }
 
-        /* Header */
         .top-header {
             background: white;
             padding: 16px 30px;
@@ -133,13 +131,11 @@
             }
         }
 
-        /* Content Area */
         .content-area {
             padding: 30px;
             flex: 1;
         }
 
-        /* Form Card */
         .form-card {
             background: white;
             border-radius: 24px;
@@ -166,7 +162,6 @@
             font-size: 1.4rem;
         }
 
-        /* Form grid */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -269,7 +264,6 @@
             transform: translateY(-2px);
         }
 
-        /* Footer */
         .footer {
             background: white;
             padding: 20px 30px;
@@ -279,7 +273,6 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .mobile-menu-btn {
                 display: block;
@@ -306,43 +299,26 @@
 </head>
 <body>
     <div class="app-wrapper">
-        <jsp:include page="AdminSidebar.jsp"></jsp:include>
+        <!-- Sidebar (unchanged) -->
+        <jsp:include page="AdminSidebar.jsp" />
+
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <span class="page-title">Create Hackathon</span>
-                </div>
-                <div class="header-right">
-                    <div class="notification-icon">
-                        <i class="far fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <c:out value="${sessionScope.user.firstName.charAt(0)}" />
-                        </div>
-                        <div class="user-info">
-                            <div class="name"><c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}" /></div>
-                            <div class="role">Administrator</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <!-- Shared Header (includes notification, logout, user profile) -->
+            <jsp:include page="AdminHeader.jsp" />
 
             <!-- Content Area -->
             <div class="content-area">
+                <!-- Page title moved here -->
+                <h1 class="page-title" style="margin-bottom: 24px;">Create Hackathon</h1>
+
                 <div class="form-card">
                     <div class="card-header">
                         <i class="fas fa-rocket"></i>
                         <h3>Event Details</h3>
                     </div>
 
-                    <form action="save-hackathon" method="POST"enctype="multipart/form-data">
+                    <form action="save-hackathon" method="POST" enctype="multipart/form-data">
                         <div class="form-grid">
                             <!-- Left Column -->
                             <div class="form-col">
@@ -402,7 +378,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Description (new) -->
+                                <!-- Description -->
                                 <div class="form-group">
                                     <label>Description</label>
                                     <div class="input-group">
@@ -464,12 +440,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Hackathon Poster URL (new) -->
+                                <!-- Hackathon Poster -->
                                 <div class="form-group">
-                                    <label>Hackathon Poster </label>
+                                    <label>Hackathon Poster</label>
                                     <div class="input-group">
                                         <span class="input-group-icon"><i class="fas fa-image"></i></span>
-                                        <input type="file" name="hackathonPoster" placeholder="https://example.com/poster.jpg">
+                                        <input type="file" name="hackathonPoster">
                                     </div>
                                 </div>
                             </div>

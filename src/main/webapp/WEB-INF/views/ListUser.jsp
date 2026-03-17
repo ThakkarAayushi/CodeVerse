@@ -346,41 +346,43 @@
                 gap: 10px;
             }
         }
+
+        /* Additional style for logout button if not in shared header */
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: #475569;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            margin-right: 8px;
+        }
+        .logout-btn:hover {
+            background: #f1f5f9;
+            color: #ef4444;
+        }
     </style>
 </head>
 <body>
     <div class="app-wrapper">
-        <jsp:include page="AdminSidebar.jsp"></jsp:include>
+        <!-- Sidebar (unchanged) -->
+        <jsp:include page="AdminSidebar.jsp" />
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <span class="page-title">User Management</span>
-                </div>
-                <div class="header-right">
-                    <div class="notification-icon">
-                        <i class="far fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <c:out value="${sessionScope.user.firstName.charAt(0)}" />
-                        </div>
-                        <div class="user-info">
-                            <div class="name"><c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}" /></div>
-                            <div class="role">Administrator</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <!-- Shared Header (includes notification, logout, user profile) -->
+            <jsp:include page="AdminHeader.jsp" />
 
             <!-- Content Area -->
             <div class="content-area">
+                <!-- Page title moved here -->
+                <h1 class="page-title" style="margin-bottom: 24px;">User Management</h1>
+
                 <div class="table-card">
                     <div class="card-header">
                         <h3><i class="fas fa-users"></i> Platform User Directory</h3>

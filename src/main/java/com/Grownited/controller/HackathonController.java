@@ -1,19 +1,23 @@
 
 package com.Grownited.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.Grownited.entity.HackathonEntity;
 import com.Grownited.entity.UserEntity;
 import com.Grownited.entity.UserTypeEntity;
 import com.Grownited.repository.HackathonRepository;
 import com.Grownited.repository.UserTypeRepository;
+import com.cloudinary.Cloudinary;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -25,6 +29,9 @@ public class HackathonController {
 	    
 	   @Autowired
 	    UserTypeRepository userTypeRepository;
+	   
+	   @Autowired
+	   Cloudinary cloudinary;
 	
 	@GetMapping("/create-hackathon")
 	    public String createHackathon(Model model) {
@@ -36,11 +43,21 @@ public class HackathonController {
 	    }
 
 	    @PostMapping("/save-hackathon")
-	    public String saveHackathon(HackathonEntity hackathonEntity,HttpSession session) {
+	    public String saveHackathon(HackathonEntity hackathonEntity,HttpSession session, MultipartFile hackathonPoster) {
 		    
 		    System.out.println(hackathonEntity.getTitle());
 		    UserEntity currentLogInUser = (UserEntity) session.getAttribute("user");
 			hackathonEntity.setUserId(currentLogInUser.getUserId());
+			try {
+    			Map  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+    			String hackathonPosterURL = map.get("secure_url").toString();
+    			System.out.println(hackathonPosterURL);
+    			hackathonEntity.setHackathonPosterURL(hackathonPosterURL);
+    			
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
 		    hackathonRepository.save(hackathonEntity);
 	        return "redirect:/listHackathon";
 	    }

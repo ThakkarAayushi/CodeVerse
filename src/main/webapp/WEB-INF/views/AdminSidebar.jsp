@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <style>
   .logo-icon-img {
     height: 70px;
@@ -5,145 +7,72 @@
     max-width: 100%;
     object-fit: contain;
     display: block;
-   }
-     * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fb;
-            color: #1e293b;
-        }
-
-        /* Layout */
-        .app-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
-            transition: width 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            background: #3b82f6;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: white;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-
-        .toggle-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #cbd5e1;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .toggle-btn:hover {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-
-        .sidebar.collapsed .toggle-btn i {
-            transform: rotate(180deg);
-        }
-
-        /* Sidebar Menu */
-        .sidebar-menu {
-            flex: 1;
-            padding: 20px 0;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            margin: 4px 8px;
-            border-radius: 12px;
-            color: #cbd5e1;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-
-        .menu-item i {
-            font-size: 1.25rem;
-            min-width: 36px;
-        }
-
-        .menu-item span {
-            margin-left: 8px;
-            font-weight: 500;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background: rgba(59, 130, 246, 0.2);
-            color: white;
-        }
-
-        .sidebar.collapsed .menu-item span {
-            display: none;
-        }
-
-        .sidebar.collapsed .menu-item {
-            justify-content: center;
-            padding: 12px 0;
-        }
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
-  /* Sidebar menu & submenu styles */
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fb;
+    color: #1e293b;
+  }
+
+  /* Layout */
+  .app-wrapper {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    transition: width 0.3s ease, left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+  }
+
+  .sidebar.collapsed {
+    width: 80px;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* centered – toggle button removed */
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .sidebar.collapsed .logo-text {
+    display: none;
+  }
+
+  /* Sidebar Menu */
+  .sidebar-menu {
+    flex: 1;
+    padding: 20px 0;
+  }
+
   .menu-item {
     display: flex;
     align-items: center;
@@ -165,16 +94,16 @@
   .menu-item span {
     margin-left: 8px;
     font-weight: 500;
-    flex: ; /* takes up remaining space, pushing arrow to the right */
+    flex: 1;
   }
 
   .menu-item .arrow-icon {
     font-size: 0.9rem;
     transition: transform 0.3s;
-    margin-left: auto; /* ensures arrow stays at the far right */
+    margin-left: auto;
   }
 
- .menu-item.open .arrow-icon {
+  .menu-item.open .arrow-icon {
     transform: rotate(-90deg);
   }
 
@@ -193,7 +122,7 @@
   }
 
   .submenu.open {
-    max-height: 200px;
+    max-height: 200px; /* adjust based on content */
   }
 
   .submenu-item {
@@ -204,6 +133,8 @@
     font-size: 0.95rem;
     cursor: pointer;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
   }
 
   .submenu-item:hover {
@@ -215,6 +146,16 @@
     margin-right: 10px;
     font-size: 1rem;
     width: 20px;
+    color: #a0afc0;
+  }
+
+  .submenu-item a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
   }
 
   /* Collapsed sidebar adjustments */
@@ -226,76 +167,94 @@
   .sidebar.collapsed .submenu {
     display: none;
   }
-  a{
-    color:white;
-     text-decoration: none;
+
+  /* Mobile behavior */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      height: 100vh;
+      z-index: 1000;
+      transition: left 0.3s ease;
+    }
+    .sidebar.mobile-open {
+      left: 0;
+    }
   }
+  
 </style>
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-area">
-      <img alt="CodeVerse Logo" src="img/logo/logo1.png" class="logo-icon-img">
+      <img alt="CodeVerse Logo" src="${pageContext.request.contextPath}/img/logo/logo1.png" class="logo-icon-img">
       <span class="logo-text">CodeVerse</span>
     </div>
-    <button class="toggle-btn" id="toggleSidebar">
-      <i class="fas fa-chevron-left"></i>
-    </button>
+    <!-- Internal toggle button removed – controlled from header -->
   </div>
 
   <div class="sidebar-menu">
-    <!-- Dashboard -->
+    <!-- Dashboard (direct link) -->
     <div class="menu-item active">
       <i class="fas fa-th-large"></i>
-      <a href="/dashboard"> <span>Dashboard</span></a>
+      <span>Dashboard</span>
+      <a href="/dashboard" style="position:absolute; inset:0;"></a> <!-- invisible link covers whole item -->
     </div>
 
-    <!-- Hackathons with submenu & arrow -->
+    <!-- Hackathons with submenu -->
     <div class="menu-item" id="hackathonMenu">
       <i class="fas fa-calendar-alt"></i>
       <span>Hackathons</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
     </div>
     <ul class="submenu" id="hackathonSubmenu">
-      <li class="submenu-item"><i class="fas fa-plus-circle"><a href = "/create-hackathon"></i> Add Hackathon</li></a>
-      <li class="submenu-item"><i class="fas fa-list"><a href="/listHackathon"></i> List Hackathons</li></a>
+      <li class="submenu-item"><a href="/create-hackathon"><i class="fas fa-plus-circle"></i> Add Hackathon</a></li>
+      <li class="submenu-item"><a href="/listHackathon"><i class="fas fa-list"></i> List Hackathons</a></li>
     </ul>
 
-    <!-- Other menu items -->
+    <!-- Users with submenu -->
     <div class="menu-item" id="userMenu">
       <i class="fas fa-users"></i>
       <span>Users</span>
-       <i class="fas fa-chevron-left arrow-icon"></i>
+      <i class="fas fa-chevron-left arrow-icon"></i>
     </div>
-     <ul class="submenu" id="userSubmenu">
-      <li class="submenu-item"><i class="fas fa-plus-circle"><a href = "/create-hackathon"></i> Add User</li></a>
-       <li class="submenu-item"><i class="fas fa-tag"></i> <a href="newUserType">Add User Type</a></li>
-      <li class="submenu-item"><i class="fas fa-list"><a href="listUser"></i> List Users</li></a>
+    <ul class="submenu" id="userSubmenu">
+      <li class="submenu-item"><a href="/register"><i class="fas fa-plus-circle"></i> Add User</a></li>
+      <li class="submenu-item"><a href="newUserType"><i class="fas fa-tag"></i> Add User Type</a></li>
+      <li class="submenu-item"><a href="listUser"><i class="fas fa-list"></i> List Users</a></li>
     </ul>
-    
-      <!-- Category with submenu (new) -->
+
+    <!-- Category with submenu -->
     <div class="menu-item" id="categoryMenu">
       <i class="fas fa-folder"></i>
       <span>Category</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
     </div>
     <ul class="submenu" id="categorySubmenu">
-      <li class="submenu-item"><i class="fas fa-plus-circle"></i> <a href="newCategory">Add Category</a></li>
-      <li class="submenu-item"><i class="fas fa-list"></i> <a href="listCategory">List Categories</a></li>
+      <li class="submenu-item"><a href="newCategory"><i class="fas fa-plus-circle"></i> Add Category</a></li>
+      <li class="submenu-item"><a href="listCategory"><i class="fas fa-list"></i> List Categories</a></li>
     </ul>
-    
+
+    <!-- Organizers (direct link) -->
     <div class="menu-item">
       <i class="fas fa-user-tie"></i>
       <span>Organizers</span>
+      <a href="/organizers" style="position:absolute; inset:0;"></a>
     </div>
+
+    <!-- Approvals -->
     <div class="menu-item">
       <i class="fas fa-check-circle"></i>
       <span>Approvals</span>
+      <a href="/approvals" style="position:absolute; inset:0;"></a>
     </div>
+
+    <!-- Settings -->
     <div class="menu-item">
       <i class="fas fa-cog"></i>
       <span>Settings</span>
+      <a href="/settings" style="position:absolute; inset:0;"></a>
     </div>
   </div>
 
@@ -306,48 +265,26 @@
 
 <script>
   const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('toggleSidebar');
+
+  // Submenu toggles (only when sidebar is expanded)
   const hackathonMenu = document.getElementById('hackathonMenu');
   const hackathonSubmenu = document.getElementById('hackathonSubmenu');
+  const userMenu = document.getElementById('userMenu');
+  const userSubmenu = document.getElementById('userSubmenu');
+  const categoryMenu = document.getElementById('categoryMenu');
+  const categorySubmenu = document.getElementById('categorySubmenu');
 
-  // Sidebar collapse/expand
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    const icon = toggleBtn.querySelector('i');
-    if (sidebar.classList.contains('collapsed')) {
-      icon.classList.remove('fa-chevron-left');
-      icon.classList.add('fa-chevron-right');
-      // Close any open submenus when collapsing
-      document.querySelectorAll('.menu-item.open').forEach(item => item.classList.remove('open'));
-      document.querySelectorAll('.submenu.open').forEach(sub => sub.classList.remove('open'));
-    } else {
-      icon.classList.remove('fa-chevron-right');
-      icon.classList.add('fa-chevron-left');
-    }
-  });
+  function setupSubmenu(menu, submenu) {
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!sidebar.classList.contains('collapsed')) {
+        menu.classList.toggle('open');
+        submenu.classList.toggle('open');
+      }
+    });
+  }
 
-  // Hackathon submenu toggle
-  hackathonMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // Only toggle if sidebar is expanded
-    if (!sidebar.classList.contains('collapsed')) {
-      hackathonMenu.classList.toggle('open');
-      hackathonSubmenu.classList.toggle('open');
-    }
-  });
-  userMenu.addEventListener('click', (e) => {
-	    e.stopPropagation();
-	    // Only toggle if sidebar is expanded
-	    if (!sidebar.classList.contains('collapsed')) {
-	     userMenu.classList.toggle('open');
-	     userSubmenu.classList.toggle('open');
-	    }
-	  });
-  categoryMenu.addEventListener('click', (e) => {
-	    e.stopPropagation();
-	    if (!sidebar.classList.contains('collapsed')) {
-	      categoryMenu.classList.toggle('open');
-	      categorySubmenu.classList.toggle('open');
-	    }
-	  });
+  setupSubmenu(hackathonMenu, hackathonSubmenu);
+  setupSubmenu(userMenu, userSubmenu);
+  setupSubmenu(categoryMenu, categorySubmenu);
 </script>

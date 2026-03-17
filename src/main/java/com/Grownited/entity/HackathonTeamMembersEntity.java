@@ -12,34 +12,34 @@ public class HackathonTeamMembersEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer hackathon_team_member_id;
-	private Integer team_id;
-	private Integer hackathon_id;
-	private Integer member_id;
+	private Integer hackathonTeamMemberId;
+	private Integer teamId;
+	private Integer hackathonId;
+	private Integer memberId;
 	private String roleTitle;
-	public Integer getHackathon_team_member_id() {
-		return hackathon_team_member_id;
+	public Integer getHackathonTeamMemberId() {
+		return hackathonTeamMemberId;
 	}
-	public void setHackathon_team_member_id(Integer hackathon_team_member_id) {
-		this.hackathon_team_member_id = hackathon_team_member_id;
+	public void setHackathonTeamMemberId(Integer hackathonTeamMemberId) {
+		this.hackathonTeamMemberId = hackathonTeamMemberId;
 	}
-	public Integer getTeam_id() {
-		return team_id;
+	public Integer getTeamId() {
+		return teamId;
 	}
-	public void setTeam_id(Integer team_id) {
-		this.team_id = team_id;
+	public void setTeamId(Integer teamId) {
+		this.teamId = teamId;
 	}
-	public Integer getHackathon_id() {
-		return hackathon_id;
+	public Integer getHackathonId() {
+		return hackathonId;
 	}
-	public void setHackathon_id(Integer hackathon_id) {
-		this.hackathon_id = hackathon_id;
+	public void setHackathonId(Integer hackathonId) {
+		this.hackathonId = hackathonId;
 	}
-	public Integer getMember_id() {
-		return member_id;
+	public Integer getMemberId() {
+		return memberId;
 	}
-	public void setMember_id(Integer member_id) {
-		this.member_id = member_id;
+	public void setMemberId(Integer memberId) {
+		this.memberId = memberId;
 	}
 	public String getRoleTitle() {
 		return roleTitle;

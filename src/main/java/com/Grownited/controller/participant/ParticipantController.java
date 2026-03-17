@@ -61,17 +61,7 @@ public class ParticipantController {
 
         // Check if current user is already registered (as leader or member)
         Integer userId = (Integer) session.getAttribute("userId");
-       /* boolean isRegistered = false;
-        if (userId != null) {
-            // Check if user is team leader
-        	Optional<HackathonTeamEntity> teamOpt = hackathonTeamRepository.findByHackathonIdAndTeamLeaderId(hackathonId, userId);     if (teamOpt.isPresent()) {
-                isRegistered = true;
-            } /*else {
-                // Check if user is team member
-                isRegistered = hackathonTeamMembersRepository.existsByHackathonIdAndMemberId(hackathonId, userId);
-            }
-        
-       model.addAttribute("isRegistered", isRegistered);*/
+     
 
         return "participant/ViewHackathons";
     }

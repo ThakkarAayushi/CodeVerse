@@ -201,7 +201,8 @@
         }
 
         .input-group input,
-        .input-group textarea {
+        .input-group textarea,
+        .input-group select {
             width: 100%;
             padding: 14px 15px 14px 0;
             border: none;
@@ -215,6 +216,14 @@
         .input-group textarea {
             min-height: 100px;
             resize: vertical;
+        }
+
+        .input-group select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 15px center;
+            background-size: 16px;
         }
 
         .helper-text {
@@ -292,63 +301,43 @@
                 max-width: 300px;
             }
         }
-        /* Add or update this rule to include select */
-			.input-group input,
-			.input-group textarea,
-			.input-group select {
-			    width: 100%;
-			    padding: 14px 15px 14px 0;
-			    border: none;
-			    outline: none;
-			    font-size: 1rem;
-			    color: #1e293b;
-			    background: transparent;
-			    font-family: 'Inter', sans-serif;
-			}
-			
-			/* Specific styling for select (custom arrow) */
-			.input-group select {
-			    -webkit-appearance: none;
-			    -moz-appearance: none;
-			    appearance: none;
-			    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") no-repeat right 15px center;
-			    background-size: 16px;
-			}
+
+        /* Logout button style (if not already in shared header) */
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: #475569;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            margin-right: 8px;
+        }
+        .logout-btn:hover {
+            background: #f1f5f9;
+            color: #ef4444;
+        }
     </style>
 </head>
 <body>
     <div class="app-wrapper">
-        <jsp:include page="AdminSidebar.jsp"></jsp:include>
+        <!-- Sidebar (unchanged) -->
+        <jsp:include page="AdminSidebar.jsp" />
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <span class="page-title">Add Hackathon Prize</span>
-                </div>
-                <div class="header-right">
-                    <div class="notification-icon">
-                        <i class="far fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <c:out value="${sessionScope.user.firstName.charAt(0)}" />
-                        </div>
-                        <div class="user-info">
-                            <div class="name"><c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}" /></div>
-                            <div class="role">Administrator</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <!-- Shared Header (includes notification, logout, user profile) -->
+            <jsp:include page="AdminHeader.jsp" />
 
             <!-- Content Area -->
             <div class="content-area">
+                <!-- Page title moved here -->
+                <h1 class="page-title" style="margin-bottom: 24px;">Add Hackathon Prize</h1>
+
                 <div class="form-card">
                     <div class="card-header">
                         <i class="fas fa-trophy"></i>
@@ -356,21 +345,22 @@
                     </div>
 
                     <form action="/savePrize" method="POST">
-                        <!-- Hidden field for hackathon ID (passed from calling page) -->
-                        <!-- input type="hidden" name="hackathon_id" value="${param.hackathon_id}"-->
-						<div class="form-group">
-						    <label>Hackathon</label>
-						    <div class="input-group">
-						        <span class="input-group-icon"><i class="fas fa-user-tag"></i></span>
-						        <select name="hackathon_id" required>
-						            <option value="">-- Select --</option>
-						            <c:forEach items="${allhackathons}" var="hk">
-						                <option value="${hk.hackthon_id}">${hk.title}</option>
-						            </c:forEach>
-						        </select>
-						    </div>
-						</div>
-						                        <div class="form-group">
+                        <!-- Hidden field for hackathon ID (passed from calling page) 
+                             Alternatively, select from dropdown as below -->
+                        <div class="form-group">
+                            <label>Hackathon</label>
+                            <div class="input-group">
+                                <span class="input-group-icon"><i class="fas fa-user-tag"></i></span>
+                                <select name="hackathon_id" required>
+                                    <option value="">-- Select --</option>
+                                    <c:forEach items="${allhackathons}" var="hk">
+                                        <option value="${hk.hackthon_id}">${hk.title}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label>Prize Title</label>
                             <div class="input-group">
                                 <span class="input-group-icon"><i class="fas fa-medal"></i></span>

@@ -67,8 +67,9 @@ public class SessionController {
 
 		if (op.isPresent()) {
 			UserEntity dbUser = op.get();
-			session.setAttribute("user", dbUser);
+			
 			if (passwordEncoder.matches(password, dbUser.getPassword())) {
+				session.setAttribute("user", dbUser);
 			//if (dbUser.getPassword().equals(password))
 			{
 				if (dbUser.getRole().equals("admin")) {
@@ -94,7 +95,7 @@ public class SessionController {
         return "forgetPassword"; // Points to /WEB-INF/jsp/forgot-password.jsp
     }
    
-    @PostMapping("resetPassword")
+    @PostMapping("/resetPassword")
     public String resetPassword(String email, Model model) {
     	
     	Optional<UserEntity> userOpt = userRepository.findByEmail(email);

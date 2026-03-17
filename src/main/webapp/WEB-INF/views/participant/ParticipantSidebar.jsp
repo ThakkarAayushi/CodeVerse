@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <style>
   .logo-icon-img {
     height: 70px;
@@ -29,7 +31,7 @@
     width: 260px;
     background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
     color: #e2e8f0;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, left 0.3s ease;
     display: flex;
     flex-direction: column;
     box-shadow: 4px 0 20px rgba(0,0,0,0.08);
@@ -43,7 +45,7 @@
     padding: 24px 20px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center; /* centered because toggle button removed */
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
@@ -51,19 +53,6 @@
     display: flex;
     align-items: center;
     gap: 12px;
-  }
-
-  .logo-icon {
-    background: #3b82f6;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    font-weight: 700;
-    color: white;
   }
 
   .logo-text {
@@ -76,29 +65,6 @@
 
   .sidebar.collapsed .logo-text {
     display: none;
-  }
-
-  .toggle-btn {
-    background: rgba(255,255,255,0.1);
-    border: none;
-    color: #cbd5e1;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .toggle-btn:hover {
-    background: rgba(255,255,255,0.2);
-    color: white;
-  }
-
-  .sidebar.collapsed .toggle-btn i {
-    transform: rotate(180deg);
   }
 
   /* Sidebar Menu */
@@ -159,19 +125,29 @@
     width: 100%;
   }
 
-  /* No submenus for participant, so we can remove related styles if desired */
+  /* Mobile behaviour */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      height: 100vh;
+      z-index: 1000;
+      transition: left 0.3s ease;
+    }
+    .sidebar.mobile-open {
+      left: 0;
+    }
+  }
 </style>
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo-area">
-      <img alt="CodeVerse Logo" src="img/logo/logo1.png" class="logo-icon-img">
+      <img alt="CodeVerse Logo" src="${pageContext.request.contextPath}/img/logo/logo1.png" class="logo-icon-img">
       <span class="logo-text">CodeVerse</span>
     </div>
-    <button class="toggle-btn" id="toggleSidebar">
-      <i class="fas fa-chevron-left"></i>
-    </button>
+    <!-- Internal toggle button removed – now controlled from header -->
   </div>
 
   <div class="sidebar-menu">
@@ -185,7 +161,7 @@
 
     <!-- My Hackathons -->
     <div class="menu-item">
-      <a href="/participant/my-hackathons">
+      <a href="/participant/myHackathons">
         <i class="fas fa-calendar-alt"></i>
         <span>My Hackathons</span>
       </a>
@@ -221,20 +197,4 @@
   </div>
 </aside>
 
-<script>
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('toggleSidebar');
-
-  // Sidebar collapse/expand
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    const icon = toggleBtn.querySelector('i');
-    if (sidebar.classList.contains('collapsed')) {
-      icon.classList.remove('fa-chevron-left');
-      icon.classList.add('fa-chevron-right');
-    } else {
-      icon.classList.remove('fa-chevron-right');
-      icon.classList.add('fa-chevron-left');
-    }
-  });
-</script>
+<!-- No internal toggle script needed – header handles collapse and mobile -->

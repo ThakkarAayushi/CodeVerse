@@ -184,7 +184,7 @@
                 </div>
             </c:if>
 
-            <form action="resetPassword" method="POST">
+            <form action="/resetPassword" method="POST">
                 <div class="form-group">
                     <label>Email Address</label>
                     <div class="input-group">

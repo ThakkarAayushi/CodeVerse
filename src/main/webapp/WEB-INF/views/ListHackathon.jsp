@@ -349,7 +349,8 @@
                 gap: 10px;
             }
         }
-                     * {
+        /* Additional sidebar styles (kept as in original) */
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -361,13 +362,11 @@
             color: #1e293b;
         }
 
-        /* Layout */
         .app-wrapper {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 260px;
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
@@ -444,7 +443,6 @@
             transform: rotate(180deg);
         }
 
-        /* Sidebar Menu */
         .sidebar-menu {
             flex: 1;
             padding: 20px 0;
@@ -484,42 +482,23 @@
             justify-content: center;
             padding: 12px 0;
         }
-        
     </style>
 </head>
 <body>
     <div class="app-wrapper">
-        <jsp:include page="AdminSidebar.jsp"></jsp:include>
+        <!-- Sidebar (unchanged) -->
+        <jsp:include page="AdminSidebar.jsp" />
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <span class="page-title">Manage Hackathons</span>
-                </div>
-                <div class="header-right">
-                    <div class="notification-icon">
-                        <i class="far fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <c:out value="${sessionScope.user.firstName.charAt(0)}" />
-                        </div>
-                        <div class="user-info">
-                            <div class="name"><c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}" /></div>
-                            <div class="role">Administrator</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <!-- Shared Header (includes notification, logout, user profile) -->
+            <jsp:include page="AdminHeader.jsp" />
 
             <!-- Content Area -->
             <div class="content-area">
+                <!-- Page title moved here -->
+                <h1 class="page-title" style="margin-bottom: 24px;">Manage Hackathons</h1>
+
                 <div class="table-card">
                     <div class="card-header">
                         <h3><i class="fas fa-calendar-alt"></i> Hackathon Events List</h3>

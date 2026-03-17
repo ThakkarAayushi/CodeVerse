@@ -18,6 +18,33 @@
         .prize-item { padding: 1rem; background: #f8fafc; border-radius: 16px; margin-bottom: 1rem; border: 1px solid #edf2f7; }
         .prize-title { font-weight: 600; color: #3b82f6; margin-bottom: 5px; }
         .prize-desc { color: #64748b; font-size: 0.9rem; }
+        
+        /* Poster image styling - fits nicely */
+        .poster-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .poster-img {
+            max-width: 100%;
+            max-height: 600px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .no-poster {
+            width: 100%;
+            height: 150px;
+            background: #e2e8f0;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -32,6 +59,20 @@
         <!-- Main Details -->
         <div class="col-lg-8">
             <div class="detail-card card p-4 mb-4">
+                <!-- Poster image with fallback -->
+                <div class="poster-container">
+                    <c:choose>
+                        <c:when test="${not empty hackathon.hackathonPosterURL}">
+                            <img src="${hackathon.hackathonPosterURL}" alt="${hackathon.title}" class="poster-img">
+                        </c:when>
+                        <c:otherwise>
+                            <div class="no-poster">
+                                <i class="fas fa-image me-2"></i> No poster available
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+                
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <h1 class="fw-bold">${hackathon.title}</h1>
                     <span class="status-badge ${hackathon.status == 'LIVE' ? 'bg-success' : hackathon.status == 'UPCOMING' ? 'bg-warning' : 'bg-secondary'} text-white">

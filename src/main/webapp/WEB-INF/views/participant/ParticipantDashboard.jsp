@@ -179,6 +179,26 @@
                 padding: 20px;
             }
         }
+
+        /* Additional style for logout button (if not already in ParticipantHeader) */
+        .logout-btn {
+            background: transparent;
+            border: none;
+            color: #475569;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            margin-right: 8px;
+        }
+        .logout-btn:hover {
+            background: #f1f5f9;
+            color: #ef4444;
+        }
     </style>
 </head>
 <body>
@@ -188,34 +208,13 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
-            <header class="top-header">
-                <div class="header-left">
-                    <button class="mobile-menu-btn" id="mobileMenuBtn">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <span class="page-title">Available Hackathons</span>
-                </div>
-                <div class="header-right">
-                    <div class="notification-icon">
-                        <i class="far fa-bell"></i>
-                        <span class="notification-badge">3</span>
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <c:out value="${sessionScope.user.firstName.charAt(0)}" />
-                        </div>
-                        <div class="user-info">
-                            <div class="name"><c:out value="${sessionScope.user.firstName} ${sessionScope.user.lastName}" /></div>
-                            <div class="role">Participant</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <!-- Shared Participant Header (includes notification, logout, user profile) -->
+            <jsp:include page="ParticipantHeader.jsp" />
 
             <!-- Content Area -->
             <div class="content-area">
                 <div class="d-flex justify-content-between align-items-center mb-4">
+                    <!-- Page title moved here (kept as is) -->
                     <h3>Available Hackathons</h3>
                     <span class="badge bg-primary fs-6">${hackathons.size()} Events Found</span>
                 </div>
@@ -276,7 +275,7 @@
         </div>
     </div>
 
-    <!-- JavaScript for Sidebar Toggle (if not already in sidebar) -->
+    <!-- JavaScript for Sidebar Toggle -->
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggleSidebar');

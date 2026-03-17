@@ -290,6 +290,24 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- New fields: Qualification and Country -->
+                        <div class="inline-group">
+                            <div class="form-group">
+                                <label>Qualification</label>
+                                <div class="input-group">
+                                    <span class="input-group-icon"><i class="fas fa-graduation-cap"></i></span>
+                                    <input type="text" name="qualification" placeholder="e.g. B.Tech, MCA" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Country</label>
+                                <div class="input-group">
+                                    <span class="input-group-icon"><i class="fas fa-globe"></i></span>
+                                    <input type="text" name="country" placeholder="Your country" required>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

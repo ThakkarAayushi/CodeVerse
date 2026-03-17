@@ -1,5 +1,6 @@
 package com.Grownited.controller;
 import com.Grownited.repository.HackathonRepository;
+import com.Grownited.repository.UserRepository;
 import com.Grownited.repository.UserTypeRepository;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class AdminController {
   
      @Autowired
      HackathonRepository hackathonRepository;
+     
+     @Autowired
+     UserRepository userRepository;
 	
 	 @GetMapping("/dashboard")
 	    public String showDashboard(Model model) {
@@ -27,11 +31,16 @@ public class AdminController {
 		    long totalHackathon = hackathonRepository.count();
 		    long upcomingHackathon = hackathonRepository.countByStatus("UPCOMING");
 		    long liveHackathon = hackathonRepository.countByStatus("LIVE");
-		    
+		    long totalUsers = userRepository.count();	
+		    long totalParticipants = userRepository.countByRole("participant");
+		    long totalJudges = userRepository.countByRole("judge");
 		     
 	        model.addAttribute("totalHackathon", totalHackathon);
 	        model.addAttribute("upcomingHackathon", upcomingHackathon);
 	        model.addAttribute("liveHackathon", liveHackathon);
+	        model.addAttribute("totalUsers",totalUsers);
+	        model.addAttribute("totalParticipants",totalParticipants);
+	        model.addAttribute("totalJudges",totalJudges);
 	        
 	        return "AdminDashboard"; // Maps to /WEB-INF/views/admin-dashboard.jsp
 	    }
