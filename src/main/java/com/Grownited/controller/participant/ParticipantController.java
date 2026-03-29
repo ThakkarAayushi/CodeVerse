@@ -254,15 +254,23 @@ public class ParticipantController {
 		boolean alreadyRegistered = false;
 		boolean alreadyInTeam = false;
 		Integer teamId = null;
-		HackathonTeamInviteEntity pendingInvite = null;
+		//HackathonTeamInviteEntity pendingInvite = null;
+		List<HackathonTeamInviteEntity> pendingInvites = new ArrayList<>();
 		if (user != null) {
 			alreadyRegistered = hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId());
 			alreadyInTeam = hackathonTeamRepository.existsByHackathonIdAndTeamLeaderId(hackathonId, user.getUserId())
 					|| hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, user.getUserId());
 			teamId = findTeamIdForUser(hackathonId, user.getUserId());
-			pendingInvite = hackathonTeamInviteRepository
+			/*pendingInvite = hackathonTeamInviteRepository
 					.findFirstByHackathonIdAndInvitedUserIdAndInviteStatus(hackathonId, user.getUserId(), "PENDING")
-					.orElse(null);
+					.orElse(null);*/
+			pendingInvites = hackathonTeamInviteRepository
+				    .findByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteTypeIn(
+				        hackathonId,
+				        user.getUserId(),
+				        "PENDING",
+				        List.of("INTERNAL", "EXTERNAL")
+				    );
 		}
 
 		model.addAttribute("hackathon", hackathon);
@@ -272,7 +280,7 @@ public class ParticipantController {
 		model.addAttribute("alreadyRegistered", alreadyRegistered);
 		model.addAttribute("alreadyInTeam", alreadyInTeam);
 		model.addAttribute("canJoin", user != null && registrationOpen && !alreadyRegistered);
-		model.addAttribute("pendingInvite", pendingInvite);
+		model.addAttribute("pendingInvite", pendingInvites);
 		model.addAttribute("teamId", teamId);
 		model.addAttribute("teamCount", hackathonTeamRepository.countByHackathonId(hackathonId));
 		model.addAttribute("joined", joined);
@@ -389,153 +397,121 @@ public class ParticipantController {
 		return "redirect:/participant/hackathon/" + hackathonId + "?joined=true";
 	}
 
-	@GetMapping("participant/hackathon/{hackathonId}/team")
-	public String manageTeam(@PathVariable Integer hackathonId, @RequestParam(required = false) String success,
-			@RequestParam(required = false) String error, Model model, HttpSession session) {
-		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null) {
-			return "redirect:/login";
-		}
+	  @GetMapping("participant/hackathon/{hackathonId}/team")
+	    public String manageTeam(@PathVariable Integer hackathonId, @RequestParam(required = false) String success,
+	                             @RequestParam(required = false) String error, Model model, HttpSession session) {
+	        UserEntity user = (UserEntity) session.getAttribute("user");
+	        if (user == null) {
+	            return "redirect:/login";
+	        }
 
-		Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
-		if (opHackathon.isEmpty()) {
-			return "redirect:/participant/home";
-		}
+	        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+	        if (opHackathon.isEmpty()) {
+	            return "redirect:/participant/home";
+	        }
 
-		Integer teamId = findTeamIdForUser(hackathonId, user.getUserId());
-		boolean joinedHackathon = hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId());
-		if (!joinedHackathon) {
-			return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
-		}
-		boolean hasTeam = teamId != null;
-		boolean isTeamLeader = false;
-		HackathonTeamEntity team = null;
-		HackathonTeamInviteEntity pendingInvite = null;
-		HackathonTeamEntity pendingInviteTeam = null;
-		List<HackathonTeamMembersEntity> teamMembers = new ArrayList<>();
-		Map<Integer, UserEntity> memberMap = new HashMap<>();
-		List<UserEntity> participantUsers = new ArrayList<>();
-		List<HackathonTeamInviteEntity> inviteList = new ArrayList<>();
+	        Integer teamId = findTeamIdForUser(hackathonId, user.getUserId());
+	        boolean joinedHackathon = hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId());
+	        if (!joinedHackathon) {
+	            return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
+	        }
+	        boolean hasTeam = teamId != null;
+	        boolean isTeamLeader = false;
+	        HackathonTeamEntity team = null;
+	        HackathonTeamInviteEntity pendingInvite = null;
+	        HackathonTeamEntity pendingInviteTeam = null;
+	        List<HackathonTeamMembersEntity> teamMembers = new ArrayList<>();
+	        Map<Integer, UserEntity> memberMap = new HashMap<>();
+	        List<UserEntity> participantUsers = new ArrayList<>();
+	        List<HackathonTeamInviteEntity> inviteList = new ArrayList<>();
+	        List<HackathonTeamInviteEntity> joinRequests = new ArrayList<>();
 
-		if (hasTeam) {
-			Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(teamId);
-			if (opTeam.isEmpty()) {
-				return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
-			}
-			team = opTeam.get();
-			isTeamLeader = user.getUserId().equals(team.getTeamLeaderId());
+	        if (hasTeam) {
+	            Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(teamId);
+	            if (opTeam.isEmpty()) {
+	                return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
+	            }
+	            team = opTeam.get();
+	            isTeamLeader = user.getUserId().equals(team.getTeamLeaderId());
 
-			teamMembers = hackathonTeamMemberRepository.findByTeamIdOrderByHackathonTeamMemberIdAsc(teamId);
-			for (HackathonTeamMembersEntity member : teamMembers) {
-				Optional<UserEntity> opMember = userRepository.findById(member.getMemberId());
-				opMember.ifPresent(userEntity -> memberMap.put(member.getMemberId(), userEntity));
-			}
-			/*List<HackathonTeamInviteEntity> joinRequests = new ArrayList<>();
+	            teamMembers = hackathonTeamMemberRepository.findByTeamIdOrderByHackathonTeamMemberIdAsc(teamId);
+	            for (HackathonTeamMembersEntity member : teamMembers) {
+	                Optional<UserEntity> opMember = userRepository.findById(member.getMemberId());
+	                opMember.ifPresent(userEntity -> memberMap.put(member.getMemberId(), userEntity));
+	            }
 
-			if (isTeamLeader) {
-			    joinRequests = hackathonTeamInviteRepository.findByTeamIdAndInviteTypeAndInviteStatus(teamId, "JOIN_REQUEST", "PENDING");
-			}
-*/
-			List<HackathonTeamInviteEntity> joinRequests = hackathonTeamInviteRepository.findByTeamIdAndInviteTypeAndInviteStatus(teamId, "REQUEST", "PENDING");
-			model.addAttribute("joinRequests", joinRequests);
-			List<Integer> existingMemberIds = teamMembers.stream().map(HackathonTeamMembersEntity::getMemberId)
-					.collect(Collectors.toList());
-			// ... after teamMembers and existingMemberIds are fetch
-			// Get eligible participants using the new query
-		/*	List<Integer> eligibleIds = hackathonParticipantRepository
-			        .findParticipantIdsNotInAnyTeamAndNoPendingInvite(hackathonId);
-			eligibleIds.remove(user.getUserId()); // remove the current user (self)
-*/
-			List<Integer> eligibleIds = hackathonParticipantRepository
-			        .findParticipantIdsNotInAnyTeamAndNoPendingInvite(hackathonId);
+	            // Get eligible participants for direct invite (no team, no pending invites)
+	            List<Integer> eligibleIds = hackathonParticipantRepository
+	                    .findParticipantIdsNotInAnyTeamAndNoPendingInvite(hackathonId);
+	            eligibleIds.remove(user.getUserId()); // remove self
+	            participantUsers = userRepository.findAllById(eligibleIds).stream()
+	                    .filter(u -> "PARTICIPANT".equals(u.getRole()))
+	                    .filter(u -> u.getActive() != null && u.getActive())
+	                    .collect(Collectors.toList());
 
-			eligibleIds.remove(user.getUserId());
+	            // Fetch all invites for this team (for display)
+	            inviteList = hackathonTeamInviteRepository
+	                    .findByTeamIdAndInviteStatusNotOrderByHackathonTeamInviteIdDesc(
+	                            teamId, "ACCEPTED");
+	           /* inviteList = hackathonTeamInviteRepository
+	                    .findByTeamIdAndInviteStatusInOrderByHackathonTeamInviteIdDesc(
+	                            teamId, List.of("PENDING", "REJECTED"));*/
 
-			participantUsers = userRepository.findAllById(eligibleIds)
-			        .stream()
-			        .filter(u -> "PARTICIPANT".equals(u.getRole()))
-			        .filter(u -> u.getActive() != null && u.getActive())
-			        .collect(Collectors.toList());
+	            // Fetch pending join requests (type = REQUEST, status = PENDING)
+	            joinRequests = hackathonTeamInviteRepository
+	                    .findByTeamIdAndInviteTypeAndInviteStatus(teamId, "REQUEST", "PENDING");
 
-			model.addAttribute("participantUsers", participantUsers);
-			
-			List<Integer> joinedParticipantIds = hackathonParticipantRepository.findByHackathonId(hackathonId).stream()
-					.map(HackathonParticipantEntity::getParticipantId).collect(Collectors.toList());
-			participantUsers = userRepository.findAllById(joinedParticipantIds).stream()
-					.filter(u -> "PARTICIPANT".equals(u.getRole()))
-					.filter(u -> u.getActive() != null && u.getActive())
-				//	.filter(u -> !existingMemberIds.contains(u.getUserId()))
-					//.filter(u -> !u.getUserId().equals(user.getUserId()))
-					.filter(u -> !hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, u.getUserId()))
-					.collect(Collectors.toList());
-			
-		/*	participantUsers = userRepository.findAllById(joinedParticipantIds).stream()
-				   .filter(u -> "PARTICIPANT".equals(u.getRole()))
-				    .filter(u -> u.getActive() != null && u.getActive())
+	        } else {
+	            pendingInvite = hackathonTeamInviteRepository
+	                    .findFirstByHackathonIdAndInvitedUserIdAndInviteStatus(hackathonId, user.getUserId(), "PENDING")
+	                    .orElse(null);
+	            if (pendingInvite != null && pendingInvite.getTeamId() != null) {
+	                pendingInviteTeam = hackathonTeamRepository.findById(pendingInvite.getTeamId()).orElse(null);
+	            }
+	        }
 
-				    // ❌ Exclude already in THIS team
-				   .filter(u -> !existingMemberIds.contains(u.getUserId()))
+	        // Available teams for joining (if user has no team)
+	        List<HackathonTeamEntity> availableTeams = hackathonTeamRepository.findByHackathonId(hackathonId);
+	        availableTeams = availableTeams.stream()
+	                .filter(t -> {
+	                    long size = hackathonTeamMemberRepository.countByTeamId(t.getHackathonTeamId());
+	                    return opHackathon.get().getMaxTeamSize() == null || size < opHackathon.get().getMaxTeamSize();
+	                })
+	                .filter(t -> {
+	                    // Exclude teams where the user already has a pending request
+	                    return !hackathonTeamInviteRepository
+	                            .existsByTeamIdAndInvitedUserIdAndInviteStatus(t.getHackathonTeamId(), user.getUserId(), "PENDING");
+	                })
+	                .collect(Collectors.toList());
+	        if (hasTeam) {
+	            Integer myTeamId = teamId;
+	            availableTeams = availableTeams.stream()
+	                    .filter(t -> !t.getHackathonTeamId().equals(myTeamId))
+	                    .collect(Collectors.toList());
+	        }
 
-				    // ❌ Exclude self
-				    .filter(u -> !u.getUserId().equals(user.getUserId()))
-
-				    // ❌ Exclude users already in ANY team of this hackathon
-				    .filter(u -> !hackathonTeamMemberRepository
-				        .existsByHackathonIdAndMemberId(hackathonId, u.getUserId()))
-
-				    // ❌ Exclude users who already have PENDING invite
-				    .filter(u -> !hackathonTeamInviteRepository
-				        .existsByHackathonIdAndInvitedUserIdAndInviteStatus(
-				            hackathonId, u.getUserId(), "PENDING"))
-
-			    .collect(Collectors.toList());*/
-			
-			if (!participantUsers.isEmpty()) {
-			    participantUsers.forEach(u -> System.out.println(" - " + u.getFirstName() + " " + u.getLastName()));
-			}
-
-			inviteList = hackathonTeamInviteRepository.findByTeamIdOrderByHackathonTeamInviteIdDesc(teamId);
-		} else {
-			pendingInvite = hackathonTeamInviteRepository
-					.findFirstByHackathonIdAndInvitedUserIdAndInviteStatus(hackathonId, user.getUserId(), "PENDING")
-					.orElse(null);
-			if (pendingInvite != null && pendingInvite.getTeamId() != null) {
-				pendingInviteTeam = hackathonTeamRepository.findById(pendingInvite.getTeamId()).orElse(null);
-				
-			}
-		}
-
-		List<HackathonTeamEntity> availableTeams = hackathonTeamRepository.findByHackathonId(hackathonId);
-		availableTeams = availableTeams.stream().filter(t -> {
-			long size = hackathonTeamMemberRepository.countByTeamId(t.getHackathonTeamId());
-			return opHackathon.get().getMaxTeamSize() == null || size < opHackathon.get().getMaxTeamSize();
-		}).collect(Collectors.toList());
-		if (hasTeam) {
-			Integer myTeamId = teamId;
-			availableTeams = availableTeams.stream().filter(t -> !t.getHackathonTeamId().equals(myTeamId)).collect(Collectors.toList());
-		}
-
-		model.addAttribute("hackathon", opHackathon.get());
-		model.addAttribute("teamId", teamId);
-		model.addAttribute("teamMembers", teamMembers);
-		model.addAttribute("memberMap", memberMap);
-		model.addAttribute("participantUsers", participantUsers);
-		model.addAttribute("inviteList", inviteList);
-		model.addAttribute("team", team);
-		model.addAttribute("isTeamLeader", isTeamLeader);
-		model.addAttribute("hasTeam", hasTeam);
-		model.addAttribute("pendingInvite", pendingInvite);
-		model.addAttribute("pendingInviteTeam", pendingInviteTeam);
-		model.addAttribute("availableTeams", availableTeams);
-		model.addAttribute("teamSizeCount", teamMembers.size());
-		model.addAttribute("teamMaxSize", opHackathon.get().getMaxTeamSize());
-		boolean inviteAllowed = opHackathon.get().getRegistrationEndDate() == null
-				|| !LocalDate.now().isAfter(opHackathon.get().getRegistrationEndDate());
-		model.addAttribute("inviteAllowed", inviteAllowed);
-		model.addAttribute("success", success);
-		model.addAttribute("error", error);
-		return "participant/ManageTeam";
-	}
+	        model.addAttribute("hackathon", opHackathon.get());
+	        model.addAttribute("teamId", teamId);
+	        model.addAttribute("teamMembers", teamMembers);
+	        model.addAttribute("memberMap", memberMap);
+	        model.addAttribute("participantUsers", participantUsers);
+	        model.addAttribute("inviteList", inviteList);
+	        model.addAttribute("joinRequests", joinRequests); // new
+	        model.addAttribute("team", team);
+	        model.addAttribute("isTeamLeader", isTeamLeader);
+	        model.addAttribute("hasTeam", hasTeam);
+	        model.addAttribute("pendingInvite", pendingInvite);
+	        model.addAttribute("pendingInviteTeam", pendingInviteTeam);
+	        model.addAttribute("availableTeams", availableTeams);
+	        model.addAttribute("teamSizeCount", teamMembers.size());
+	        model.addAttribute("teamMaxSize", opHackathon.get().getMaxTeamSize());
+	        boolean inviteAllowed = opHackathon.get().getRegistrationEndDate() == null
+	                || !LocalDate.now().isAfter(opHackathon.get().getRegistrationEndDate());
+	        model.addAttribute("inviteAllowed", inviteAllowed);
+	        model.addAttribute("success", success);
+	        model.addAttribute("error", error);
+	        return "participant/ManageTeam";
+	    }
 
 	@PostMapping("participant/hackathon/{hackathonId}/team/create")
 	@Transactional
@@ -575,149 +551,246 @@ public class ParticipantController {
 		return "redirect:/participant/hackathon/" + hackathonId + "/team?success=teamCreated";
 	}
 
-	@PostMapping("participant/hackathon/{hackathonId}/team/join-existing")
-	@Transactional
-	public String joinExistingTeam(@PathVariable Integer hackathonId, @RequestParam Integer joinTeamId, HttpSession session) {
-	    UserEntity user = (UserEntity) session.getAttribute("user");
-	    if (user == null) {
-	        return "redirect:/login";
-	    }
+    @PostMapping("participant/hackathon/{hackathonId}/team/join-existing")
+    @Transactional
+    public String joinExistingTeam(@PathVariable Integer hackathonId, @RequestParam Integer joinTeamId, HttpSession session) {
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
 
-	    if (!hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId())) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
-	    }
+        if (!hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
+        }
 
-	    Integer existingTeamId = findTeamIdForUser(hackathonId, user.getUserId());
-	    if (existingTeamId != null) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=alreadyInHackathon";
-	    }
+        Integer existingTeamId = findTeamIdForUser(hackathonId, user.getUserId());
+        if (existingTeamId != null) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=alreadyInHackathon";
+        }
 
-	    Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(joinTeamId);
-	    if (opTeam.isEmpty() || !hackathonId.equals(opTeam.get().getHackathonId())) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=invalidTeam";
-	    }
+        Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(joinTeamId);
+        if (opTeam.isEmpty() || !hackathonId.equals(opTeam.get().getHackathonId())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=invalidTeam";
+        }
 
-	    Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
-	    if (opHackathon.isEmpty()) {
-	        return "redirect:/participant/home";
-	    }
-	    if (opHackathon.get().getRegistrationEndDate() != null
-	            && LocalDate.now().isAfter(opHackathon.get().getRegistrationEndDate())) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteClosed";
-	    }
+        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+        if (opHackathon.isEmpty()) {
+            return "redirect:/participant/home";
+        }
+        if (opHackathon.get().getRegistrationEndDate() != null
+                && LocalDate.now().isAfter(opHackathon.get().getRegistrationEndDate())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteClosed";
+        }
 
-	    long teamSize = hackathonTeamMemberRepository.countByTeamId(joinTeamId);
-	    Integer maxSize = opHackathon.get().getMaxTeamSize();
-	    if (maxSize != null && teamSize >= maxSize) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=teamFull";
-	    }
+        long teamSize = hackathonTeamMemberRepository.countByTeamId(joinTeamId);
+        Integer maxSize = opHackathon.get().getMaxTeamSize();
+        if (maxSize != null && teamSize >= maxSize) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=teamFull";
+        }
 
-	    // Check if a pending request already exists for this user and team
-	    boolean pendingExists = hackathonTeamInviteRepository.existsByTeamIdAndInvitedUserIdAndInviteStatus(joinTeamId, user.getUserId(), "PENDING");
-	    if (pendingExists) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteExists";
-	    }
+        // Check if there's already a pending request for this team
+        boolean pendingExists = hackathonTeamInviteRepository.existsByTeamIdAndInvitedUserIdAndInviteStatus(
+                joinTeamId, user.getUserId(), "PENDING");
+        if (pendingExists) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteExists";
+        }
 
-	    // Create a join request (invite of type REQUEST)
-	    HackathonTeamInviteEntity request = new HackathonTeamInviteEntity();
-	    request.setTeamId(joinTeamId);
-	    request.setHackathonId(hackathonId);
-	    request.setInvitedBy(user.getUserId());  // the user who requests to join
-	    request.setInviteType("REQUEST");
-	    request.setInvitedUserId(user.getUserId());
-	    request.setInvitedEmail(user.getEmail());
-	    request.setRoleTitle("MEMBER");
-	    request.setInviteStatus("PENDING");
-	    request.setCreatedAt(LocalDate.now());
-	    hackathonTeamInviteRepository.save(request);
+        // Create a join request (type = REQUEST)
+        HackathonTeamInviteEntity request = new HackathonTeamInviteEntity();
+        request.setTeamId(joinTeamId);
+        request.setHackathonId(hackathonId);
+        request.setInvitedBy(user.getUserId());
+        request.setInviteType("REQUEST");
+        request.setInvitedUserId(user.getUserId());
+        request.setInvitedEmail(user.getEmail());
+        request.setRoleTitle("MEMBER");
+        request.setInviteStatus("PENDING");
+        request.setCreatedAt(LocalDate.now());
+        hackathonTeamInviteRepository.save(request);
 
-	    return "redirect:/participant/hackathon/" + hackathonId + "/team?success=joinRequestSent";
-	}
-	@PostMapping("participant/hackathon/{hackathonId}/team/request/{inviteId}/accept")
-	@Transactional
-	public String acceptJoinRequest(@PathVariable Integer hackathonId, @PathVariable Integer inviteId, HttpSession session) {
-	    UserEntity user = (UserEntity) session.getAttribute("user");
-	    if (user == null) {
-	        return "redirect:/login";
-	    }
+        return "redirect:/participant/hackathon/" + hackathonId + "/team?success=joinRequestSent";
+    }
 
-	    Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
-	    if (opInvite.isEmpty()) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteNotFound";
-	    }
+   /* @PostMapping("participant/hackathon/{hackathonId}/team/request/{inviteId}/accept")
+    @Transactional
+    public String acceptJoinRequest(@PathVariable Integer hackathonId, @PathVariable Integer inviteId, HttpSession session) {
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
 
-	    HackathonTeamInviteEntity invite = opInvite.get();
-	    if (!"PENDING".equals(invite.getInviteStatus()) || !"REQUEST".equals(invite.getInviteType())
-	            || !invite.getHackathonId().equals(hackathonId)) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteInvalid";
-	    }
+        Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
+        if (opInvite.isEmpty()) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteNotFound";
+        }
 
-	    // Verify that the current user is the team leader of the team
-	    Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(invite.getTeamId());
-	    if (opTeam.isEmpty() || !user.getUserId().equals(opTeam.get().getTeamLeaderId())) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=notLeader";
-	    }
+        HackathonTeamInviteEntity invite = opInvite.get();
+        if (!"PENDING".equals(invite.getInviteStatus()) || !"REQUEST".equals(invite.getInviteType())
+                || !invite.getHackathonId().equals(hackathonId)) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteInvalid";
+        }
 
-	    // Check if the invited user is already in a team
-	    if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, invite.getInvitedUserId())) {
-	        invite.setInviteStatus("REJECTED"); // or mark as already in team
-	        hackathonTeamInviteRepository.save(invite);
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=alreadyInHackathon";
-	    }
+        // Verify team leader
+        Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(invite.getTeamId());
+        if (opTeam.isEmpty() || !user.getUserId().equals(opTeam.get().getTeamLeaderId())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=notLeader";
+        }
 
-	    // Check team capacity
-	    long teamSize = hackathonTeamMemberRepository.countByTeamId(invite.getTeamId());
-	    Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
-	    if (opHackathon.isPresent() && opHackathon.get().getMaxTeamSize() != null
-	            && teamSize >= opHackathon.get().getMaxTeamSize()) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=teamFull";
-	    }
+        // Check if invited user already in a team
+        if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, invite.getInvitedUserId())) {
+            invite.setInviteStatus("REJECTED");
+            hackathonTeamInviteRepository.save(invite);
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=alreadyInHackathon";
+        }
 
-	    // Add member to team
-	    HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
-	    member.setTeamId(invite.getTeamId());
-	    member.setHackathonId(hackathonId);
-	    member.setMemberId(invite.getInvitedUserId());
-	    member.setRoleTitle(invite.getRoleTitle());
-	    hackathonTeamMemberRepository.save(member);
+        // Check team capacity
+        long teamSize = hackathonTeamMemberRepository.countByTeamId(invite.getTeamId());
+        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+        if (opHackathon.isPresent() && opHackathon.get().getMaxTeamSize() != null
+                && teamSize >= opHackathon.get().getMaxTeamSize()) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=teamFull";
+        }
 
-	    // Update invite status
-	    invite.setInviteStatus("ACCEPTED");
-	    hackathonTeamInviteRepository.save(invite);
+        // Add member to team
+        HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
+        member.setTeamId(invite.getTeamId());
+        member.setHackathonId(hackathonId);
+        member.setMemberId(invite.getInvitedUserId());
+        member.setRoleTitle(invite.getRoleTitle());
+        hackathonTeamMemberRepository.save(member);
 
-	    return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestAccepted";
-	}
+        // Update invite status
+        invite.setInviteStatus("ACCEPTED");
+        hackathonTeamInviteRepository.save(invite);
 
-	@PostMapping("participant/hackathon/{hackathonId}/team/request/{inviteId}/reject")
-	@Transactional
-	public String rejectJoinRequest(@PathVariable Integer hackathonId, @PathVariable Integer inviteId, HttpSession session) {
-	    UserEntity user = (UserEntity) session.getAttribute("user");
-	    if (user == null) {
-	        return "redirect:/login";
-	    }
+        return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestAccepted";
+    }*/
+    @PostMapping("participant/hackathon/{hackathonId}/team/request/{inviteId}/accept")
+    @Transactional
+    public String acceptJoinRequest(@PathVariable Integer hackathonId,
+                                    @PathVariable Integer inviteId,
+                                    HttpSession session) {
 
-	    Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
-	    if (opInvite.isEmpty()) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteNotFound";
-	    }
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
 
-	    HackathonTeamInviteEntity invite = opInvite.get();
-	    if (!"PENDING".equals(invite.getInviteStatus()) || !"REQUEST".equals(invite.getInviteType())
-	            || !invite.getHackathonId().equals(hackathonId)) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteInvalid";
-	    }
+        HackathonTeamInviteEntity invite = hackathonTeamInviteRepository
+                .findById(inviteId)
+                .orElse(null);
 
-	    // Verify leader
-	    Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(invite.getTeamId());
-	    if (opTeam.isEmpty() || !user.getUserId().equals(opTeam.get().getTeamLeaderId())) {
-	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=notLeader";
-	    }
+        if (invite == null ||
+            !"PENDING".equals(invite.getInviteStatus()) ||
+            !"REQUEST".equals(invite.getInviteType())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=invalidRequest";
+        }
 
-	    invite.setInviteStatus("REJECTED");
-	    hackathonTeamInviteRepository.save(invite);
+        // ✅ Check leader authorization
+        HackathonTeamEntity team = hackathonTeamRepository
+                .findById(invite.getTeamId())
+                .orElse(null);
 
-	    return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestRejected";
-	}
+        if (team == null || !team.getTeamLeaderId().equals(user.getUserId())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=notLeader";
+        }
+
+        Integer userId = invite.getInvitedUserId();
+
+        // ✅ Already in team → reject request
+        if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, userId)) {
+            invite.setInviteStatus("REJECTED");
+            hackathonTeamInviteRepository.save(invite);
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=alreadyInTeam";
+        }
+
+        // ✅ Team size validation
+        long teamSize = hackathonTeamMemberRepository.countByTeamId(team.getHackathonTeamId());
+        HackathonEntity hackathon = hackathonRepository.findById(hackathonId).orElse(null);
+
+        if (hackathon != null && hackathon.getMaxTeamSize() != null &&
+            teamSize >= hackathon.getMaxTeamSize()) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=teamFull";
+        }
+
+        // ✅ Add to team
+        HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
+        member.setTeamId(team.getHackathonTeamId());
+        member.setHackathonId(hackathonId);
+        member.setMemberId(userId);
+        member.setRoleTitle("MEMBER");
+
+        hackathonTeamMemberRepository.save(member);
+
+        // ✅ Mark accepted request
+        invite.setInviteStatus("ACCEPTED");
+        hackathonTeamInviteRepository.save(invite);
+        hackathonTeamInviteRepository
+        .deleteByHackathonIdAndInvitedUserIdAndInviteStatus(
+            hackathonId, invite.getInvitedUserId(), "PENDING");
+
+        // ✅ 🔥 AUTO REMOVE ALL OTHER PENDING REQUESTS OF SAME USER
+        hackathonTeamInviteRepository
+                .deleteByHackathonIdAndInvitedUserIdAndInviteStatus(
+                        hackathonId, userId, "PENDING");
+
+        return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestAccepted";
+    }
+
+   /* @PostMapping("participant/hackathon/{hackathonId}/team/request/{inviteId}/reject")
+    @Transactional
+    public String rejectJoinRequest(@PathVariable Integer hackathonId, @PathVariable Integer inviteId, HttpSession session) {
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
+        if (opInvite.isEmpty()) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteNotFound";
+        }
+
+        HackathonTeamInviteEntity invite = opInvite.get();
+        if (!"PENDING".equals(invite.getInviteStatus()) || !"REQUEST".equals(invite.getInviteType())
+                || !invite.getHackathonId().equals(hackathonId)) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteInvalid";
+        }
+
+        // Verify leader
+        Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(invite.getTeamId());
+        if (opTeam.isEmpty() || !user.getUserId().equals(opTeam.get().getTeamLeaderId())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=notLeader";
+        }
+
+        invite.setInviteStatus("REJECTED");
+        hackathonTeamInviteRepository.save(invite);
+
+        return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestRejected";
+    }*/
+    @PostMapping("participant/hackathon/{hackathonId}/team/request/{inviteId}/reject")
+    @Transactional
+    public String rejectJoinRequest(@PathVariable Integer hackathonId,
+                                    @PathVariable Integer inviteId,
+                                    HttpSession session) {
+
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        HackathonTeamInviteEntity invite = hackathonTeamInviteRepository
+                .findById(inviteId)
+                .orElse(null);
+
+        if (invite == null) {
+            return "redirect:/participant/hackathon/" + hackathonId + "/team?error=notFound";
+        }
+
+        // ✅ Mark rejected
+        invite.setInviteStatus("REJECTED");
+        hackathonTeamInviteRepository.save(invite);
+
+        // ✅ REMOVE from UI (optional hard delete)
+        // hackathonTeamInviteRepository.delete(invite);
+
+        return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestRejected";
+    }
 	@PostMapping("participant/hackathon/{hackathonId}/team/invite-member")
 	@Transactional
 	public String inviteRegisteredMember(@PathVariable Integer hackathonId, @RequestParam Integer invitedUserId, HttpSession session) {
@@ -869,7 +942,7 @@ public class ParticipantController {
 	public String rejectInvitation(@PathVariable Integer hackathonId, @PathVariable Integer inviteId, HttpSession session) {
 		return handleInvitationResponse(hackathonId, inviteId, session, false, false);
 	}
-	@PostMapping("/participant/hackathon/{hackathonId}/team/request/{requestId}/accept")
+	/*@PostMapping("/participant/hackathon/{hackathonId}/team/request/{requestId}/accept")
 	@Transactional
 	public String acceptJoinRequest(@PathVariable Integer hackathonId,
 	                               @PathVariable Integer requestId) {
@@ -893,8 +966,8 @@ public class ParticipantController {
 	    hackathonTeamInviteRepository.save(request);
 
 	    return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestAccepted";
-	}
-	@PostMapping("/participant/hackathon/{hackathonId}/team/request/{requestId}/reject")
+	}*/
+	/*@PostMapping("/participant/hackathon/{hackathonId}/team/request/{requestId}/reject")
 	@Transactional
 	public String rejectJoinRequest(@PathVariable Integer hackathonId,
 	                               @PathVariable Integer requestId) {
@@ -907,7 +980,7 @@ public class ParticipantController {
 	    }
 
 	    return "redirect:/participant/hackathon/" + hackathonId + "/team?success=requestRejected";
-	}
+	}*/
 	/*
 	 * @PostMapping(
 	 * "participant/hackathon/{hackathonId}/team/invite/{inviteId}/accept")
@@ -925,13 +998,20 @@ public class ParticipantController {
 
 	    UserEntity user = (UserEntity) session.getAttribute("user");
 
-	    HackathonTeamInviteEntity invite = hackathonTeamInviteRepository.findById(inviteId).orElse(null);
+	    HackathonTeamInviteEntity invite = hackathonTeamInviteRepository
+	            .findById(inviteId).orElse(null);
 
 	    if (invite == null || !"PENDING".equals(invite.getInviteStatus())) {
 	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=inviteInvalid";
 	    }
 
-	    // Add member to team
+	    // ❗ prevent duplicate join
+	    if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(
+	            hackathonId, user.getUserId())) {
+	        return "redirect:/participant/hackathon/" + hackathonId + "/team?error=alreadyInTeam";
+	    }
+
+	    // ✅ Add member
 	    HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
 	    member.setTeamId(invite.getTeamId());
 	    member.setHackathonId(hackathonId);
@@ -940,13 +1020,17 @@ public class ParticipantController {
 
 	    hackathonTeamMemberRepository.save(member);
 
-	    // Update invite status
+	    // ✅ Accept invite
 	    invite.setInviteStatus("ACCEPTED");
 	    hackathonTeamInviteRepository.save(invite);
 
+	    // 🔥 IMPORTANT: remove all other invites
+	    hackathonTeamInviteRepository
+	        .deleteByHackathonIdAndInvitedUserIdAndInviteStatus(
+	            hackathonId, user.getUserId(), "PENDING");
+
 	    return "redirect:/participant/hackathon/" + hackathonId + "/team?success=inviteAccepted";
 	}
-
 	/*
 	 * @PostMapping(
 	 * "participant/hackathon/{hackathonId}/team/invite/{inviteId}/reject")
@@ -1107,15 +1191,14 @@ public class ParticipantController {
 		hackathonParticipantRepository.save(participant);
 	}
 
-	private Integer findTeamIdForUser(Integer hackathonId, Integer userId) {
-		Optional<HackathonTeamMembersEntity> memberRow = hackathonTeamMemberRepository.findFirstByHackathonIdAndMemberId(hackathonId,
-				userId);
-		if (memberRow.isPresent()) {
-			return memberRow.get().getTeamId();
-		}
-		Optional<HackathonTeamEntity> leaderTeam = hackathonTeamRepository.findFirstByHackathonIdAndTeamLeaderId(hackathonId, userId);
-		return leaderTeam.map(HackathonTeamEntity::getHackathonTeamId).orElse(null);
-	}
+	 private Integer findTeamIdForUser(Integer hackathonId, Integer userId) {
+	        Optional<HackathonTeamMembersEntity> memberRow = hackathonTeamMemberRepository.findFirstByHackathonIdAndMemberId(hackathonId, userId);
+	        if (memberRow.isPresent()) {
+	            return memberRow.get().getTeamId();
+	        }
+	        Optional<HackathonTeamEntity> leaderTeam = hackathonTeamRepository.findFirstByHackathonIdAndTeamLeaderId(hackathonId, userId);
+	        return leaderTeam.map(HackathonTeamEntity::getHackathonTeamId).orElse(null);
+	    }
 
 	private boolean isSubmissionOpen(HackathonEntity hackathon, LocalDate today) {
 		if (hackathon == null || hackathon.getRegistrationEndDate() == null) {

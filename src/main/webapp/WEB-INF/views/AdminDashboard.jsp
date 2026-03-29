@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="https://jakarta.ee/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -447,113 +447,113 @@
             }
         }
         /* Make the entire wrapper fill the viewport and prevent outer scrolling */
-.app-wrapper {
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* Main content area: full height, flex column, no outer scroll */
-.main-content {
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Content area (the part with stats, charts, table) becomes scrollable */
-.content-area {
-    flex: 1;
-    overflow-y: auto;
-    padding: 30px; /* keep your existing padding */
-}
-.content-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow: auto; /* REMOVE SCROLL */
-    padding: 20px;
-}
-.chart-card {
-	
-    display: flex;
-    flex-direction: column;
-}
-.chart-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 20px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-    transition: all 0.25s ease;
-    display: flex;
-    flex-direction: column;
-}
-.chart-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
-    border-color: #cbd5e1;
-}
-.stat-card {
-    padding: 16px;
-}
-
-.chart-card {
-    padding: 26px;
-}
-.chart-card canvas {
-    flex: 1 !important;
-}
-
-/* Sidebar: full height, flex column so its header stays fixed */
-.sidebar {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Sidebar menu becomes scrollable if items overflow */
-.sidebar-menu {
-    flex: 1;
-    overflow-y: auto;
-}
-
-/* Optional: hide scrollbar for a cleaner look (works in WebKit) */
-.sidebar-menu::-webkit-scrollbar {
-    width: 4px;
-}
-.sidebar-menu::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.2);
-    border-radius: 10px;
-}
-  width: 100%;
-}
-.chart-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    height: 30%; /* Adjust this */
-}
-.chart-card h4 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #0f172a;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.chart-card h4 i {
-    color: #3b82f6;
-    font-size: 1.1rem;
-}
-.chart-container {
-    background: #f8fafc; /* light inner background */
-    border-radius: 12px;
-    padding: 10px;
-    height: 300px;
-}
+		.app-wrapper {
+		    height: 100vh;
+		    overflow: hidden;
+		}
+		
+		/* Main content area: full height, flex column, no outer scroll */
+		.main-content {
+		    height: 100vh;
+		    overflow: hidden;
+		    display: flex;
+		    flex-direction: column;
+		}
+		
+		/* Content area (the part with stats, charts, table) becomes scrollable */
+		.content-area {
+		    flex: 1;
+		    overflow-y: auto;
+		    padding: 30px; /* keep your existing padding */
+		}
+		.content-area {
+		    flex: 1;
+		    display: flex;
+		    flex-direction: column;
+		    gap: 16px;
+		    overflow: auto; /* REMOVE SCROLL */
+		    padding: 20px;
+		}
+		.chart-card {
+			
+		    display: flex;
+		    flex-direction: column;
+		}
+		.chart-card {
+		    background: #ffffff;
+		    border-radius: 20px;
+		    padding: 20px;
+		    border: 1px solid #e2e8f0;
+		    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+		    transition: all 0.25s ease;
+		    display: flex;
+		    flex-direction: column;
+		}
+		.chart-card:hover {
+		    transform: translateY(-4px);
+		    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+		    border-color: #cbd5e1;
+		}
+		.stat-card {
+		    padding: 16px;
+		}
+		
+		.chart-card {
+		    padding: 26px;
+		}
+		.chart-card canvas {
+		    flex: 1 !important;
+		}
+		
+		/* Sidebar: full height, flex column so its header stays fixed */
+		.sidebar {
+		    height: 100vh;
+		    display: flex;
+		    flex-direction: column;
+		}
+		
+		/* Sidebar menu becomes scrollable if items overflow */
+		.sidebar-menu {
+		    flex: 1;
+		    overflow-y: auto;
+		}
+		
+		/* Optional: hide scrollbar for a cleaner look (works in WebKit) */
+		.sidebar-menu::-webkit-scrollbar {
+		    width: 4px;
+		}
+		.sidebar-menu::-webkit-scrollbar-thumb {
+		    background: rgba(255,255,255,0.2);
+		    border-radius: 10px;
+		}
+		  width: 100%;
+		}
+		.chart-grid {
+		    display: grid;
+		    grid-template-columns: repeat(2, 1fr);
+		    gap: 16px;
+		    height: 30%; /* Adjust this */
+		}
+		.chart-card h4 {
+		    font-size: 1rem;
+		    font-weight: 600;
+		    color: #0f172a;
+		    margin-bottom: 15px;
+		    display: flex;
+		    align-items: center;
+		    gap: 10px;
+		}
+		
+		.chart-card h4 i {
+		    color: #3b82f6;
+		    font-size: 1.1rem;
+		}
+		.chart-container {
+		    background: #f8fafc; /* light inner background */
+		    border-radius: 12px;
+		    padding: 10px;
+		    height: 300px;
+		}
 </style>
 </head>
 <body>

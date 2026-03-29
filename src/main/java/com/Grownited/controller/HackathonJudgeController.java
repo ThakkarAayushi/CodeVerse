@@ -33,7 +33,7 @@ public class HackathonJudgeController {
 	@Autowired
 	UserRepository userRepository;
 
-	@GetMapping("manageHackathonJudge")
+	@GetMapping("/manageHackathonJudge")
 	public String manageHackathonJudge(@RequestParam Integer hackathonId, @RequestParam(required = false) String error,
 			@RequestParam(required = false) String success, Model model) {
 

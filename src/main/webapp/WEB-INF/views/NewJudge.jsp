@@ -4,14 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Add Hackathon | CodeVerse Admin</title>
-    
-    <!-- Fonts & Icons -->
+    <title>Invite Judge | CodeVerse Admin</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-        /* ========== DASHBOARD LAYOUT STYLES (fixed header & sidebar) ========== */
+        /* ========== DASHBOARD LAYOUT STYLES ========== */
         * {
             margin: 0;
             padding: 0;
@@ -29,7 +27,6 @@
             height: 100vh;
             overflow: hidden;
         }
-        /* Sidebar */
         .sidebar {
             width: 260px;
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
@@ -130,7 +127,6 @@
             justify-content: center;
             padding: 12px 0;
         }
-        /* Main content */
         .main-content {
             flex: 1;
             display: flex;
@@ -139,7 +135,6 @@
             height: 100vh;
             overflow: hidden;
         }
-        /* Header (fixed) */
         .top-header {
             background: white;
             padding: 16px 30px;
@@ -222,13 +217,11 @@
                 color: #64748b;
             }
         }
-        /* Scrollable content area */
         .content-area {
             flex: 1;
             overflow-y: auto;
             padding: 30px;
         }
-        /* Footer */
         .footer {
             background: white;
             padding: 20px 30px;
@@ -237,7 +230,6 @@
             color: #64748b;
             font-size: 0.9rem;
         }
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
@@ -268,7 +260,7 @@
             background: white;
             border-radius: 24px;
             padding: 35px;
-            max-width: 100%;
+            max-width: 800px;
             margin: 0 auto;
             box-shadow: 0 8px 30px rgba(0,0,0,0.02);
             border: 1px solid #edf2f7;
@@ -290,11 +282,6 @@
             gap: 10px;
         }
         .card-header-custom i { color: #3b82f6; }
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
         .form-group { margin-bottom: 20px; }
         .form-group label {
             display: block;
@@ -322,7 +309,7 @@
             color: #3b82f6;
             font-size: 1rem;
         }
-        .input-group input, .input-group select, .input-group textarea {
+        .input-group input {
             width: 100%;
             padding: 12px 15px 12px 0;
             border: none;
@@ -332,35 +319,11 @@
             background: transparent;
             font-family: inherit;
         }
-        .input-group textarea { min-height: 100px; padding-top: 12px; }
-        .section-divider {
-            margin: 40px 0 30px;
-            border: 0;
-            border-top: 1px solid #e9eef2;
-        }
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .prize-row {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-        }
         .action-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 15px;
-            margin-top: 40px;
+            margin-top: 30px;
         }
         .btn {
             padding: 12px 30px;
@@ -383,227 +346,105 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
         }
-        .btn-light {
+        .btn-secondary {
             background: #f1f5f9;
             color: #475569;
         }
         @media (max-width: 768px) {
-            .form-grid, .prize-row { grid-template-columns: 1fr; }
-            .action-buttons { flex-direction: column; }
-            .btn { width: 100%; justify-content: center; }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- Sidebar (same as dashboard) -->
     <jsp:include page="AdminSidebar.jsp" />
-
-    <!-- Main content -->
     <div class="main-content">
-        <!-- Header (same as dashboard) -->
         <jsp:include page="AdminHeader.jsp" />
-
-        <!-- Scrollable content area -->
         <div class="content-area">
             <div class="page-header-section" style="margin-bottom: 24px;">
-                <h1 class="page-title" style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Create New Hackathon</h1>
+                <h1 class="page-title" style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Invite Judge</h1>
+               
             </div>
 
             <div class="form-card">
                 <div class="card-header-custom">
-                    <h3><i class="fas fa-rocket"></i> Launch Event</h3>
-                    <a href="listHackathon" class="btn btn-light" style="padding: 8px 15px; font-size: 0.8rem;">
+                    <h3><i class="fas fa-user-plus"></i> Invite New Judge</h3>
+                    <a href="listJudge" class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.8rem;">
                         <i class="fas fa-arrow-left"></i> Back to List
                     </a>
                 </div>
-
-                <form action="saveHackathon" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="leaderboardPublished" value="false" />
-
-                    <div class="form-grid">
-                        <!-- Left column -->
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label>Hackathon Title</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-trophy"></i></span>
-                                    <input type="text" name="title" placeholder="e.g. CodeSprint 2026" required />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Status</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-circle-check"></i></span>
-                                    <select name="status" required>
-                                        <option value="UPCOMING">Upcoming</option>
-                                        <option value="ONGOING">Ongoing</option>
-                                        <option value="COMPLETED">Completed</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Event Type</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-globe"></i></span>
-                                    <select name="eventType" required>
-                                        <option value="ONLINE">Online</option>
-                                        <option value="OFFLINE">Offline</option>
-                                        <option value="HYBRID">Hybrid</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Registration Start</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-calendar-plus"></i></span>
-                                    <input type="date" name="registrationStartDate" required />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Min Team Size</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-users"></i></span>
-                                    <input type="number" name="minTeamSize" min="1" value="1" required />
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right column -->
-                        <div class="form-col">
-                            <div class="form-group">
-                                <label>Location / Venue</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-map-marker-alt"></i></span>
-                                    <input type="text" name="location" placeholder="Remote or City Name" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Eligibility (User Type)</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-user-graduate"></i></span>
-                                    <select name="userTypeId" required>
-                                        <option value="">-- Select Eligibility --</option>
-                                        <c:forEach var="u" items="${allUserType}">
-                                            <option value="${u.userTypeId}">${u.userType}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Payment Mode</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-credit-card"></i></span>
-                                    <select name="payment" required>
-                                        <option value="FREE">Free of Cost</option>
-                                        <option value="PAID">Paid Entry</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Registration End</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-calendar-xmark"></i></span>
-                                    <input type="date" name="registrationEndDate" required />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Max Team Size</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-user-plus"></i></span>
-                                    <input type="number" name="maxTeamSize" min="1" value="4" required />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <form action="saveJudge" method="post">
                     <div class="form-group">
-                        <label>Full Hackathon Description (HTML Allowed)</label>
+                        <label>First Name</label>
                         <div class="input-group">
-                            <span class="input-group-icon"><i class="fas fa-code"></i></span>
-                            <textarea name="hackathonDetails" rows="6" placeholder="Describe the rules, timeline, and themes..." required></textarea>
+                            <span class="input-group-icon"><i class="fas fa-user"></i></span>
+                            <input type="text" name="firstName" required />
                         </div>
                     </div>
-			<div class="form-group">
-                                    <label>Hackathon Poster</label>
-                                    <div class="input-group">
-                                        <span class="input-group-icon"><i class="fas fa-image"></i></span>
-                                        <input type="file" name="hackathonPoster">
-                                    </div>
-                                </div>
-
-                    <div class="section-divider"></div>
-                    <h4 class="section-title"><i class="fas fa-gift"></i> Prize Distributions</h4>
-
-                    <div class="prize-row">
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>1st Prize Title</label>
-                            <div class="input-group">
-                                <span class="input-group-icon"><i class="fas fa-medal" style="color:#ffd700"></i></span>
-                                <input type="text" name="prizeTitle1" placeholder="e.g. Winner" required />
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>1st Prize Description</label>
-                            <div class="input-group">
-                                <span class="input-group-icon"><i class="fas fa-info-circle"></i></span>
-                                <input type="text" name="prizeDescription1" placeholder="e.g. $1000 + Certificate" required />
-                            </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-user"></i></span>
+                            <input type="text" name="lastName" required />
                         </div>
                     </div>
-
-                    <div class="prize-row">
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>2nd Prize Title</label>
-                            <div class="input-group">
-                                <span class="input-group-icon"><i class="fas fa-medal" style="color:#c0c0c0"></i></span>
-                                <input type="text" name="prizeTitle2" placeholder="Runner Up" />
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>2nd Prize Description</label>
-                            <div class="input-group">
-                                <span class="input-group-icon"><i class="fas fa-info-circle"></i></span>
-                                <input type="text" name="prizeDescription2" placeholder="e.g. $500 + Certificate" />
-                            </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-envelope"></i></span>
+                            <input type="email" name="email" required />
                         </div>
                     </div>
-
-                    <div class="prize-row">
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>3rd Prize Title</label>
-                            <div class="input-group">
-                                <span class="input-group-icon"><i class="fas fa-medal" style="color:#cd7f32"></i></span>
-                                <input type="text" name="prizeTitle3" placeholder="Second Runner Up" />
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0">
-                            <label>3rd Prize Description</label>
-                            <div class="input-group">
-                                <span class="input-group-icon"><i class="fas fa-info-circle"></i></span>
-                                <input type="text" name="prizeDescription3" placeholder="e.g. $250 + Certificate" />
-                            </div>
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-phone"></i></span>
+                            <input type="text" name="contactNum" />
                         </div>
                     </div>
-
+                    <div class="form-group">
+                        <label>Qualification</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-graduation-cap"></i></span>
+                            <input type="text" name="qualification" placeholder="e.g. M.Tech, PhD" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-briefcase"></i></span>
+                            <input type="text" name="designation" placeholder="e.g. Senior Engineer, Professor" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Organization</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-building"></i></span>
+                            <input type="text" name="organization" placeholder="Company or Institute" />
+                        </div>
+                    </div>
                     <div class="action-buttons">
-                        <button type="button" onclick="window.history.back()" class="btn btn-light">Discard Changes</button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Save & Publish Hackathon
+                            <i class="fas fa-paper-plane"></i> Send Invite
                         </button>
                     </div>
+                    <c:if test="${not empty error}">
+                        <div class="alert alert-danger mt-3">${error}</div>
+                    </c:if>
                 </form>
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
-        </footer>
     </div>
 </div>
 
-<!-- Sidebar toggle JavaScript (same as dashboard) -->
+<!-- Sidebar toggle script -->
 <script>
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');

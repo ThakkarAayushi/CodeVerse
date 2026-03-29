@@ -260,27 +260,28 @@
         <!-- Left column: Team members, invites, etc. -->
         <div class="col-lg-8">
             <!-- Pending Invitation (when user has no team yet) -->
-            <c:if test="${not hasTeam and not empty pendingInvite}">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h5><i class="fas fa-envelope-open-text"></i> Pending Team Invitation</h5>
-                    </div>
-                    <div class="card-body-custom">
-                        <p class="text-muted mb-3">
-                            You have been invited to join 
-                            <strong><c:out value="${pendingInviteTeam != null ? pendingInviteTeam.teamName : 'a team'}"/></strong>.
-                        </p>
-                        <div class="d-flex gap-3">
-                            <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite/${pendingInvite.hackathonTeamInviteId}/accept" method="post">
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-check me-2"></i>Accept Invitation</button>
-                            </form>
-                            <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite/${pendingInvite.hackathonTeamInviteId}/reject" method="post">
-                                <button type="submit" class="btn btn-danger"><i class="fas fa-times me-2"></i>Reject Invitation</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
+           <c:if test="${not empty pendingInvites}">
+			    <h5>Team Invites</h5>
+			
+			    <c:forEach items="${pendingInvites}" var="invite">
+			        <div class="invite-box">
+			            <p>
+			                Team ID: ${invite.teamId} <br/>
+			                Invited By: ${invite.invitedBy}
+			            </p>
+			
+			            <!-- ACCEPT -->
+			            <form action="/participant/hackathon/${hackathon.hackathonId}/team/invite/${invite.hackathonTeamInviteId}/accept" method="post">
+			                <button type="submit">Accept</button>
+			            </form>
+			
+			            <!-- REJECT -->
+			            <form action="/participant/hackathon/${hackathon.hackathonId}/team/invite/${invite.hackathonTeamInviteId}/reject" method="post">
+			                <button type="submit">Reject</button>
+			            </form>
+			        </div>
+			    </c:forEach>
+			</c:if>
 
             <!-- No team yet: Create or join -->
             <c:if test="${not hasTeam}">

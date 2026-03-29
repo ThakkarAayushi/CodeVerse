@@ -85,6 +85,11 @@ public class HackathonTeamInviteEntity {
 	public void setCreatedAt(LocalDate createdAt) {
 		this.createdAt = createdAt;
 	}
+	public void deleteById(Integer inviteId) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	
 
 }

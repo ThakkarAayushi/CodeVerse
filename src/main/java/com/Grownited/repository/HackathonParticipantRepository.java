@@ -20,9 +20,9 @@ public interface HackathonParticipantRepository extends JpaRepository<HackathonP
 	
 	// HackathonParticipantRepository.java
 	@Query("SELECT p.participantId FROM HackathonParticipantEntity p " +
-	       "WHERE p.hackathonId = :hackathonId " +
-	       "AND p.participantId NOT IN (SELECT m.memberId FROM HackathonTeamMembersEntity m WHERE m.hackathonId = :hackathonId) " +
-	       "AND p.participantId NOT IN (SELECT i.invitedUserId FROM HackathonTeamInviteEntity i " +
-	       "                            WHERE i.hackathonId = :hackathonId AND i.inviteStatus = 'PENDING')")
-	List<Integer> findParticipantIdsNotInAnyTeamAndNoPendingInvite(@Param("hackathonId") Integer hackathonId);
+		       "WHERE p.hackathonId = :hackathonId " +
+		       "AND p.participantId NOT IN (SELECT m.memberId FROM HackathonTeamMembersEntity m WHERE m.hackathonId = :hackathonId) " +
+		       "AND p.participantId NOT IN (SELECT i.invitedUserId FROM HackathonTeamInviteEntity i " +
+		       "                            WHERE i.hackathonId = :hackathonId AND i.inviteStatus = 'PENDING')")
+		List<Integer> findParticipantIdsNotInAnyTeamAndNoPendingInvite(@Param("hackathonId") Integer hackathonId);
 }

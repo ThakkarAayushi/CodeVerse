@@ -16,7 +16,7 @@ public class HackathonDescriptionEntity {
 	private Integer hackathon_description_id;
 	
 	@Column(columnDefinition = "TEXT")
-	private String hackathon_details;
+	private String hackathonDetails;
 	private Integer hackathonId;
 	public Integer getHackathon_description_id() {
 		return hackathon_description_id;
@@ -24,11 +24,12 @@ public class HackathonDescriptionEntity {
 	public void setHackathon_description_id(Integer hackathon_description_id) {
 		this.hackathon_description_id = hackathon_description_id;
 	}
-	public String getHackathon_details() {
-		return hackathon_details;
+	
+	public String getHackathonDetails() {
+		return hackathonDetails;
 	}
-	public void setHackathon_details(String hackathon_details) {
-		this.hackathon_details = hackathon_details;
+	public void setHackathonDetails(String hackathonDetails) {
+		this.hackathonDetails = hackathonDetails;
 	}
 	public Integer getHackathonId() {
 		return hackathonId;

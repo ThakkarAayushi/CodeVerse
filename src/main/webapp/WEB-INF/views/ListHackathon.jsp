@@ -25,16 +25,11 @@
             color: #1e293b;
         }
 
-        /* Layout */
         .app-wrapper {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Sidebar styles are assumed to be in AdminSidebar.jsp */
-        /* We'll include the toggle button functionality later */
-
-        /* Main Content */
         .main-content {
             flex: 1;
             display: flex;
@@ -42,7 +37,6 @@
             background: #f8fafc;
         }
 
-        /* Header */
         .top-header {
             background: white;
             padding: 16px 30px;
@@ -136,13 +130,11 @@
             }
         }
 
-        /* Content Area */
         .content-area {
             padding: 30px;
             flex: 1;
         }
 
-        /* Table Card */
         .table-card {
             background: white;
             border-radius: 24px;
@@ -217,7 +209,6 @@
             font-weight: 500;
         }
 
-        /* Custom styles for hackathon list */
         .event-title {
             font-weight: 600;
             color: #0f172a;
@@ -248,7 +239,6 @@
             margin-top: 4px;
         }
 
-        /* Status badges */
         .status-badge {
             padding: 6px 14px;
             border-radius: 30px;
@@ -269,7 +259,6 @@
             color: #854d0e;
         }
 
-        /* Action buttons */
         .action-btns {
             display: flex;
             gap: 8px;
@@ -299,7 +288,6 @@
             background: #dc2626;
         }
 
-        /* Pagination */
         .pagination {
             display: flex;
             justify-content: flex-end;
@@ -322,7 +310,6 @@
             background: #f1f5f9;
         }
 
-        /* Footer */
         .footer {
             background: white;
             padding: 20px 30px;
@@ -332,7 +319,6 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .mobile-menu-btn {
                 display: block;
@@ -349,24 +335,7 @@
                 gap: 10px;
             }
         }
-        /* Additional sidebar styles (kept as in original) */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fb;
-            color: #1e293b;
-        }
-
-        .app-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-
+        /* Sidebar styles (kept as in original) */
         .sidebar {
             width: 260px;
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
@@ -482,106 +451,141 @@
             justify-content: center;
             padding: 12px 0;
         }
-       
     </style>
 </head>
 <body>
-    <div class="app-wrapper">
-        <!-- Sidebar (unchanged) -->
-        <jsp:include page="AdminSidebar.jsp" />
+<div class="app-wrapper">
+    <!-- Sidebar (unchanged) -->
+    <jsp:include page="AdminSidebar.jsp" />
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Shared Header (includes notification, logout, user profile) -->
-            <jsp:include page="AdminHeader.jsp" />
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Shared Header -->
+        <jsp:include page="AdminHeader.jsp" />
 
-            <!-- Content Area -->
-            <div class="content-area">
-                <!-- Page title moved here -->
-                <h1 class="page-title" style="margin-bottom: 24px;">Manage Hackathons</h1>
+        <!-- Content Area -->
+        <div class="content-area">
+            <h1 class="page-title" style="margin-bottom: 24px;">Manage Hackathons</h1>
 
-                <div class="table-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-calendar-alt"></i> Hackathon Events List</h3>
-                        <!--a href="create-hackathon" class="add-btn"><i class="fas fa-plus"></i> Launch New</a-->
-                    </div>
-                    <div class="responsive-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Sr.No</th>
-                                    <th>Event Details</th>
-                                    <th>Participation</th>
-                                    <th>Registration Period</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Setting</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:forEach var="h" items="${allHackathons}" varStatus="s">
-                                    <tr>
-                                        <td>${s.count}</td>
-                                        <td>
-                                            <span class="event-title">${h.title}</span>
-                                            <div style="margin-top: 5px;">
-                                                <span class="type-badge">${h.event_type}</span>
-                                                <span class="type-badge">${h.payment}</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div>${h.userType}s</div>
-                                            <div class="team-size">Team: ${h.minTeamSize} - ${h.maxTeamSize}</div>
-                                        </td>
-                                        <td>
-                                            <div class="date-start"><i class="fas fa-calendar-check"></i> Start: ${h.registrationStartDate}</div>
-                                            <div class="date-end"><i class="fas fa-calendar-times"></i> End: ${h.registrationEndDate}</div>
-                                        </td>
-                                        <td>${h.location}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${h.status == 'LIVE'}">
-                                                    <span class="status-badge status-live">Live</span>
-                                                </c:when>
-                                                <c:when test="${h.status == 'EXPIRED'}">
-                                                    <span class="status-badge status-expired">Expired</span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="status-badge status-upcoming">${h.status}</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>
-                                            <div class="action-btns">
-                                                <button class="btn-icon btn-edit" title="Edit" onclick="location.href='edit-hackathon?hackthon_id=${h.hackthon_id}'">
-                                                    <i class="fas fa-pencil-alt"></i>
-                                                </button>
-                                                <button class="btn-icon btn-delete" title="Delete" onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackthon_id=${h.hackthon_id}'">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
+            <div class="table-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar-alt"></i> Hackathon Events List</h3>
+                    <!-- If you have a create button, uncomment and adjust -->
+                    <!--a href="create-hackathon" class="add-btn"><i class="fas fa-plus"></i> Launch New</a-->
+                </div>
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sr.No</th>
+                                <th>Event Details</th>
+                                <th>Participation</th>
+                                <th>Registration Period</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Setting</th>
+                            </tr>
+                        </thead>
+                      <tbody>
+    <c:forEach var="h" items="${allHackathons}" varStatus="s">
+        <tr>
+           <td>${(currentPage - 1) * 10 + s.count}</td>
+            <td>
+                <span class="event-title">${h.title}</span>
+                <div style="margin-top: 5px;">
+                    <span class="type-badge">${h.eventType}</span>
+                    <span class="type-badge">${h.payment}</span>
+                </div>
+            </td>
+            <td>
+                <div>${h.userType}s</div>
+                <div class="team-size">Team: ${h.minTeamSize} - ${h.maxTeamSize}</div>
+            </td>
+            <td>
+                <div class="date-start"><i class="fas fa-calendar-check"></i> Start: ${h.registrationStartDate}</div>
+                <div class="date-end"><i class="fas fa-calendar-times"></i> End: ${h.registrationEndDate}</div>
+            </td>
+            <td>${h.location}</td>
+            <td>
+                <c:choose>
+                    <c:when test="${h.status == 'LIVE'}">
+                        <span class="status-badge status-live">Live</span>
+                    </c:when>
+                    <c:when test="${h.status == 'EXPIRED'}">
+                        <span class="status-badge status-expired">Expired</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="status-badge status-upcoming">${h.status}</span>
+                    </c:otherwise>
+                </c:choose>
+            </td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-icon btn-edit"
+                            onclick="location.href='editHackathon?hackathonId=${h.hackathonId}'">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button class="btn-icon btn-delete"
+                            onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackathonId=${h.hackathonId}'">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                      <button class="btn-icon" style="background: #10b981;"
+			                onclick="location.href='manageHackathonJudge?hackathonId=${h.hackathonId}'"
+			                title="Manage Judges">
+			            <i class="fas fa-users"></i>
+			        </button>
+                </div>
+            </td>
+        </tr>
+    </c:forEach>
 
-                                <c:if test="${empty allHackathons}">
-                                    <tr>
-                                        <td colspan="7" style="text-align: center; padding: 60px; color: #94a3b8;">
-                                            <i class="fas fa-inbox fa-2x mb-3" style="display: block; margin-bottom: 10px;"></i>
-                                            No hackathons found. Create your first event to get started!
-                                        </td>
-                                    </tr>
-                                </c:if>
-                            </tbody>
-                        </table>
-                    </div>
+    <c:if test="${empty allHackathons}">
+        <tr>
+            <td colspan="7" style="text-align:center;">No hackathons found</td>
+        </tr>
+    </c:if>
+</tbody>
+                    </table>
+                </div>
 
-                    <!-- Pagination (optional, you can keep or remove) -->
-                    <div class="pagination">
-                        <a href="#" class="page-link">Previous</a>
-                        <a href="#" class="page-link">1</a>
-                        <a href="#" class="page-link">Next</a>
-                    </div>
+             <div class="pagination" style="align-items:center; gap:10px;">
+			
+			    <!-- Previous Button -->
+			    <c:choose>
+			        <c:when test="${currentPage > 1}">
+			            <a class="page-link"
+			               href="listHackathon?page=${currentPage - 1}">
+			                ← Previous
+			            </a>
+			        </c:when>
+			        <c:otherwise>
+			            <span class="page-link" style="opacity:0.5; cursor:not-allowed;">
+			                ← Previous
+			            </span>
+			        </c:otherwise>
+			    </c:choose>
+			
+			    <!-- Page Info -->
+			    <span class="page-link" style="background:#3b82f6; color:white; font-weight:600;">
+			        ${currentPage} 
+			    </span>
+			
+			    <!-- Next Button -->
+			    <c:choose>
+			        <c:when test="${currentPage < totalPages}">
+			            <a class="page-link"
+			               href="listHackathon?page=${currentPage + 1}">
+			                Next →
+			            </a>
+			        </c:when>
+			        <c:otherwise>
+			            <span class="page-link" style="opacity:0.5; cursor:not-allowed;">
+			                Next →
+			            </span>
+			        </c:otherwise>
+			    </c:choose>
+			
+			</div>
             </div>
 
             <!-- Footer -->
@@ -590,85 +594,95 @@
             </footer>
         </div>
     </div>
+</div>
 
-    <!-- JavaScript for Sidebar Toggle & Mobile Menu -->
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+<script>
+    // Sidebar Toggle (if needed)
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                const icon = toggleBtn.querySelector('i');
-                if (sidebar.classList.contains('collapsed')) {
-                    icon.classList.remove('fa-chevron-left');
-                    icon.classList.add('fa-chevron-right');
-                } else {
-                    icon.classList.remove('fa-chevron-right');
-                    icon.classList.add('fa-chevron-left');
-                }
-            });
-        }
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            const icon = toggleBtn.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+            } else {
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+            }
+        });
+    }
 
+    if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', () => {
             sidebar.classList.add('mobile-open');
         });
+    }
 
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                    sidebar.classList.remove('mobile-open');
-                }
-            }
-        });
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            if (sidebar && !sidebar.contains(e.target) && mobileMenuBtn && !mobileMenuBtn.contains(e.target)) {
                 sidebar.classList.remove('mobile-open');
             }
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            const rows = document.querySelectorAll('#tableBody tr');
-            const rowsPerPage = 10;
-            let currentPage = 1;
-            const totalPages = Math.ceil(rows.length / rowsPerPage);
+        }
+    });
 
-            const prevBtn = document.getElementById('prevPage');
-            const nextBtn = document.getElementById('nextPage');
-            const pageInfo = document.getElementById('pageInfo');
-            const totalPagesSpan = document.getElementById('totalPages');
-            totalPagesSpan.textContent = totalPages;
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            if (sidebar) sidebar.classList.remove('mobile-open');
+        }
+    });
 
-            function showPage(page) {
-                const start = (page - 1) * rowsPerPage;
-                const end = start + rowsPerPage;
-                rows.forEach((row, index) => {
-                    row.style.display = (index >= start && index < end) ? '' : 'none';
-                });
-                pageInfo.textContent = `Page ${page} of ${totalPages}`;
-                prevBtn.disabled = (page === 1);
-                nextBtn.disabled = (page === totalPages || totalPages === 0);
-            }
+    // Pagination logic (works with tableBody)
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('#tableBody tr');
+        const rowsPerPage = 10;
+        let currentPage = 1;
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-            prevBtn.addEventListener('click', () => {
+        const prevBtn = document.getElementById('prevPage');
+        const nextBtn = document.getElementById('nextPage');
+        const pageInfo = document.getElementById('pageInfo');
+
+        function showPage(page) {
+            const start = (page - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            rows.forEach((row, index) => {
+                row.style.display = (index >= start && index < end) ? '' : 'none';
+            });
+            pageInfo.textContent = `Page ${page} of ${totalPages}`;
+            prevBtn.disabled = (page === 1);
+            nextBtn.disabled = (page === totalPages || totalPages === 0);
+        }
+
+        if (prevBtn && nextBtn && totalPages > 0) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 if (currentPage > 1) {
                     currentPage--;
                     showPage(currentPage);
                 }
             });
 
-            nextBtn.addEventListener('click', () => {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 if (currentPage < totalPages) {
                     currentPage++;
                     showPage(currentPage);
                 }
             });
 
-            // Initial display
             showPage(1);
-        });
-    </script>
-    
+        } else if (prevBtn && nextBtn) {
+            // No rows – disable pagination
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            pageInfo.textContent = 'Page 0 of 0';
+        }
+    });
+</script>
 </body>
 </html>

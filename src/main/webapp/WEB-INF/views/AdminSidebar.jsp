@@ -256,7 +256,17 @@
       <li class="submenu-item"><a href="newUserType"><i class="fas fa-tag"></i> Add User Type</a></li>
       <li class="submenu-item"><a href="listUser"><i class="fas fa-list"></i> List Users</a></li>
     </ul>
-
+	
+	<div class="menu-item" id="judgeMenu">
+      <i class="fas fa-gavel"></i>
+      <span>Judges</span>
+      <i class="fas fa-chevron-left arrow-icon"></i>
+    </div>
+    <ul class="submenu" id="judgeSubmenu">
+      <li class="submenu-item"><a href="/newJudge"><i class="fas fa-user-plus"></i> Invite Judge</a></li>
+      <li class="submenu-item"><a href="/listJudge"><i class="fas fa-list"></i> List Judges</a></li>
+    </ul>
+    
     <!-- Category with submenu -->
     <div class="menu-item" id="categoryMenu">
       <i class="fas fa-folder"></i>
@@ -316,6 +326,7 @@ menuItems.forEach(item => {
   const hackathonMenu = document.getElementById('hackathonMenu');
   const hackathonSubmenu = document.getElementById('hackathonSubmenu');
   const userMenu = document.getElementById('userMenu');
+  const judgeMenu = document.getElementById('judgeMenu');
   const userSubmenu = document.getElementById('userSubmenu');
   const categoryMenu = document.getElementById('categoryMenu');
   const categorySubmenu = document.getElementById('categorySubmenu');
@@ -333,7 +344,7 @@ menuItems.forEach(item => {
   setupSubmenu(hackathonMenu, hackathonSubmenu);
   setupSubmenu(userMenu, userSubmenu);
   setupSubmenu(categoryMenu, categorySubmenu);
-  
+  setupSubmenu(judgeMenu,judgeSubmenu)
 
   const currentPath = window.location.pathname;
 

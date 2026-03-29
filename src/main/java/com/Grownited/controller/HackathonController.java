@@ -1,23 +1,35 @@
-
 package com.Grownited.controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.Grownited.entity.HackathonDescriptionEntity;
 import com.Grownited.entity.HackathonEntity;
+import com.Grownited.entity.HackathonPrizeEntity;
 import com.Grownited.entity.UserEntity;
 import com.Grownited.entity.UserTypeEntity;
+import com.Grownited.repository.HackathonDescriptionRepository;
+import com.Grownited.repository.HackathonJudgeRepository;
+import com.Grownited.repository.HackathonPrizeRepository;
 import com.Grownited.repository.HackathonRepository;
+import com.Grownited.repository.UserRepository;
 import com.Grownited.repository.UserTypeRepository;
 import com.cloudinary.Cloudinary;
 
@@ -34,6 +46,19 @@ public class HackathonController {
 	   
 	   @Autowired
 	   Cloudinary cloudinary;
+	   
+		
+		@Autowired
+		HackathonDescriptionRepository hackathonDescriptionRepository;
+
+		@Autowired
+		HackathonPrizeRepository hackathonPrizeRepository;
+
+		@Autowired
+		HackathonJudgeRepository hackathonJudgeRepository;
+
+		@Autowired
+		UserRepository userRepository;
 	
 	@GetMapping("/create-hackathon")
 	    public String createHackathon(Model model) {
@@ -44,7 +69,7 @@ public class HackathonController {
 	        return "create-hackathons";
 	    }
 
-	    @PostMapping("/save-hackathon")
+	  /*  @PostMapping("/save-hackathon")
 	    public String saveHackathon(HackathonEntity hackathonEntity,HttpSession session, MultipartFile hackathonPoster) {
 		    
 		    System.out.println(hackathonEntity.getTitle());
@@ -62,27 +87,76 @@ public class HackathonController {
     		}
 		    hackathonRepository.save(hackathonEntity);
 	        return "redirect:/listHackathon";
-	    }
-	    
-	    @GetMapping("listHackathon")
-	    public String listHackathon(Model model)
+	    }*/
+	    @PostMapping("saveHackathon")
+		@Transactional
+		public String saveHackathon(HackathonEntity hackathonEntity, HttpSession session,
+				@RequestParam(required = false) String hackathonDetails,
+				@RequestParam(required = false) String prizeTitle1,
+				@RequestParam(required = false) String prizeDescription1,
+				@RequestParam(required = false) String prizeTitle2,
+				@RequestParam(required = false) String prizeDescription2,
+				@RequestParam(required = false) String prizeTitle3,
+				@RequestParam(required = false) String prizeDescription3,
+				 MultipartFile hackathonPoster) {
+			if (hackathonEntity.getLeaderboardPublished() == null) {
+				hackathonEntity.setLeaderboardPublished(false);
+			}
+			UserEntity currentLogInUser = (UserEntity) session.getAttribute("user");
+			if (currentLogInUser != null) {
+				hackathonEntity.setUserId(currentLogInUser.getUserId());
+			}
+			try {
+    			Map  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+    			String hackathonPosterURL = map.get("secure_url").toString();
+    			System.out.println(hackathonPosterURL);
+    			hackathonEntity.setHackathonPosterURL(hackathonPosterURL);
+    			
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+			hackathonRepository.save(hackathonEntity);
+			Integer hackathonId = hackathonEntity.getHackathonId();
+
+			saveOrUpdateDescription(hackathonId, hackathonDetails);
+
+			saveOrUpdatePrize(hackathonId, null, prizeTitle1, prizeDescription1);
+			saveOrUpdatePrize(hackathonId, null, prizeTitle2, prizeDescription2);
+			saveOrUpdatePrize(hackathonId, null, prizeTitle3, prizeDescription3);
+
+			return "redirect:/listHackathon";//do not open jsp , open another url -> listHackathon
+		}
+
+	    @GetMapping("/listHackathon")
+	    public String listHackathon(@RequestParam(defaultValue = "1") int page,Model model)
 	    {
 	    	 
-	    	List<HackathonEntity> allHackathons = hackathonRepository.findAll();
+	    	/*List<HackathonEntity> allHackathons = hackathonRepository.findAll();
 	    	model.addAttribute("allHackathons" , allHackathons);
-	    	return "ListHackathon";
+	    	return "ListHackathon";*/
+	    	   int pageSize = 10;
+
+	    	    Pageable pageable = PageRequest.of(page - 1, pageSize);
+	    	    Page<HackathonEntity> hackathonPage = hackathonRepository.findAll(pageable);
+
+	    	    model.addAttribute("allHackathons", hackathonPage.getContent());
+	    	    model.addAttribute("currentPage", page);
+	    	    model.addAttribute("totalPages", hackathonPage.getTotalPages());
+
+	    	    return "ListHackathon";
 	    	
 	    }
 	    
 	    @GetMapping("deleteHackathon")
-		public String deleteHackathon(Integer hackthon_id) {
-			hackathonRepository.deleteById(hackthon_id);
+		public String deleteHackathon(Integer hackathonId) {
+			hackathonRepository.deleteById(hackathonId);
 			
 			return "redirect:/listHackathon";//do not open jsp , open another url -> listHackathon
 		}
 	 // Show edit form with existing hackathon data
-	    @GetMapping("/edit-hackathon")
-	    public String editHackathon(@RequestParam("hackthon_id") Integer hackathonId, Model model) {
+	  /*  @GetMapping("/edit-hackathon")
+	    public String editHackathon(@RequestParam("hackathonId") Integer hackathonId, Model model) {
 	        HackathonEntity hackathon = hackathonRepository.findById(hackathonId).orElse(null);
 	        if (hackathon == null) {
 	            return "redirect:/listHackathon";
@@ -92,15 +166,32 @@ public class HackathonController {
 	        List<UserTypeEntity> allUserType = userTypeRepository.findAll();
 	        model.addAttribute("allUserType", allUserType);
 	        return "EditHackathon"; // we'll create this JSP
-	    }
+	    }*/
+	    @GetMapping("editHackathon")
+		public String editHackathon(@RequestParam Integer hackathonId, Model model) {
+			Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+			if (opHackathon.isEmpty()) {
+				return "redirect:/listHackathon";
+			}
+			List<UserTypeEntity> allUserType = userTypeRepository.findAll();
+			Optional<HackathonDescriptionEntity> description = hackathonDescriptionRepository.findFirstByHackathonId(hackathonId);
+			List<HackathonPrizeEntity> prizeList = hackathonPrizeRepository.findByHackathonIdOrderByHackathonPrizeIdAsc(hackathonId);
+			model.addAttribute("allUserType", allUserType);
+			model.addAttribute("hackathon", opHackathon.get());
+			model.addAttribute("hackathonDescription", description.orElse(new HackathonDescriptionEntity()));
+			model.addAttribute("prize1", getPrizeOrNew(prizeList, 0));
+			model.addAttribute("prize2", getPrizeOrNew(prizeList, 1));
+			model.addAttribute("prize3", getPrizeOrNew(prizeList, 2));
+			return "EditHackathon";
+		}
 
-	    // Update existing hackathon
-	    @PostMapping("/update-hackathon")
-	    public String updateHackathon(@RequestParam("hackthon_id") Integer hackathonId,
+		// Update existing hackathon
+	   /* @PostMapping("/update-hackathon")
+	    public String updateHackathon(@RequestParam("hackathonId") Integer hackathonId,
 	                                  @RequestParam("title") String title,
 	                                  @RequestParam("description") String description,
 	                                  @RequestParam("status") String status,
-	                                  @RequestParam("event_type") String eventType,
+	                                  @RequestParam("eventType") String eventType,
 	                                  @RequestParam("payment") String payment,
 	                                  @RequestParam("minTeamSize") Integer minTeamSize,
 	                                  @RequestParam("maxTeamSize") Integer maxTeamSize,
@@ -146,5 +237,92 @@ public class HackathonController {
 	        return "redirect:/listHackathon";
 	    }
 	  
+     */
+	    @PostMapping("updateHackathon")
+		@Transactional
+		public String updateHackathon(HackathonEntity hackathonEntity, HttpSession session,
+				@RequestParam(required = false) String hackathonDetails,
+				@RequestParam(required = false) Integer prizeId1,
+				@RequestParam(required = false) String prizeTitle1,
+				@RequestParam(required = false) String prizeDescription1,
+				@RequestParam(required = false) Integer prizeId2,
+				@RequestParam(required = false) String prizeTitle2,
+				@RequestParam(required = false) String prizeDescription2,
+				@RequestParam(required = false) Integer prizeId3,
+				@RequestParam(required = false) String prizeTitle3,
+				@RequestParam(required = false) String prizeDescription3,
+				 MultipartFile hackathonPoster) {
+			Optional<HackathonEntity> existing = hackathonRepository.findById(hackathonEntity.getHackathonId());
+			if (hackathonEntity.getLeaderboardPublished() == null && existing.isPresent()) {
+				hackathonEntity.setLeaderboardPublished(existing.get().getLeaderboardPublished());
+			}
+
+			if (hackathonEntity.getUserId() == null) {
+				UserEntity currentLogInUser = (UserEntity) session.getAttribute("user");
+				if (currentLogInUser != null) {
+					hackathonEntity.setUserId(currentLogInUser.getUserId());
+				}
+			}
+			try {
+    			Map  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+    			String hackathonPosterURL = map.get("secure_url").toString();
+    			System.out.println(hackathonPosterURL);
+    			hackathonEntity.setHackathonPosterURL(hackathonPosterURL);
+    			
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+			hackathonRepository.save(hackathonEntity);
+
+			Integer hackathonId = hackathonEntity.getHackathonId();
+			saveOrUpdateDescription(hackathonId, hackathonDetails);
+
+			saveOrUpdatePrize(hackathonId, prizeId1, prizeTitle1, prizeDescription1);
+			saveOrUpdatePrize(hackathonId, prizeId2, prizeTitle2, prizeDescription2);
+			saveOrUpdatePrize(hackathonId, prizeId3, prizeTitle3, prizeDescription3);
+
+			return "redirect:/listHackathon";
+		}
+	    
+	    private HackathonPrizeEntity getPrizeOrNew(List<HackathonPrizeEntity> prizeList, int index) {
+			if (prizeList.size() > index) {
+				return prizeList.get(index);
+			}
+			return new HackathonPrizeEntity();
+		}
+	    
+	    private void saveOrUpdateDescription(Integer hackathonId, String details) {
+			if (!StringUtils.hasText(details)) {
+				return;
+			}
+			HackathonDescriptionEntity description = hackathonDescriptionRepository.findFirstByHackathonId(hackathonId)
+					.orElse(new HackathonDescriptionEntity());
+			description.setHackathonId(hackathonId);
+			description.setHackathonDetails(details);
+			hackathonDescriptionRepository.save(description);
+		}
+
+		private void saveOrUpdatePrize(Integer hackathonId, Integer prizeId, String title, String descriptionText) {
+			boolean hasData = StringUtils.hasText(title) || StringUtils.hasText(descriptionText);
+			if (!hasData && prizeId == null) {
+				return;
+			}
+
+			if (!hasData && prizeId != null) {
+				hackathonPrizeRepository.deleteById(prizeId);
+				return;
+			}
+
+			HackathonPrizeEntity prize = prizeId != null
+					? hackathonPrizeRepository.findById(prizeId).orElse(new HackathonPrizeEntity())
+					: new HackathonPrizeEntity();
+
+			prize.setHackathonId(hackathonId);
+			prize.setPrizeTitle(title);
+			prize.setPrizeDescription(descriptionText);
+			hackathonPrizeRepository.save(prize);
+		}
+
 
 }

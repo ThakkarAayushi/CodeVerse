@@ -81,7 +81,7 @@ public class SessionController {
 					return "redirect:/participant/home";// url '
 				}
 				else if (dbUser.getRole().equals("judge")) {
-					return "redirect:/judge-dashboard";
+					return "redirect:/judge/JudgeDashboard";
 				}
 			}	
 		  }

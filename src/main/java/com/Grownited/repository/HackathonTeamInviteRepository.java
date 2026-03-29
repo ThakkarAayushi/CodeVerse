@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.Grownited.entity.HackathonEntity;
 import com.Grownited.entity.HackathonTeamInviteEntity;
 
 @Repository
@@ -26,4 +27,17 @@ public interface HackathonTeamInviteRepository extends JpaRepository<HackathonTe
 
 	// HackathonTeamInviteRepository.java
 	List<HackathonTeamInviteEntity> findByTeamIdAndInviteTypeAndInviteStatus(Integer teamId, String inviteType, String inviteStatus);
+
+	void deleteByHackathonIdAndInvitedUserIdAndInviteStatus(Integer hackathonId, Integer userId, String string);
+	
+	List<HackathonTeamInviteEntity> findByTeamIdAndInviteStatusNotOrderByHackathonTeamInviteIdDesc(Integer teamId, String status);
+	Optional<HackathonTeamInviteEntity>
+	findFirstByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteTypeIn(
+	    Integer hackathonId,
+	    Integer userId,
+	    String status,
+	    List<String> inviteTypes);
+
+	List<HackathonTeamInviteEntity> findByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteTypeIn(Integer hackathonId,
+			Integer userId, String string, List<String> of);
 }
