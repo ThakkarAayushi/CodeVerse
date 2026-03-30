@@ -497,10 +497,10 @@
                     <span class="type-badge">${h.payment}</span>
                 </div>
             </td>
-            <td>
-                <div>${h.userType}s</div>
-                <div class="team-size">Team: ${h.minTeamSize} - ${h.maxTeamSize}</div>
-            </td>
+		    <td>
+			    <div>${h.userType}</div>
+			    <div class="team-size">Team: ${h.minTeamSize} - ${h.maxTeamSize}</div>
+			</td>
             <td>
                 <div class="date-start"><i class="fas fa-calendar-check"></i> Start: ${h.registrationStartDate}</div>
                 <div class="date-end"><i class="fas fa-calendar-times"></i> End: ${h.registrationEndDate}</div>

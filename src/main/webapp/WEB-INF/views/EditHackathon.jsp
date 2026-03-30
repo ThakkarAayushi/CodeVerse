@@ -452,7 +452,8 @@
                                     <span class="input-group-icon"><i class="fas fa-toggle-on"></i></span>
                                     <select name="status" required>
                                         <option value="UPCOMING" ${hackathon.status == 'UPCOMING' ? 'selected' : ''}>Upcoming</option>
-                                        <option value="ONGOING" ${hackathon.status == 'ONGOING' ? 'selected' : ''}>Ongoing</option>
+                                        <!-- option value="ONGOING" ${hackathon.status == 'ONGOING' ? 'selected' : ''}>Ongoing</option-->
+                                          <option value="LIVE" ${hackathon.status == 'LIVE' ? 'selected' : ''}>Live</option>
                                         <option value="COMPLETED" ${hackathon.status == 'COMPLETED' ? 'selected' : ''}>Completed</option>
                                     </select>
                                 </div>
@@ -493,11 +494,13 @@
                                 <label>Eligibility (User Type)</label>
                                 <div class="input-group">
                                     <span class="input-group-icon"><i class="fas fa-user-tag"></i></span>
-                                    <select name="userType" required>
-                                        <c:forEach var="u" items="${allUserType}">
-                                            <option value="${u.userTypeId}" ${hackathon.userType == u.userType ? 'selected' : ''}>${u.userType}</option>
-                                        </c:forEach>
-                                    </select>
+                                   <select name="userTypeId" required>
+									    <c:forEach var="u" items="${allUserType}">
+									        <option value="${u.userTypeId}" ${hackathon.userType == u.userType ? 'selected' : ''}>
+									            ${u.userType}
+									        </option>
+									    </c:forEach>
+									</select>
                                 </div>
                             </div>
                             <div class="form-group">

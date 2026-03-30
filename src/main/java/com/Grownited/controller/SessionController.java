@@ -65,13 +65,15 @@ public class SessionController {
 	public String authenticate(String email, String password,Model model,HttpSession session) {
 		Optional<UserEntity> op = userRepository.findByEmail(email);
 
-		if (op.isPresent()) {
+		/*if (op.isPresent()) {
 			UserEntity dbUser = op.get();
 			
-			if (passwordEncoder.matches(password, dbUser.getPassword())) {
+			if (passwordEncoder.matches(password, dbUser.getPassword()))
+			{
+			{
 				session.setAttribute("user", dbUser);
 			//if (dbUser.getPassword().equals(password))
-			{
+			  
 				if (dbUser.getRole().equals("admin")) {
 					System.out.println("demo");
 					return "redirect:/dashboard";// url '
@@ -81,14 +83,33 @@ public class SessionController {
 					return "redirect:/participant/home";// url '
 				}
 				else if (dbUser.getRole().equals("judge")) {
-					return "redirect:/judge/JudgeDashboard";
+					return "redirect:/judge/judge-dashboard";
 				}
 			}	
 		  }
-		}	
+		}	*/
+		if (op.isPresent()) {
+		    UserEntity dbUser = op.get();
+
+		    if (passwordEncoder.matches(password, dbUser.getPassword())) {
+
+		        session.setAttribute("user", dbUser);
+
+		        if ("admin".equals(dbUser.getRole())) {
+		            return "redirect:/dashboard";
+		        } 
+		        else if ("participant".equals(dbUser.getRole())) {
+		            return "redirect:/participant/home";
+		        }
+		        else if ("judge".equals(dbUser.getRole())) {
+		            return "redirect:/judge/judge-dashboard";
+		        }
+		    }
+		}
 		model.addAttribute("error","Invalid Credentials");
 		return "Login";
-	}
+}
+
     
     @GetMapping("/forgetpassword")
     public String showPage() {

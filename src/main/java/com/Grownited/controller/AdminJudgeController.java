@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.Grownited.entity.UserEntity;
 import com.Grownited.repository.UserRepository;
+import com.Grownited.service.MailerService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -23,6 +24,9 @@ public class AdminJudgeController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private MailerService mailerService;
 
     // ==================== LIST JUDGES ====================
     @GetMapping("/listJudge")
@@ -44,11 +48,11 @@ public class AdminJudgeController {
     public String saveJudge(UserEntity judge, Model model, HttpSession session) {
       
         // 1. Check if email already exists
-       // Optional<UserEntity> existing = userRepository.findByEmail(judge.getEmail());
+        Optional<UserEntity> existing = userRepository.findByEmail(judge.getEmail());
         // 2. Generate random temporary password (e.g., 8 characters alphanumeric)
         String tempPassword = generateRandomPassword(8);
         judge.setPassword(passwordEncoder.encode(tempPassword));
-        judge.setRole("JUDGE");
+        judge.setRole("judge");
         judge.setActive(true);
         judge.setPasswordResetRequired(true);
         // Set any other default values
@@ -58,7 +62,7 @@ public class AdminJudgeController {
         userRepository.save(judge);
 
         // 4. Optionally send email (commented for now)
-        // sendInvitationEmail(judge.getEmail(), tempPassword);
+        mailerService.sendJudgeInviteMail(judge, tempPassword);
 
         // 5. Redirect with success and temp password (or just success flag)
         return "redirect:/listJudge?invited=true&tempPassword=" + tempPassword;

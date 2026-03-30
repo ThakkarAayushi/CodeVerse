@@ -38,7 +38,7 @@ public class UserEntity {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-		public String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {

@@ -70,10 +70,10 @@ public class JudgeController {
 	@Autowired
 	HackathonTeamRepository hackathonTeamRepository;
 
-	@GetMapping("judge-dashboard")
+	@GetMapping("/judge/judge-dashboard")
 	public String judgeDashboard(Model model, HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		if (Boolean.TRUE.equals(user.getPasswordResetRequired())) {
@@ -153,7 +153,7 @@ public class JudgeController {
 	@GetMapping("judge/viewHackathon")
 	public String judgeViewHackathon(@RequestParam Integer hackathonId, Model model, HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		if (Boolean.TRUE.equals(user.getPasswordResetRequired())) {
@@ -162,12 +162,12 @@ public class JudgeController {
 
 		boolean assigned = hackathonJudgeRepository.existsByHackathonIdAndUserId(hackathonId, user.getUserId());
 		if (!assigned) {
-			return "redirect:/judge-dashboard";
+			return "redirect:/judge/judge-dashboard";
 		}
 
 		Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
 		if (opHackathon.isEmpty()) {
-			return "redirect:/judge-dashboard";
+			return "redirect:/judge/judge-dashboard";
 		}
 
 		Optional<HackathonDescriptionEntity> description = hackathonDescriptionRepository.findFirstByHackathonId(hackathonId);
@@ -220,7 +220,7 @@ public class JudgeController {
 	@GetMapping("judge/change-password")
 	public String judgeChangePassword(HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		return "judge/JudgeChangePassword";
@@ -229,7 +229,7 @@ public class JudgeController {
 	@PostMapping("judge/update-password")
 	public String judgeUpdatePassword(String newPassword, String confirmPassword, Model model, HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 
@@ -246,13 +246,13 @@ public class JudgeController {
 		user.setPasswordResetRequired(false);
 		userRepository.save(user);
 		session.setAttribute("user", user);
-		return "redirect:/judge-dashboard";
+		return "redirect:/judge/judge-dashboard";
 	}
 
 	@GetMapping("judge/profile")
 	public String judgeProfile(HttpSession session, Model model) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		model.addAttribute("judge", user);
@@ -262,7 +262,7 @@ public class JudgeController {
 	@PostMapping("judge/profile/update")
 	public String updateJudgeProfile(UserEntity formUser, MultipartFile profilePic, HttpSession session, Model model) {
 		UserEntity sessionUser = (UserEntity) session.getAttribute("user");
-		if (sessionUser == null || !"JUDGE".equals(sessionUser.getRole())) {
+		if (sessionUser == null || !"judge".equals(sessionUser.getRole())) {
 			return "redirect:/login";
 		}
 
@@ -296,7 +296,7 @@ public class JudgeController {
 	@GetMapping("judge/submissions")
 	public String judgeSubmissions(Model model, HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		if (Boolean.TRUE.equals(user.getPasswordResetRequired())) {
@@ -332,7 +332,7 @@ public class JudgeController {
 	@GetMapping("judge/submissions/review")
 	public String reviewSubmission(@RequestParam Integer submissionId, Model model, HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		if (Boolean.TRUE.equals(user.getPasswordResetRequired())) {
@@ -364,7 +364,7 @@ public class JudgeController {
 	@PostMapping("judge/submissions/review/save")
 	public String saveReview(HackathonResultEntity formResult, HttpSession session) {
 		UserEntity user = (UserEntity) session.getAttribute("user");
-		if (user == null || !"JUDGE".equals(user.getRole())) {
+		if (user == null || !"judge".equals(user.getRole())) {
 			return "redirect:/login";
 		}
 		if (Boolean.TRUE.equals(user.getPasswordResetRequired())) {

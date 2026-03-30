@@ -50,7 +50,7 @@ public class HackathonJudgeController {
 			userRepository.findById(assignment.getUserId()).ifPresent(user -> judgeMap.put(user.getUserId(), user));
 		}
 
-		List<UserEntity> availableJudges = userRepository.findByRole("JUDGE").stream()
+		List<UserEntity> availableJudges = userRepository.findByRole("judge").stream()
 				.filter(j -> j.getActive() != null && j.getActive())
 				.filter(j -> !assignedUserIds.contains(j.getUserId())).collect(Collectors.toList());
 
@@ -67,7 +67,7 @@ public class HackathonJudgeController {
 	public String saveHackathonJudge(Integer hackathonId, Integer userId) {
 		Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
 		Optional<UserEntity> opJudge = userRepository.findById(userId);
-		if (opHackathon.isEmpty() || opJudge.isEmpty() || !"JUDGE".equals(opJudge.get().getRole())) {
+		if (opHackathon.isEmpty() || opJudge.isEmpty() || !"judge".equals(opJudge.get().getRole())) {
 			return "redirect:/manageHackathonJudge?hackathonId=" + hackathonId + "&error=invalidJudge";
 		}
 

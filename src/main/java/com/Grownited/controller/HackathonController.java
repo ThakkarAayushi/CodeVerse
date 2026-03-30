@@ -1,12 +1,11 @@
 package com.Grownited.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -98,6 +97,7 @@ public class HackathonController {
 				@RequestParam(required = false) String prizeDescription2,
 				@RequestParam(required = false) String prizeTitle3,
 				@RequestParam(required = false) String prizeDescription3,
+				 @RequestParam("userTypeId") Integer userTypeId,
 				 MultipartFile hackathonPoster) {
 			if (hackathonEntity.getLeaderboardPublished() == null) {
 				hackathonEntity.setLeaderboardPublished(false);
@@ -116,6 +116,11 @@ public class HackathonController {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
+			
+			  if (userTypeId != null) {
+			        Optional<UserTypeEntity> ut = userTypeRepository.findById(userTypeId);
+			        ut.ifPresent(u -> hackathonEntity.setUserType(u.getUserType()));
+			    }
 			hackathonRepository.save(hackathonEntity);
 			Integer hackathonId = hackathonEntity.getHackathonId();
 
@@ -251,6 +256,7 @@ public class HackathonController {
 				@RequestParam(required = false) Integer prizeId3,
 				@RequestParam(required = false) String prizeTitle3,
 				@RequestParam(required = false) String prizeDescription3,
+				@RequestParam("userTypeId") Integer userTypeId,  
 				 MultipartFile hackathonPoster) {
 			Optional<HackathonEntity> existing = hackathonRepository.findById(hackathonEntity.getHackathonId());
 			if (hackathonEntity.getLeaderboardPublished() == null && existing.isPresent()) {
@@ -273,6 +279,11 @@ public class HackathonController {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
     		}
+		    if (userTypeId != null) {
+		        Optional<UserTypeEntity> ut = userTypeRepository.findById(userTypeId);
+		        ut.ifPresent(u -> hackathonEntity.setUserType(u.getUserType()));
+		    }
+
 			hackathonRepository.save(hackathonEntity);
 
 			Integer hackathonId = hackathonEntity.getHackathonId();
