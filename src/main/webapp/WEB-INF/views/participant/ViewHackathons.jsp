@@ -141,7 +141,18 @@
     </style>
 </head>
 <body>
-
+<c:if test="${param.success == 'paymentSuccess'}">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> Payment successful! You are now registered.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</c:if>
+<c:if test="${param.error == 'paymentFailed'}">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> Payment failed. Please try again or contact support.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</c:if>
 <div class="container py-5">
     <!-- Back button -->
     <a href="${pageContext.request.contextPath}/participant/home" class="btn btn-link text-decoration-none mb-4">
@@ -260,9 +271,9 @@
 
                 <hr class="my-4">
 
-                <!-- Registration / Team Action Area -->
+<%--                 <!-- Registration / Team Action Area -->
                 <c:choose>
-                    <%-- Registration not started yet --%>
+                    Registration not started yet
                     <c:when test="${today lt hackathon.registrationStartDate}">
                         <div class="alert alert-info text-center mb-3" role="alert">
                             <i class="fas fa-clock me-2"></i> Registration opens on ${hackathon.registrationStartDate}
@@ -272,7 +283,7 @@
                         </button>
                     </c:when>
 
-                    <%-- Deadline passed --%>
+                    Deadline passed
                     <c:when test="${today gt hackathon.registrationEndDate}">
                         <div class="alert alert-danger text-center mb-3" role="alert">
                             <i class="fas fa-clock me-2"></i> Registration Deadline Passed
@@ -282,10 +293,10 @@
                         </button>
                     </c:when>
 
-                    <%-- Registration is open (status UPCOMING or LIVE) --%>
+                    Registration is open (status UPCOMING or LIVE)
                     <c:when test="${hackathon.status eq 'UPCOMING' or hackathon.status eq 'LIVE'}">
                         <c:choose>
-                            <%-- Already registered --%>
+                            Already registered
                             <c:when test="${alreadyRegistered}">
                                 <div class="alert alert-info text-center mb-3" role="alert">
                                     <i class="fas fa-check-circle me-2"></i> You are already registered in this hackathon.
@@ -296,7 +307,7 @@
                                 </a>
                             </c:when>
 
-                            <%-- Pending invitation --%>
+                            Pending invitation
                             <c:when test="${not empty pendingInvite}">
                                 <div class="alert alert-warning text-center mb-3" role="alert">
                                     <i class="fas fa-envelope me-2"></i> You have a pending team invitation.
@@ -315,7 +326,7 @@
                                 </div>
                             </c:when>
 								
-                            <%-- Can join directly (no pending invite, not registered) --%>
+                            Can join directly (no pending invite, not registered)
                             <c:otherwise>
                                 <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
                                     <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
@@ -325,50 +336,8 @@
                             </c:otherwise>
                         </c:choose>
                     </c:when>
-                    <%-- Inside the registration open block --%>
-<c:when test="${hackathon.status eq 'UPCOMING' or hackathon.status eq 'LIVE'}">
-    <c:choose>
-        <%-- Already registered --%>
-        <c:when test="${alreadyRegistered}">
-            ...
-        </c:when>
 
-        <%-- Pending invitation --%>
-        <c:when test="${not empty pendingInvite}">
-            ...
-        </c:when>
-
-        <%-- Paid hackathon and not registered yet --%>
-        <c:when test="${hackathon.payment eq 'PAID'}">
-            <c:choose>
-                <c:when test="${hasPaid}">
-                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
-                            <i class="fas fa-pen me-2"></i> Join Hackathon (Already Paid)
-                        </button>
-                    </form>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/pay" 
-                       class="btn btn-warning w-100 py-2 fw-bold shadow">
-                        <i class="fas fa-credit-card me-2"></i> Pay ₹ ${hackathon.registrationFee} and Register
-                    </a>
-                </c:otherwise>
-            </c:choose>
-        </c:when>
-
-        <%-- Free hackathon --%>
-        <c:otherwise>
-            <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
-                    <i class="fas fa-pen me-2"></i> Join Hackathon
-                </button>
-            </form>
-        </c:otherwise>
-    </c:choose>
-</c:when>
-
-                    <%-- Hackathon is completed or expired (no registration) --%>
+                    Hackathon is completed or expired (no registration)
                     <c:otherwise>
                         <div class="alert alert-secondary text-center mb-3" role="alert">
                             <i class="fas fa-ban me-2"></i> Registration Not Available
@@ -379,7 +348,94 @@
                     </c:otherwise>
                 </c:choose>
 
-                <!-- Leaderboard link (if available) -->
+ --%>   
+ 
+ <c:choose>
+    <%-- Registration not started yet --%>
+    <c:when test="${today lt hackathon.registrationStartDate}">
+        <div class="alert alert-info text-center mb-3" role="alert">
+            <i class="fas fa-clock me-2"></i> Registration opens on ${hackathon.registrationStartDate}
+        </div>
+        <button class="btn btn-secondary w-100 py-2 fw-bold" disabled>Not Started</button>
+    </c:when>
+
+    <%-- Registration deadline passed --%>
+    <c:when test="${today gt hackathon.registrationEndDate}">
+        <div class="alert alert-danger text-center mb-3" role="alert">
+            <i class="fas fa-clock me-2"></i> Registration Deadline Passed
+        </div>
+        <button class="btn btn-secondary w-100 py-2 fw-bold" disabled>Deadline Expired</button>
+    </c:when>
+
+    <%-- Registration is open --%>
+    <c:when test="${hackathon.status eq 'UPCOMING' or hackathon.status eq 'LIVE'}">
+        <c:choose>
+            <%-- Already registered --%>
+            <c:when test="${alreadyRegistered}">
+                <div class="alert alert-info text-center mb-3" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> You are already registered in this hackathon.
+                </div>
+                <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team" 
+                   class="btn btn-outline-info w-100 py-2 fw-bold">
+                    <i class="fas fa-users me-2"></i> Manage Team
+                </a>
+            </c:when>
+
+            <%-- Pending invitation (accept/reject) --%>
+            <c:when test="${not empty pendingInvite}">
+                <div class="alert alert-warning text-center mb-3" role="alert">
+                    <i class="fas fa-envelope me-2"></i> You have a pending team invitation.
+                </div>
+                <div class="btn-row">
+                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/invite/${pendingInvite.hackathonTeamInviteId}/accept" method="post">
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Accept Invitation</button>
+                    </form>
+                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/invite/${pendingInvite.hackathonTeamInviteId}/reject" method="post">
+                        <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">Reject Invitation</button>
+                    </form>
+                </div>
+            </c:when>
+
+            <%-- Paid hackathon flow --%>
+            <c:when test="${hackathon.payment eq 'PAID'}">
+                <c:choose>
+                    <c:when test="${hasPaid}">
+                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
+                                <i class="fas fa-pen me-2"></i> Join Hackathon (Already Paid)
+                            </button>
+                        </form>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/pay" 
+                           class="btn btn-warning w-100 py-2 fw-bold shadow">
+                            <i class="fas fa-credit-card me-2"></i> Pay ₹ ${hackathon.registrationFee} and Register
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+            </c:when>
+
+            <%-- Free hackathon (default) --%>
+            <c:otherwise>
+                <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
+                        <i class="fas fa-pen me-2"></i> Join Hackathon
+                    </button>
+                </form>
+            </c:otherwise>
+        </c:choose>
+    </c:when>
+
+    <%-- Hackathon completed or expired – no registration --%>
+    <c:otherwise>
+        <div class="alert alert-secondary text-center mb-3" role="alert">
+            <i class="fas fa-ban me-2"></i> Registration Not Available
+        </div>
+        <button class="btn btn-secondary w-100 py-2 fw-bold" disabled>
+            ${hackathon.status == 'COMPLETED' ? 'Event Completed' : 'Closed'}
+        </button>
+    </c:otherwise>
+</c:choose>             <!-- Leaderboard link (if available) -->
                 <c:if test="${leaderboardAvailable}">
                     <hr class="my-4">
                     <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathon_id}/leaderboard" 

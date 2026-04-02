@@ -1025,17 +1025,36 @@ public class ParticipantController {
 
         HackathonEntity hackathon = opHackathon.get();
 
-        // Call payment service
-        String expiredDate = expMonth + expYear; // format as expected by Authorize.net
+        // Check registration period
+        LocalDate today = LocalDate.now();
+        if (hackathon.getRegistrationStartDate() != null && hackathon.getRegistrationEndDate() != null &&
+            (today.isBefore(hackathon.getRegistrationStartDate()) || today.isAfter(hackathon.getRegistrationEndDate()))) {
+            return "redirect:/participant/hackathon/" + hackathonId + "?error=registrationClosed";
+        }
+
+        // Check if already paid or registered
+        if (paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId, user.getUserId(), "SUCCESS").isPresent()) {
+            return "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyPaid";
+        }
+        if (hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId())) {
+            return "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyRegistered";
+        }
+
+        // Process payment
+        String expiredDate = expMonth + expYear; // Ensure format is MMYY (Authorize.net expects 2-digit year)
+        // Convert year to last two digits if needed
+        if (expYear.length() > 2) {
+            expiredDate = expMonth + expYear.substring(expYear.length() - 2);
+        }
         Double amount = hackathon.getRegistrationFee();
         ANetApiResponse response = paymentService.chargeCreditCard(user.getEmail(), cardNumber, expiredDate, amount);
 
-        // Process response
+        // Check response
         if (response != null && response.getMessages().getResultCode() == MessageTypeEnum.OK) {
             CreateTransactionResponse trResponse = (CreateTransactionResponse) response;
             TransactionResponse result = trResponse.getTransactionResponse();
-            if (result.getMessages() != null) {
-                // Payment successful – save payment record
+            if (result != null && result.getMessages() != null) {
+                // Save payment record
                 PaymentEntity payment = new PaymentEntity();
                 payment.setHackathonId(hackathonId);
                 payment.setUserId(user.getUserId());
@@ -1048,7 +1067,7 @@ public class ParticipantController {
                 payment.setPaymentStatus("SUCCESS");
                 paymentRepository.save(payment);
 
-                // Register user for hackathon (if not already)
+                // Register user for hackathon
                 ensureParticipantRegistration(hackathonId, user.getUserId());
 
                 return "redirect:/participant/hackathon/" + hackathonId + "?success=paymentSuccess";

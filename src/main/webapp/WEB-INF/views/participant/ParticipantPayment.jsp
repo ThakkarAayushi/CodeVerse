@@ -37,7 +37,7 @@
                 </div>
                 <div class="mb-3">
                     <label>CVV</label>
-                    <input type="password" name="cvv" class="form-control" required>
+                    <input type="password" name="cvv" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Pay Now</button>
             </form>
