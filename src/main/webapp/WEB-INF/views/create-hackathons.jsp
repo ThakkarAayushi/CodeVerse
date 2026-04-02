@@ -431,6 +431,13 @@
                                     <input type="text" name="title" placeholder="e.g. CodeSprint 2026" required />
                                 </div>
                             </div>
+                             <div class="form-group">
+                                <label>Short Description</label>
+                                <div class="input-group">
+                                    <span class="input-group-icon"><i class="fas fa-align-left"></i></span>
+                                    <textarea name="description" rows="1">${hackathon.description}</textarea>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label>Status</label>
                                 <div class="input-group">

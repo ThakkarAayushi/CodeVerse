@@ -429,11 +429,12 @@ public class ParticipantController {
 
     // ==================== TEAM MANAGEMENT ====================
 
-    @GetMapping("participant/hackathon/{hackathonId}/team")
+    @GetMapping("/participant/hackathon/{hackathonId}/team")
     public String manageTeam(@PathVariable Integer hackathonId,
                              @RequestParam(required = false) String success,
                              @RequestParam(required = false) String error,
                              Model model, HttpSession session) {
+
         UserEntity user = (UserEntity) session.getAttribute("user");
         if (user == null) return "redirect:/login";
 
@@ -441,18 +442,25 @@ public class ParticipantController {
         if (opHackathon.isEmpty()) return "redirect:/participant/home";
 
         Integer teamId = findTeamIdForUser(hackathonId, user.getUserId());
-        boolean joinedHackathon = hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId());
+
+        boolean joinedHackathon =
+                hackathonParticipantRepository.existsByHackathonIdAndParticipantId(
+                        hackathonId, user.getUserId());
+
         if (!joinedHackathon) {
             return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
         }
 
         boolean hasTeam = teamId != null;
         boolean isTeamLeader = false;
+
         HackathonTeamEntity team = null;
         HackathonTeamInviteEntity pendingInvite = null;
         HackathonTeamEntity pendingInviteTeam = null;
+
         List<HackathonTeamMembersEntity> teamMembers = new ArrayList<>();
         Map<Integer, UserEntity> memberMap = new HashMap<>();
+
         List<UserEntity> participantUsers = new ArrayList<>();
         List<HackathonTeamInviteEntity> inviteList = new ArrayList<>();
         List<HackathonTeamInviteEntity> joinRequests = new ArrayList<>();
@@ -460,77 +468,146 @@ public class ParticipantController {
         List<HackathonTeamInviteEntity> myPendingRequests = new ArrayList<>();
 
         if (hasTeam) {
+
             Optional<HackathonTeamEntity> opTeam = hackathonTeamRepository.findById(teamId);
-            if (opTeam.isEmpty()) return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
+            if (opTeam.isEmpty()) {
+                return "redirect:/participant/hackathon/" + hackathonId + "?error=notRegistered";
+            }
+
             team = opTeam.get();
             isTeamLeader = user.getUserId().equals(team.getTeamLeaderId());
 
-            teamMembers = hackathonTeamMemberRepository.findByTeamIdOrderByHackathonTeamMemberIdAsc(teamId);
+            // 👥 Team Members
+            teamMembers = hackathonTeamMemberRepository
+                    .findByTeamIdOrderByHackathonTeamMemberIdAsc(teamId);
+
             for (HackathonTeamMembersEntity m : teamMembers) {
-                userRepository.findById(m.getMemberId()).ifPresent(u -> memberMap.put(m.getMemberId(), u));
+                userRepository.findById(m.getMemberId())
+                        .ifPresent(u -> memberMap.put(m.getMemberId(), u));
             }
 
-            // All registered participants for this hackathon
-            List<Integer> joinedParticipantIds = hackathonParticipantRepository.findByHackathonId(hackathonId)
-                    .stream().map(HackathonParticipantEntity::getParticipantId).collect(Collectors.toList());
-            List<Integer> existingMemberIds = teamMembers.stream().map(HackathonTeamMembersEntity::getMemberId).collect(Collectors.toList());
-            List<Integer> usersInOtherTeams = hackathonTeamMemberRepository.findByHackathonId(hackathonId)
-                    .stream().map(HackathonTeamMembersEntity::getMemberId).filter(id -> !existingMemberIds.contains(id)).collect(Collectors.toList());
-            List<Integer> usersWithPendingInvites = hackathonTeamInviteRepository.findByHackathonIdAndInviteStatus(hackathonId, "PENDING")
-                    .stream().map(HackathonTeamInviteEntity::getInvitedUserId).filter(Objects::nonNull).collect(Collectors.toList());
+            // 🧪 STEP 1: Get all participant IDs
+            List<Integer> joinedParticipantIds =
+                    hackathonParticipantRepository.findByHackathonId(hackathonId)
+                            .stream()
+                            .map(HackathonParticipantEntity::getParticipantId)
+                            .collect(Collectors.toList());
 
-            participantUsers = userRepository.findAllById(joinedParticipantIds).stream()
-                    .filter(u -> "PARTICIPANT".equals(u.getRole()))
-                    .filter(u -> u.getActive() != null && u.getActive())
+            System.out.println("Participant IDs: " + joinedParticipantIds);
+
+            // 🧪 STEP 2: Fetch users
+            List<UserEntity> allUsers = userRepository.findAllById(joinedParticipantIds);
+
+            System.out.println("All users fetched: " + allUsers.size());
+
+            // 🧪 DEBUG PRINT
+            allUsers.forEach(u -> System.out.println(
+                    "User: " + u.getEmail() +
+                    " | role=" + u.getRole() +
+                    " | active=" + u.getActive()
+            ));
+
+            List<Integer> existingMemberIds = teamMembers.stream()
+                    .map(HackathonTeamMembersEntity::getMemberId)
+                    .collect(Collectors.toList());
+
+            List<Integer> usersInOtherTeams = hackathonTeamMemberRepository
+                    .findByHackathonId(hackathonId)
+                    .stream()
+                    .map(HackathonTeamMembersEntity::getMemberId)
+                    .collect(Collectors.toList());
+
+            List<Integer> usersWithPendingInvites =
+                    hackathonTeamInviteRepository
+                            .findByHackathonIdAndInviteStatus(hackathonId, "PENDING")
+                            .stream()
+                            .map(HackathonTeamInviteEntity::getInvitedUserId)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+
+            // ✅ FIXED FILTER LOGIC
+            participantUsers = allUsers.stream()
+                    .filter(u -> u.getRole() != null &&
+                            u.getRole().equalsIgnoreCase("PARTICIPANT")) // FIX
+                    .filter(u -> u.getActive() == null || u.getActive()) // SAFE FIX
                     .filter(u -> !u.getUserId().equals(user.getUserId()))
                     .filter(u -> !existingMemberIds.contains(u.getUserId()))
-                    .filter(u -> !usersInOtherTeams.contains(u.getUserId()))
+                    .filter(u ->  !usersInOtherTeams.contains(u.getUserId()))
                     .filter(u -> !usersWithPendingInvites.contains(u.getUserId()))
                     .collect(Collectors.toList());
 
-            inviteList = hackathonTeamInviteRepository.findByTeamIdOrderByHackathonTeamInviteIdDesc(teamId);
-            joinRequests = hackathonTeamInviteRepository.findByTeamIdAndInviteTypeAndInviteStatus(teamId, "REQUEST", "PENDING");
+            System.out.println("Filtered participants: " + participantUsers.size());
+
+            inviteList = hackathonTeamInviteRepository
+                    .findByTeamIdOrderByHackathonTeamInviteIdDesc(teamId);
+
+            joinRequests = hackathonTeamInviteRepository
+                    .findByTeamIdAndInviteTypeAndInviteStatus(teamId, "REQUEST", "PENDING");
+
             for (HackathonTeamInviteEntity req : joinRequests) {
-                userRepository.findById(req.getInvitedUserId()).ifPresent(u -> requesterMap.put(req.getInvitedUserId(), u));
+                userRepository.findById(req.getInvitedUserId())
+                        .ifPresent(u -> requesterMap.put(req.getInvitedUserId(), u));
             }
+
         } else {
-            // Try to find pending invite by userId
+
             pendingInvite = hackathonTeamInviteRepository
-                    .findFirstByHackathonIdAndInvitedUserIdAndInviteStatus(hackathonId, user.getUserId(), "PENDING")
+                    .findFirstByHackathonIdAndInvitedUserIdAndInviteStatus(
+                            hackathonId, user.getUserId(), "PENDING")
                     .orElse(null);
-            // If not found, try by email
+
             if (pendingInvite == null) {
                 pendingInvite = hackathonTeamInviteRepository
-                        .findFirstByHackathonIdAndInvitedEmailAndInviteStatus(hackathonId, user.getEmail(), "PENDING")
+                        .findFirstByHackathonIdAndInvitedEmailAndInviteStatus(
+                                hackathonId, user.getEmail(), "PENDING")
                         .orElse(null);
+
                 if (pendingInvite != null && pendingInvite.getInvitedUserId() == null) {
                     pendingInvite.setInvitedUserId(user.getUserId());
                     hackathonTeamInviteRepository.save(pendingInvite);
                 }
             }
+
             if (pendingInvite != null && pendingInvite.getTeamId() != null) {
-                pendingInviteTeam = hackathonTeamRepository.findById(pendingInvite.getTeamId()).orElse(null);
+                pendingInviteTeam = hackathonTeamRepository
+                        .findById(pendingInvite.getTeamId())
+                        .orElse(null);
             }
 
             myPendingRequests = hackathonTeamInviteRepository
-                    .findByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteType(hackathonId, user.getUserId(), "PENDING", "REQUEST");
+                    .findByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteType(
+                            hackathonId, user.getUserId(), "PENDING", "REQUEST");
         }
 
-        // Build available teams for joining
-        List<HackathonTeamEntity> availableTeams = hackathonTeamRepository.findByHackathonId(hackathonId);
-        availableTeams = availableTeams.stream().filter(t -> {
-            long size = hackathonTeamMemberRepository.countByTeamId(t.getHackathonTeamId());
-            return opHackathon.get().getMaxTeamSize() == null || size < opHackathon.get().getMaxTeamSize();
-        }).collect(Collectors.toList());
+        // 📌 Available Teams
+        List<HackathonTeamEntity> availableTeams =
+                hackathonTeamRepository.findByHackathonId(hackathonId);
+
+        availableTeams = availableTeams.stream()
+                .filter(t -> {
+                    long size = hackathonTeamMemberRepository.countByTeamId(t.getHackathonTeamId());
+                    return opHackathon.get().getMaxTeamSize() == null ||
+                            size < opHackathon.get().getMaxTeamSize();
+                })
+                .collect(Collectors.toList());
 
         if (hasTeam) {
             Integer myTeamId = teamId;
-            availableTeams = availableTeams.stream().filter(t -> !t.getHackathonTeamId().equals(myTeamId)).collect(Collectors.toList());
+            availableTeams = availableTeams.stream()
+                    .filter(t -> !t.getHackathonTeamId().equals(myTeamId))
+                    .collect(Collectors.toList());
         } else {
-            Set<Integer> teamsWithPendingRequest = myPendingRequests.stream().map(HackathonTeamInviteEntity::getTeamId).collect(Collectors.toSet());
-            availableTeams = availableTeams.stream().filter(t -> !teamsWithPendingRequest.contains(t.getHackathonTeamId())).collect(Collectors.toList());
+            Set<Integer> teamsWithPendingRequest =
+                    myPendingRequests.stream()
+                            .map(HackathonTeamInviteEntity::getTeamId)
+                            .collect(Collectors.toSet());
+
+            availableTeams = availableTeams.stream()
+                    .filter(t -> !teamsWithPendingRequest.contains(t.getHackathonTeamId()))
+                    .collect(Collectors.toList());
         }
 
+        // 📦 Model Attributes
         model.addAttribute("hackathon", opHackathon.get());
         model.addAttribute("teamId", teamId);
         model.addAttribute("teamMembers", teamMembers);
@@ -545,16 +622,17 @@ public class ParticipantController {
         model.addAttribute("availableTeams", availableTeams);
         model.addAttribute("teamSizeCount", hasTeam ? teamMembers.size() : 0);
         model.addAttribute("teamMaxSize", opHackathon.get().getMaxTeamSize());
-        model.addAttribute("inviteAllowed", opHackathon.get().getRegistrationEndDate() == null
-                || !LocalDate.now().isAfter(opHackathon.get().getRegistrationEndDate()));
+        model.addAttribute("inviteAllowed",
+                opHackathon.get().getRegistrationEndDate() == null ||
+                        !LocalDate.now().isAfter(opHackathon.get().getRegistrationEndDate()));
         model.addAttribute("success", success);
         model.addAttribute("error", error);
         model.addAttribute("joinRequests", joinRequests);
         model.addAttribute("requesterMap", requesterMap);
         model.addAttribute("myPendingRequests", myPendingRequests);
+
         return "participant/ManageTeam";
     }
-
     // ==================== TEAM ACTIONS ====================
 
     @PostMapping("participant/hackathon/{hackathonId}/team/create")
@@ -751,7 +829,7 @@ public class ParticipantController {
         }
 
         Optional<UserEntity> opInvited = userRepository.findById(invitedUserId);
-        if (opInvited.isEmpty() || !"PARTICIPANT".equals(opInvited.get().getRole())) {
+        if (opInvited.isEmpty() || !"PARTICIPANT".equalsIgnoreCase(opInvited.get().getRole())) {
             return "redirect:/participant/hackathon/" + hackathonId + "/team?error=invalidUser";
         }
         if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, invitedUserId)) {

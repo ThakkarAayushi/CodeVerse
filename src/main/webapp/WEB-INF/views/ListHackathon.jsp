@@ -451,6 +451,113 @@
             justify-content: center;
             padding: 12px 0;
         }
+          /* Header (fixed) */
+        .top-header {
+            background: white;
+            padding: 16px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border-bottom: 1px solid #e9eef2;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #475569;
+            cursor: pointer;
+        }
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+          /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            .main-content {
+                width: 100%;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .top-header {
+                padding: 16px 20px;
+            }
+            .content-area {
+                padding: 20px;
+            }
+        }
+        /* 1. Ensure the app-wrapper takes full height and prevents body scroll */
+html, body {
+    height: 100%;
+    overflow: hidden; /* Prevent double scrollbars */
+}
+
+.app-wrapper {
+    display: flex;
+    height: 100vh; /* Lock height to viewport */
+    width: 100vw;
+}
+
+/* 2. Make Sidebar height 100% and non-scrollable (unless menu is too long) */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    z-index: 1001;
+    overflow-y: auto; /* Scrollable menu if items exceed screen height */
+}
+
+/* 3. Main Content should be a flex column that handles its own scroll */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Header stays top, only content-area scrolls */
+}
+
+/* 4. Fix the Header to the top */
+.top-header {
+    flex-shrink: 0; /* Don't let header squish */
+    background: white;
+    padding: 16px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    border-bottom: 1px solid #e9eef2;
+    z-index: 1000;
+}
+
+/* 5. This is the only part that should scroll */
+.content-area {
+    padding: 30px;
+    flex: 1;
+    overflow-y: auto; /* Enable scrolling for the table and content only */
+    background: #f8fafc;
+}
     </style>
 </head>
 <body>
@@ -471,7 +578,7 @@
                 <div class="card-header">
                     <h3><i class="fas fa-calendar-alt"></i> Hackathon Events List</h3>
                     <!-- If you have a create button, uncomment and adjust -->
-                    <!--a href="create-hackathon" class="add-btn"><i class="fas fa-plus"></i> Launch New</a-->
+                    <a href="create-hackathon" class="add-btn"><i class="fas fa-plus"></i> Launch New</a>
                 </div>
                 <div class="responsive-table">
                     <table>

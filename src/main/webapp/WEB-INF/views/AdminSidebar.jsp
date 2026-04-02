@@ -266,9 +266,9 @@
       <li class="submenu-item"><a href="/newJudge"><i class="fas fa-user-plus"></i> Invite Judge</a></li>
       <li class="submenu-item"><a href="/listJudge"><i class="fas fa-list"></i> List Judges</a></li>
     </ul>
-    
+  
     <!-- Category with submenu -->
-    <div class="menu-item" id="categoryMenu">
+    <!-- <div class="menu-item" id="categoryMenu">
       <i class="fas fa-folder"></i>
       <span>Category</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
@@ -276,21 +276,9 @@
     <ul class="submenu" id="categorySubmenu">
       <li class="submenu-item"><a href="newCategory"><i class="fas fa-plus-circle"></i> Add Category</a></li>
       <li class="submenu-item"><a href="listCategory"><i class="fas fa-list"></i> List Categories</a></li>
-    </ul>
+    </ul> -->
 
-    <!-- Organizers (direct link) -->
-    <div class="menu-item">
-      <i class="fas fa-user-tie"></i>
-      <span>Organizers</span>
-      <a href="/organizers" style="position:absolute; inset:0;"></a>
-    </div>
-
-    <!-- Approvals -->
-    <div class="menu-item">
-      <i class="fas fa-check-circle"></i>
-      <span>Approvals</span>
-      <a href="/approvals" style="position:absolute; inset:0;"></a>
-    </div>
+ 
 
     <!-- Settings -->
     <div class="menu-item">
@@ -328,7 +316,7 @@ menuItems.forEach(item => {
   const userMenu = document.getElementById('userMenu');
   const judgeMenu = document.getElementById('judgeMenu');
   const userSubmenu = document.getElementById('userSubmenu');
-  const categoryMenu = document.getElementById('categoryMenu');
+//  const categoryMenu = document.getElementById('categoryMenu');
   const categorySubmenu = document.getElementById('categorySubmenu');
 
   function setupSubmenu(menu, submenu) {
@@ -343,7 +331,7 @@ menuItems.forEach(item => {
 
   setupSubmenu(hackathonMenu, hackathonSubmenu);
   setupSubmenu(userMenu, userSubmenu);
-  setupSubmenu(categoryMenu, categorySubmenu);
+//  setupSubmenu(categoryMenu, categorySubmenu);
   setupSubmenu(judgeMenu,judgeSubmenu)
 
   const currentPath = window.location.pathname;

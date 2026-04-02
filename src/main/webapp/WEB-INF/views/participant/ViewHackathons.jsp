@@ -172,7 +172,86 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </c:if>
+    <div class="join-panel">
+				<div class="join-info">
+					<c:choose>
+						<c:when test="${alreadyRegistered}">
+							You are already part of this hackathon.
+						</c:when>
+						<c:when test="${not empty pendingInvite}">
+							You have a pending team invitation for this hackathon.
+						</c:when>
+						<c:when test="${registrationOpen}">
+							Registration is open. Join now to participate.
+						</c:when>
+						<c:otherwise>
+							You can join only during the registration period.
+						</c:otherwise>
+					</c:choose>
+				</div>
+				<c:choose>
+					<c:when test="${alreadyRegistered}">
+						<a href="/participant/hackathon/${hackathon.hackathonId}/team" class="join-btn">Manage Team</a>
+					</c:when>
+					<c:when test="${not empty pendingInvite}">
+						<div class="btn-row">
+							<form action="/participant/hackathon/${hackathon.hackathonId}/invite/${pendingInvite.hackathonTeamInviteId}/accept" method="post">
+								<button type="submit" class="join-btn">Accept Invitation</button>
+							</form>
+							<form action="/participant/hackathon/${hackathon.hackathonId}/invite/${pendingInvite.hackathonTeamInviteId}/reject" method="post">
+								<button type="submit" class="join-btn danger-btn">Reject Invitation</button>
+							</form>
+						</div>
+					</c:when>
+					<c:when test="${canJoin}">
+						<form action="/participant/hackathon/${hackathon.hackathonId}/join" method="post">
+							<button type="submit" class="join-btn">Join Hackathon</button>
+						</form>
+					</c:when>
+					<c:otherwise>
+						<button type="button" class="join-btn" disabled>Join Hackathon</button>
+					</c:otherwise>
+				</c:choose>
+			</div>
 
+    
+ <!-- Pending Join Requests (for participant) -->
+            <c:if test="${not hasTeam and not empty myPendingRequests}">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5><i class="fas fa-clock"></i> Your Pending Join Requests</h5>
+                    </div>
+                    <div class="card-body-custom p-0">
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr><th>Team</th><th>Status</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${myPendingRequests}" var="req">
+                                        <c:set var="teamNameForReq" value="" />
+                                        <c:forEach items="${availableTeams}" var="t">
+                                            <c:if test="${t.hackathonTeamId == req.teamId}">
+                                                <c:set var="teamNameForReq" value="${t.teamName}" />
+                                            </c:if>
+                                        </c:forEach>
+                                        <tr>
+                                            <td>${teamNameForReq}</td>
+                                            <td><span class="status-badge status-pending">PENDING</span></td>
+                                            <td>
+                                                <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/cancel" method="post">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+ 
     <div class="row">
         <!-- Main Details -->
         <div class="col-lg-8">

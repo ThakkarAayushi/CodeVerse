@@ -93,7 +93,7 @@ public class JudgeController {
 				totalHackathon++;
 				if ("UPCOMING".equalsIgnoreCase(h.getStatus())) {
 					upcomingHackathon++;
-				} else if ("ONGOING".equalsIgnoreCase(h.getStatus())) {
+				} else if ("ONGOING".equalsIgnoreCase(h.getStatus()) || "LIVE".equalsIgnoreCase(h.getStatus())) {
 					ongoingHackathon++;
 					ongoingHackathonList.add(h);
 				}

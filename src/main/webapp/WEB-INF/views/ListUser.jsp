@@ -366,6 +366,35 @@
             background: #f1f5f9;
             color: #ef4444;
         }
+        /* 3. Main Content should be a flex column that handles its own scroll */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Header stays top, only content-area scrolls */
+}
+
+/* 4. Fix the Header to the top */
+.top-header {
+    flex-shrink: 0; /* Don't let header squish */
+    background: white;
+    padding: 16px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    border-bottom: 1px solid #e9eef2;
+    z-index: 1000;
+}
+
+/* 5. This is the only part that should scroll */
+.content-area {
+    padding: 30px;
+    flex: 1;
+    overflow-y: auto; /* Enable scrolling for the table and content only */
+    background: #f8fafc;
+}
     </style>
 </head>
 <body>
@@ -386,7 +415,7 @@
                 <div class="table-card">
                     <div class="card-header">
                         <h3><i class="fas fa-users"></i> Platform User Directory</h3>
-                        <a href="register" class="add-btn"><i class="fas fa-user-plus"></i> Register User</a>
+                        <a href="register" class="add-btn"><i class="fas fa-user-plus"></i> Add User</a>
                     </div>
                     <div class="responsive-table">
                         <table>

@@ -211,13 +211,7 @@
       </a>
     </div>
 
-    <!-- My Team -->
-    <div class="menu-item">
-      <a href="/participant/my-team">
-        <i class="fas fa-users"></i>
-        <span>My Team</span>
-      </a>
-    </div>
+   
 
     <!-- Profile -->
     <div class="menu-item">

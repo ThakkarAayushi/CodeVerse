@@ -209,7 +209,7 @@
     </div>
 
     <!-- Hackathons (Assigned) -->
-    <div class="menu-item" id="hackathonMenu">
+    <!-- <div class="menu-item" id="hackathonMenu">
       <i class="fas fa-calendar-alt"></i>
       <span>Hackathons</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
@@ -217,10 +217,10 @@
     <ul class="submenu" id="hackathonSubmenu">
       <li class="submenu-item"><a href="/judge/hackathons/assigned"><i class="fas fa-list"></i> Assigned Hackathons</a></li>
       <li class="submenu-item"><a href="/judge/hackathons/upcoming"><i class="fas fa-clock"></i> Upcoming</a></li>
-    </ul>
+    </ul> -->
 
     <!-- Submissions -->
-    <div class="menu-item" id="submissionMenu">
+    <!-- <div class="menu-item" id="submissionMenu">
       <i class="fas fa-file-alt"></i>
       <span>Submissions</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
@@ -228,7 +228,7 @@
     <ul class="submenu" id="submissionSubmenu">
       <li class="submenu-item"><a href="/judge/submissions/pending"><i class="fas fa-hourglass-half"></i> Pending Review</a></li>
       <li class="submenu-item"><a href="/judge/submissions/reviewed"><i class="fas fa-check-circle"></i> Reviewed</a></li>
-    </ul>
+    </ul> -->
 
     <!-- Profile -->
     <div class="menu-item">

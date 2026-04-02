@@ -333,7 +333,7 @@
         <!-- Left column -->
         <div class="col-lg-8">
             <!-- Pending Invitation Card (if any) -->
-         <%--  <c:if test="${not hasTeam and not empty pendingInvite}">
+         <c:if test="${not hasTeam and not empty pendingInvite}">
     <div class="card-custom">
         <div class="card-header-custom">
             <h5><i class="fas fa-envelope-open-text"></i> Pending Team Invitation</h5>
@@ -353,7 +353,7 @@
             </div>
         </div>
     </div>
-</c:if>> --%>
+</c:if>
               <!-- Join Requests (for leader) -->
            <c:if test="${hasTeam and isTeamLeader and not empty joinRequests}">
     <div class="card-custom">
@@ -443,8 +443,7 @@
                     </div>
                 </div>
             </c:if>
-			
-			<%-- <c:if test="${pendingInvite != null}">
+	<%-- 	<c:if test="${pendingInvite != null}">
     <div class="alert alert-info">
         You have been invited to join team:
         <b>${pendingInviteTeam.teamName}</b>
@@ -616,7 +615,7 @@
                         <h6>External User</h6>
                         <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite-external" method="post">
                             <input type="email" name="externalEmail" class="form-control" placeholder="name@example.com" required>
-                            <input type="text" name="roleTitle" class="form-control mt-2" placeholder="Role (optional)">
+                            <input type="text" name="roleTitle" class="form-control mt-2" placeholder="Memeber">
                             <button type="submit" class="btn btn-primary mt-2 w-100">Send External Invite</button>
                         </form>
                     </div>

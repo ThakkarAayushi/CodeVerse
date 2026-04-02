@@ -337,9 +337,9 @@
             <div class="table-card">
                 <div class="card-header-custom">
                     <h3><i class="fas fa-gavel"></i> Judge List</h3>
-                    <a href="newJudge" class="btn btn-primary" style="padding: 8px 20px;">
+                   <!--  <a href="newJudge" class="btn btn-primary" style="padding: 8px 20px;">
                         <i class="fas fa-user-plus"></i> Invite New Judge
-                    </a>
+                    </a> -->
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover">
