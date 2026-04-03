@@ -62,5 +62,8 @@ public interface HackathonTeamInviteRepository extends JpaRepository<HackathonTe
 
 	Optional<HackathonTeamInviteEntity> findFirstByHackathonIdAndInvitedEmailAndInviteStatus(
 		    Integer hackathonId, String invitedEmail, String inviteStatus);
+	
+	List<HackathonTeamInviteEntity> findByInvitedUserIdAndInviteStatus(Integer invitedUserId, String inviteStatus);
+	List<HackathonTeamInviteEntity> findByInvitedEmailAndInviteStatus(String invitedEmail, String inviteStatus);
 
 }

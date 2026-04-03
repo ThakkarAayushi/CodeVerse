@@ -172,47 +172,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </c:if>
-    <div class="join-panel">
-				<div class="join-info">
-					<c:choose>
-						<c:when test="${alreadyRegistered}">
-							You are already part of this hackathon.
-						</c:when>
-						<c:when test="${not empty pendingInvite}">
-							You have a pending team invitation for this hackathon.
-						</c:when>
-						<c:when test="${registrationOpen}">
-							Registration is open. Join now to participate.
-						</c:when>
-						<c:otherwise>
-							You can join only during the registration period.
-						</c:otherwise>
-					</c:choose>
-				</div>
-				<c:choose>
-					<c:when test="${alreadyRegistered}">
-						<a href="/participant/hackathon/${hackathon.hackathonId}/team" class="join-btn">Manage Team</a>
-					</c:when>
-					<c:when test="${not empty pendingInvite}">
-						<div class="btn-row">
-							<form action="/participant/hackathon/${hackathon.hackathonId}/invite/${pendingInvite.hackathonTeamInviteId}/accept" method="post">
-								<button type="submit" class="join-btn">Accept Invitation</button>
-							</form>
-							<form action="/participant/hackathon/${hackathon.hackathonId}/invite/${pendingInvite.hackathonTeamInviteId}/reject" method="post">
-								<button type="submit" class="join-btn danger-btn">Reject Invitation</button>
-							</form>
-						</div>
-					</c:when>
-					<c:when test="${canJoin}">
-						<form action="/participant/hackathon/${hackathon.hackathonId}/join" method="post">
-							<button type="submit" class="join-btn">Join Hackathon</button>
-						</form>
-					</c:when>
-					<c:otherwise>
-						<button type="button" class="join-btn" disabled>Join Hackathon</button>
-					</c:otherwise>
-				</c:choose>
-			</div>
+   
 
     
  <!-- Pending Join Requests (for participant) -->

@@ -366,8 +366,49 @@
                 <span class="badge bg-primary fs-6" id="resultsCount">${hackathons.size()} Events Found</span>
             </div>
 
-            
-
+  <!-- Pending Team Invitations Section -->
+<c:if test="${not empty pendingInvites}">
+    <div class="mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="fas fa-envelope-open-text fs-4 text-warning"></i>
+            <h4 class="fw-semibold m-0">Pending Team Invitations</h4>
+            <span class="badge bg-warning text-dark ms-2">${fn:length(pendingInvites)}</span>
+        </div>
+        <div class="row g-4">
+            <c:forEach items="${pendingInvites}" var="inv">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card hackathon-card h-100 border-0 shadow-sm position-relative">
+                        <span class="badge badge-status bg-warning text-dark">
+                            Pending
+                        </span>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-primary fw-bold mb-2">${inv.hackathon.title}</h5>
+                            <div class="mb-2">
+                                <small class="text-muted"><i class="fas fa-users me-1"></i> Team: <strong>${inv.team.teamName}</strong></small>
+                            </div>
+                            <div class="mb-3">
+                                <small class="text-muted"><i class="fas fa-calendar-alt me-1"></i> Registration closes: ${inv.hackathon.registrationEndDate}</small>
+                            </div>
+                            <div class="mt-auto d-flex gap-2">
+                                <form action="${pageContext.request.contextPath}/participant/hackathon/${inv.hackathon.hackathonId}/team/invite/${inv.invite.hackathonTeamInviteId}/accept" method="post" class="flex-grow-1">
+                                    <button type="submit" class="btn btn-success w-100 rounded-pill">
+                                        <i class="fas fa-check me-1"></i> Accept
+                                    </button>
+                                </form>
+                                <form action="${pageContext.request.contextPath}/participant/hackathon/${inv.hackathon.hackathonId}/team/invite/${inv.invite.hackathonTeamInviteId}/reject" method="post" class="flex-grow-1">
+                                    <button type="submit" class="btn btn-outline-danger w-100 rounded-pill">
+                                        <i class="fas fa-times me-1"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+    </div>
+    <hr class="my-4">
+</c:if>
             <!-- Filter Panel -->
             <div class="filter-panel">
                 <div class="row g-3 align-items-end">
@@ -409,7 +450,7 @@
                     </div>
 
                     <!-- Eligibility -->
-                    <div class="col-md-2">
+                    <!-- <div class="col-md-2">
                         <div class="filter-label">Eligibility</div>
                         <select id="eligibilityFilter" class="form-select form-select-sm">
                             <option value="">Everyone</option>
@@ -418,7 +459,17 @@
                             <option value="3">College Student</option>
                             <option value="4">School Student</option>
                         </select>
-                    </div>
+                    </div> -->
+                    <!-- Eligibility -->
+					<div class="col-md-2">
+					    <div class="filter-label">Eligibility</div>
+					    <select id="eligibilityFilter" class="form-select form-select-sm">
+					        <option value="">Everyone</option>
+					        <c:forEach items="${eligibilityOptions}" var="opt">
+					            <option value="${opt}">${opt}</option>
+					        </c:forEach>
+					    </select>
+					</div>
 
                     <!-- Sort -->
                     <div class="col-md-2">

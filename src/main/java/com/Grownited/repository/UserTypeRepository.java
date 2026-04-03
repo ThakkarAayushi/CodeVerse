@@ -7,5 +7,5 @@ import com.Grownited.entity.UserTypeEntity;
 
 @Repository
 public interface UserTypeRepository extends JpaRepository<UserTypeEntity, Integer> {
-
+	
 }

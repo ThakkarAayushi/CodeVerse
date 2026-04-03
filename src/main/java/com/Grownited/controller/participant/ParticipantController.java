@@ -65,10 +65,52 @@ public class ParticipantController {
     // ==================== PARTICIPANT DASHBOARD ====================
 
     @GetMapping("/participant/home")
-    public String participantDashboard(Model model) {
-        List<HackathonEntity> hackathons = hackathonRepository.findAll();
-        model.addAttribute("hackathons", hackathons);
-        model.addAttribute("today", LocalDate.now());
+    public String participantDashboard(Model model,HttpSession session) {
+    	   List<HackathonEntity> hackathons = hackathonRepository.findAll();
+    	    model.addAttribute("hackathons", hackathons);
+    	    model.addAttribute("today", LocalDate.now());
+    	    
+    	    // Fetch distinct userType values for eligibility filter
+    	    List<String> eligibilityOptions = hackathonRepository.findDistinctUserType();
+    	    model.addAttribute("eligibilityOptions", eligibilityOptions);
+    	    UserEntity user = (UserEntity) session.getAttribute("user");
+    	    List<PendingInviteDto> pendingInvites = new ArrayList<>();
+
+    	    if (user != null) {
+    	        // 1. Find invites by userId (internal invites)
+    	        List<HackathonTeamInviteEntity> invites = hackathonTeamInviteRepository
+    	                .findByInvitedUserIdAndInviteStatus(user.getUserId(), "PENDING");
+
+    	        // 2. Find invites by email (external invites)
+    	        List<HackathonTeamInviteEntity> emailInvites = hackathonTeamInviteRepository
+    	                .findByInvitedEmailAndInviteStatus(user.getEmail(), "PENDING");
+
+    	        for (HackathonTeamInviteEntity inv : emailInvites) {
+    	            if (inv.getInvitedUserId() == null) {
+    	                inv.setInvitedUserId(user.getUserId());
+    	                hackathonTeamInviteRepository.save(inv);
+    	            }
+    	            if (!invites.contains(inv)) invites.add(inv);
+    	        }
+
+    	        // 3. Build DTOs for display
+    	        for (HackathonTeamInviteEntity inv : invites) {
+    	            if ("REQUEST".equals(inv.getInviteType())) continue; // skip join requests
+
+    	            Optional<HackathonEntity> hOpt = hackathonRepository.findById(inv.getHackathonId());
+    	            Optional<HackathonTeamEntity> tOpt = hackathonTeamRepository.findById(inv.getTeamId());
+
+    	            if (hOpt.isPresent() && tOpt.isPresent()) {
+    	                PendingInviteDto dto = new PendingInviteDto();
+    	                dto.setInvite(inv);
+    	                dto.setHackathon(hOpt.get());
+    	                dto.setTeam(tOpt.get());
+    	                pendingInvites.add(dto);
+    	            }
+    	        }
+    	    }
+
+    	    model.addAttribute("pendingInvites", pendingInvites);
         return "participant/Home";
     }
 
@@ -1233,5 +1275,19 @@ public class ParticipantController {
         public void setAverageScore(double averageScore) { this.averageScore = averageScore; }
         public int getRank() { return rank; }
         public void setRank(int rank) { this.rank = rank; }
+    }
+    
+    public static class PendingInviteDto {
+        private HackathonTeamInviteEntity invite;
+        private HackathonEntity hackathon;
+        private HackathonTeamEntity team;
+
+        // getters & setters
+        public HackathonTeamInviteEntity getInvite() { return invite; }
+        public void setInvite(HackathonTeamInviteEntity invite) { this.invite = invite; }
+        public HackathonEntity getHackathon() { return hackathon; }
+        public void setHackathon(HackathonEntity hackathon) { this.hackathon = hackathon; }
+        public HackathonTeamEntity getTeam() { return team; }
+        public void setTeam(HackathonTeamEntity team) { this.team = team; }
     }
 }

@@ -22,6 +22,9 @@ import java.util.List;
 public interface HackathonRepository extends JpaRepository<HackathonEntity, Integer> {
      
 	    long countByStatus(String status);
+
+	    @Query("SELECT DISTINCT h.userType FROM HackathonEntity h WHERE h.userType IS NOT NULL")
+		List<String> findDistinctUserType();
 	    
 	    
 	 

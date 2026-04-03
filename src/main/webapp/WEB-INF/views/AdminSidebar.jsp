@@ -252,7 +252,7 @@
       <i class="fas fa-chevron-left arrow-icon"></i>
     </div>
     <ul class="submenu" id="userSubmenu">
-      <li class="submenu-item"><a href="/register"><i class="fas fa-plus-circle"></i> Add User</a></li>
+     <!--  <li class="submenu-item"><a href="/register"><i class="fas fa-plus-circle"></i> Add User</a></li> -->
       <li class="submenu-item"><a href="newUserType"><i class="fas fa-tag"></i> Add User Type</a></li>
       <li class="submenu-item"><a href="listUser"><i class="fas fa-list"></i> List Users</a></li>
     </ul>
