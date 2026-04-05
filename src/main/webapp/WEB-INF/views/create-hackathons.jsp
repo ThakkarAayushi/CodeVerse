@@ -575,7 +575,7 @@
                                     <span class="input-group-icon"><i class="fas fa-circle-check"></i></span>
                                     <select name="status" required>
                                         <option value="UPCOMING">Upcoming</option>
-                                        <option value="ONGOING">Ongoing</option>
+                                        <option value="LIVE">LIVE</option>
                                         <option value="COMPLETED">Completed</option>
                                     </select>
                                 </div>

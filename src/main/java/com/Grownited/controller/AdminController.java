@@ -51,6 +51,8 @@ public class AdminController {
 		    long totalHackathon = hackathonRepository.count();
 		    long upcomingHackathon = hackathonRepository.countByStatus("UPCOMING");
 		    long liveHackathon = hackathonRepository.countByStatus("LIVE");
+		    long completedHackathon = hackathonRepository.countByStatus("COMPLETED");
+		    long expiredHackathon = hackathonRepository.countByStatus("EXPIRED");
 		    long totalUsers = userRepository.count();	
 		    long totalParticipants = userRepository.countByRole("participant");
 		    long totalJudges = userRepository.countByRole("judge");
@@ -58,7 +60,9 @@ public class AdminController {
 		     
 	        model.addAttribute("totalHackathon", totalHackathon);
 	        model.addAttribute("upcomingHackathon", upcomingHackathon);
+	        model.addAttribute("completedHackathon",completedHackathon);
 	        model.addAttribute("liveHackathon", liveHackathon);
+	        model.addAttribute("expiredHackathon",expiredHackathon);
 	        model.addAttribute("totalUsers",totalUsers);
 	        model.addAttribute("totalParticipants",totalParticipants);
 	        model.addAttribute("totalJudges",totalJudges);

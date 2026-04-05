@@ -133,6 +133,7 @@ public class HackathonController {
 			    }
 			//  hackathonEntity.setLeaderboardPublished("on".equals(leaderboardPublishedParam));
 			  hackathonEntity.setRegistrationFee(registrationFee);  
+			  hackathonService.updateHackathonStatus(hackathonEntity);
 			hackathonRepository.save(hackathonEntity);
 			Integer hackathonId = hackathonEntity.getHackathonId();
 
@@ -146,20 +147,41 @@ public class HackathonController {
 		}
 
 	    @GetMapping("/listHackathon")
-	    public String listHackathon(@RequestParam(defaultValue = "1") int page,Model model)
+	    public String listHackathon(@RequestParam(defaultValue = "1") int page,Model model,@RequestParam(required = false) String search,
+	            @RequestParam(required = false) String status,
+	            @RequestParam(required = false) String payment,
+	            @RequestParam(required = false) String eventType)
 	    {
 	    	 
 	    	/*List<HackathonEntity> allHackathons = hackathonRepository.findAll();
 	    	model.addAttribute("allHackathons" , allHackathons);
 	    	return "ListHackathon";*/
-	    	   int pageSize = 10;
-
+			/*
+			 * int pageSize = 10;
+			 * 
+			 * Pageable pageable = PageRequest.of(page - 1, pageSize); Page<HackathonEntity>
+			 * hackathonPage = hackathonRepository.findAll(pageable);
+			 * 
+			 * model.addAttribute("allHackathons", hackathonPage.getContent());
+			 * model.addAttribute("currentPage", page); model.addAttribute("totalPages",
+			 * hackathonPage.getTotalPages());
+			 */
+	    	 int pageSize = 10;
 	    	    Pageable pageable = PageRequest.of(page - 1, pageSize);
-	    	    Page<HackathonEntity> hackathonPage = hackathonRepository.findAll(pageable);
+
+	    	    // Apply filters (search term is used on title)
+	    	    Page<HackathonEntity> hackathonPage = hackathonRepository.findAllWithFilters(
+	    	            search, status, payment, eventType, pageable);
 
 	    	    model.addAttribute("allHackathons", hackathonPage.getContent());
 	    	    model.addAttribute("currentPage", page);
 	    	    model.addAttribute("totalPages", hackathonPage.getTotalPages());
+
+	    	    // Preserve filter values in the model to populate the inputs
+	    	    model.addAttribute("searchValue", search);
+	    	    model.addAttribute("statusValue", status);
+	    	    model.addAttribute("paymentValue", payment);
+	    	    model.addAttribute("eventTypeValue", eventType);
 
 	    	    return "ListHackathon";
 	    	
@@ -286,6 +308,7 @@ public class HackathonController {
 					hackathonEntity.setUserId(currentLogInUser.getUserId());
 				}
 			}
+			 if (hackathonPoster != null && !hackathonPoster.isEmpty()) {
 			try {
     			Map  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
     			String hackathonPosterURL = map.get("secure_url").toString();
@@ -295,13 +318,20 @@ public class HackathonController {
     		} catch (IOException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();
+    			 existing.ifPresent(eh -> hackathonEntity.setHackathonPosterURL(eh.getHackathonPosterURL()));
     		}
+			 }
+			 else {
+			        // No new file: preserve the existing poster URL
+			        existing.ifPresent(eh -> hackathonEntity.setHackathonPosterURL(eh.getHackathonPosterURL()));
+			    }
 		    if (userTypeId != null) {
 		        Optional<UserTypeEntity> ut = userTypeRepository.findById(userTypeId);
 		        ut.ifPresent(u -> hackathonEntity.setUserType(u.getUserType()));
 		    }
 		    
 		 //   hackathonEntity.setLeaderboardPublished("on".equals(leaderboardPublishedParam));
+		    hackathonService.updateHackathonStatus(hackathonEntity);
 			hackathonRepository.save(hackathonEntity);
 
 			Integer hackathonId = hackathonEntity.getHackathonId();

@@ -491,19 +491,24 @@
 
 <script>
     // 1. Hackathon Status (Pie)
+    // 1. Hackathon Status Pie Chart (Upcoming, Live, Completed, Expired)
     new Chart(document.getElementById('statusChart'), {
         type: 'pie',
         data: {
-            labels: ['Upcoming', 'Live', 'Expired'],
+            labels: ['Upcoming', 'Live', 'Completed', 'Expired'],
             datasets: [{
-                data: [${upcomingHackathon}, ${liveHackathon}, ${totalHackathon - (upcomingHackathon + liveHackathon)}],
-                backgroundColor: ['#fbbf24', '#10b981', '#94a3b8'],
+                data: [
+                    ${upcomingHackathon != null ? upcomingHackathon : 0},
+                    ${liveHackathon != null ? liveHackathon : 0},
+                    ${completedHackathon != null ? completedHackathon : 0},
+                    ${expiredHackathon != null ? expiredHackathon : 0}
+                ],
+                backgroundColor: ['#fbbf24', '#10b981', '#3b82f6', '#94a3b8'],
                 borderWidth: 0
             }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
-
     // 2. User Roles
     new Chart(document.getElementById('roleChart'), {
         type: 'bar',

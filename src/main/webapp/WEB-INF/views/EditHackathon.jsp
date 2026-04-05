@@ -572,16 +572,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Status</label>
-                                <div class="input-group">
-                                    <span class="input-group-icon"><i class="fas fa-circle-check"></i></span>
-                                    <select name="status" required>
-                                        <option value="UPCOMING" ${hackathon.status == 'UPCOMING' ? 'selected' : ''}>Upcoming</option>
-                                        <option value="LIVE" ${hackathon.status == 'LIVE' ? 'selected' : ''}>Live</option>
-                                        <option value="COMPLETED" ${hackathon.status == 'COMPLETED' ? 'selected' : ''}>Completed</option>
-                                    </select>
-                                </div>
-                            </div>
+						    <label>Status</label>
+						    <div class="input-group">
+						        <span class="input-group-icon"><i class="fas fa-circle-check"></i></span>
+						        <select name="status" required>
+						            <option value="UPCOMING" ${hackathon.status == 'UPCOMING' ? 'selected' : ''}>Upcoming</option>
+						            <option value="LIVE" ${hackathon.status == 'LIVE' ? 'selected' : ''}>Live</option>
+						            <option value="COMPLETED" ${hackathon.status == 'COMPLETED' ? 'selected' : ''}>Completed</option>
+						            <option value="EXPIRED" ${hackathon.status == 'EXPIRED' ? 'selected' : ''}>Expired</option>
+						        </select>
+						    </div>
+						</div>
                             <div class="form-group">
                                 <label>Event Type</label>
                                 <div class="input-group">

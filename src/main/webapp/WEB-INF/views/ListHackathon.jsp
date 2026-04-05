@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -328,6 +329,72 @@
             padding: 30px;
         }
 
+        /* ========== FILTER PANEL ========== */
+        .filter-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #e9eef2;
+        }
+        .filter-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        .filter-item {
+            flex: 1;
+            min-width: 160px;
+        }
+        .filter-label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            display: block;
+            color: #475569;
+        }
+        .filter-input, .filter-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            transition: 0.2s;
+        }
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        .reset-btn {
+            background: #f1f5f9;
+            border: none;
+            color: #475569;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            height: 42px;
+        }
+        .reset-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        @media (max-width: 768px) {
+            .filter-item {
+                min-width: 100%;
+            }
+        }
+
         /* ========== TABLE CARD ========== */
         .table-card {
             background: white;
@@ -375,7 +442,6 @@
             transition: 0.2s;
             font-size: 0.9rem;
         }
-
         .add-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(59,130,246,0.3);
@@ -462,20 +528,21 @@
             font-weight: 600;
             display: inline-block;
         }
-
         .status-live {
             background: #d1fae5;
             color: #065f46;
         }
-
         .status-expired {
             background: #fee2e2;
             color: #991b1b;
         }
-
         .status-upcoming {
             background: #fef9c3;
             color: #854d0e;
+        }
+        .status-completed {
+            background: #e0e7ff;
+            color: #3730a3;
         }
 
         /* Action buttons */
@@ -496,27 +563,21 @@
             transition: 0.2s;
             color: white;
         }
-
         .btn-edit {
             background: #3b82f6;
         }
-
         .btn-edit:hover {
             background: #2563eb;
         }
-
         .btn-delete {
             background: #ef4444;
         }
-
         .btn-delete:hover {
             background: #dc2626;
         }
-
         .btn-judge {
             background: #10b981;
         }
-
         .btn-judge:hover {
             background: #059669;
         }
@@ -545,18 +606,15 @@
             align-items: center;
             gap: 6px;
         }
-
         .page-link:hover:not(.disabled) {
             background: #f1f5f9;
             border-color: #cbd5e1;
         }
-
         .page-link.disabled {
             opacity: 0.5;
             cursor: not-allowed;
             pointer-events: none;
         }
-
         .current-page {
             background: skyblue;
             color: #1e293b;
@@ -622,17 +680,55 @@
                 <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">Manage Hackathons</h1>
             </div>
 
+            <!-- Filter Panel -->
+            <div class="filter-panel">
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <div class="filter-label"><i class="fas fa-search me-1"></i> Search</div>
+                        <input type="text" id="searchInput" class="filter-input" placeholder="Title, location...">
+                    </div>
+                    <div class="filter-item">
+                        <div class="filter-label">Status</div>
+                        <select id="statusFilter" class="filter-select">
+                            <option value="">All</option>
+                            <option value="UPCOMING">Upcoming</option>
+                            <option value="LIVE">Live</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="EXPIRED">Expired</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <div class="filter-label">Payment Type</div>
+                        <select id="paymentFilter" class="filter-select">
+                            <option value="">All</option>
+                            <option value="FREE">Free</option>
+                            <option value="PAID">Paid</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <div class="filter-label">Event Type</div>
+                        <select id="eventTypeFilter" class="filter-select">
+                            <option value="">All</option>
+                            <option value="ONLINE">Online</option>
+                            <option value="OFFLINE">Offline</option>
+                            <option value="HYBRID">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="filter-item" style="flex: 0 0 auto;">
+                        <button id="resetFiltersBtn" class="reset-btn"><i class="fas fa-undo-alt"></i> Reset</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="table-card">
                 <div class="card-header">
                     <h3><i class="fas fa-calendar-alt"></i> Hackathon Events List</h3>
-                   <!--  <a href="create-hackathon" class="add-btn" style="margin-left:50rem"><i class="fas fa-plus"></i> Launch New</a>
-                     -->
-                     <a href="exportHackathons" class="add-btn" style="background: linear-gradient(135deg,#10b981,#059669);">
-            <i class="fas fa-download"></i> Export Report
-        </a>
+                    <a href="exportHackathons" class="add-btn" style="background: linear-gradient(135deg,#10b981,#059669);">
+                        <i class="fas fa-download"></i> Export Report
+                    </a>
                 </div>
                 <div class="responsive-table">
-                    <table class="hackathon-table">
+                    <table class="hackathon-table" id="hackathonTable">
                         <thead>
                             <tr>
                                 <th>Sr.No</th>
@@ -644,9 +740,9 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tableBody">
                             <c:forEach var="h" items="${allHackathons}" varStatus="s">
-                                <tr>
+                                <tr data-title="${h.title}" data-status="${h.status}" data-payment="${h.payment}" data-eventtype="${h.eventType}" data-location="${h.location}">
                                     <td>${(currentPage - 1) * 10 + s.count}</td>
                                     <td>
                                         <span class="event-title">${h.title}</span>
@@ -672,6 +768,9 @@
                                             <c:when test="${h.status == 'EXPIRED'}">
                                                 <span class="status-badge status-expired">Expired</span>
                                             </c:when>
+                                            <c:when test="${h.status == 'COMPLETED'}">
+                                                <span class="status-badge status-completed">Completed</span>
+                                            </c:when>
                                             <c:otherwise>
                                                 <span class="status-badge status-upcoming">${h.status}</span>
                                             </c:otherwise>
@@ -679,52 +778,53 @@
                                     </td>
                                     <td>
                                         <div class="action-btns">
-                                            <button class="btn-icon btn-edit" onclick="location.href='editHackathon?hackathonId=${h.hackathonId}'" title="Edit">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </button>
-                                            <button class="btn-icon btn-delete" onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackathonId=${h.hackathonId}'" title="Delete">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            <button class="btn-icon btn-judge" onclick="location.href='manageHackathonJudge?hackathonId=${h.hackathonId}'" title="Manage Judges">
-                                                <i class="fas fa-users"></i>
-                                            </button>
+                                            <button class="btn-icon btn-edit" onclick="location.href='editHackathon?hackathonId=${h.hackathonId}'" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                                            <button class="btn-icon btn-delete" onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackathonId=${h.hackathonId}'" title="Delete"><i class="fas fa-trash"></i></button>
+                                            <button class="btn-icon btn-judge" onclick="location.href='manageHackathonJudge?hackathonId=${h.hackathonId}'" title="Manage Judges"><i class="fas fa-users"></i></button>
                                         </div>
                                     </td>
                                 </tr>
                             </c:forEach>
                             <c:if test="${empty allHackathons}">
-                                <tr><td colspan="7" style="text-align:center; padding: 60px;">No hackathons found. <a href="create-hackathon" style="color:#3b82f6;">Create one</a>?</td></tr>
+                                <tr id="noDataRow"><td colspan="7" style="text-align:center; padding: 60px;">No hackathons found. <a href="create-hackathon" style="color:#3b82f6;">Create one</a>?</td></tr>
                             </c:if>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination: Prev, current page (skyblue), Next -->
-                <div class="pagination">
-                    <c:choose>
-                        <c:when test="${currentPage > 1}">
-                            <a class="page-link" href="listHackathon?page=${currentPage - 1}">
-                                <i class="fas fa-chevron-left"></i> Previous
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="page-link disabled"><i class="fas fa-chevron-left"></i> Previous</span>
-                        </c:otherwise>
-                    </c:choose>
+                <!-- Pagination with filter parameters -->
+<div class="pagination">
+    <c:set var="filterParams" value="" />
+    <c:if test="${not empty searchValue}"><c:set var="filterParams" value="&search=${searchValue}" /></c:if>
+    <c:if test="${not empty statusValue}"><c:set var="filterParams" value="${filterParams}&status=${statusValue}" /></c:if>
+    <c:if test="${not empty paymentValue}"><c:set var="filterParams" value="${filterParams}&payment=${paymentValue}" /></c:if>
+    <c:if test="${not empty eventTypeValue}"><c:set var="filterParams" value="${filterParams}&eventType=${eventTypeValue}" /></c:if>
 
-                    <span class="current-page">${currentPage}</span>
+    <c:choose>
+        <c:when test="${currentPage > 1}">
+            <a class="page-link" href="listHackathon?page=${currentPage - 1}${filterParams}">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+        </c:when>
+        <c:otherwise>
+            <span class="page-link disabled"><i class="fas fa-chevron-left"></i> Previous</span>
+        </c:otherwise>
+    </c:choose>
 
-                    <c:choose>
-                        <c:when test="${currentPage < totalPages}">
-                            <a class="page-link" href="listHackathon?page=${currentPage + 1}">
-                                Next <i class="fas fa-chevron-right"></i>
-                            </a>
-                        </c:when>
-                        <c:otherwise>
-                            <span class="page-link disabled">Next <i class="fas fa-chevron-right"></i></span>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
+    <span class="current-page">${currentPage}</span>
+
+    <c:choose>
+        <c:when test="${currentPage < totalPages}">
+            <a class="page-link" href="listHackathon?page=${currentPage + 1}${filterParams}">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+        </c:when>
+        <c:otherwise>
+            <span class="page-link disabled">Next <i class="fas fa-chevron-right"></i></span>
+        </c:otherwise>
+    </c:choose>
+</div>
             </div>
         </div>
         <footer class="footer">
@@ -734,7 +834,47 @@
 </div>
 
 <script>
-    // Sidebar toggle and mobile menu
+    // Server-side filtering with debounce
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const paymentFilter = document.getElementById('paymentFilter');
+    const eventTypeFilter = document.getElementById('eventTypeFilter');
+    const resetBtn = document.getElementById('resetFiltersBtn');
+
+    // Set initial values from the model
+    searchInput.value = '${searchValue}';
+    statusFilter.value = '${statusValue}';
+    paymentFilter.value = '${paymentValue}';
+    eventTypeFilter.value = '${eventTypeValue}';
+
+    let debounceTimer;
+
+    function applyFilters() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const params = new URLSearchParams();
+            if (searchInput.value.trim()) params.set('search', searchInput.value.trim());
+            if (statusFilter.value) params.set('status', statusFilter.value);
+            if (paymentFilter.value) params.set('payment', paymentFilter.value);
+            if (eventTypeFilter.value) params.set('eventType', eventTypeFilter.value);
+            params.set('page', '1');
+            window.location.href = 'listHackathon?' + params.toString();
+        }, 500); // wait 500ms after last keystroke
+    }
+
+    function resetFilters() {
+        window.location.href = 'listHackathon';
+    }
+
+    // Use 'input' for real‑time search
+    searchInput.addEventListener('input', applyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+    paymentFilter.addEventListener('change', applyFilters);
+    eventTypeFilter.addEventListener('change', applyFilters);
+    resetBtn.addEventListener('click', resetFilters);
+</script>
+<script>
+    // Sidebar toggle and mobile menu (unchanged)
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -772,8 +912,7 @@
             sidebar.classList.remove('mobile-open');
         }
     });
-	
-    // User dropdown from AdminHeader
+
     const userDropdown = document.getElementById('userDropdown');
     const dropdownMenu = document.getElementById('dropdownMenu');
     if (userDropdown) {

@@ -510,9 +510,11 @@
                                      data-maxteam="${hack.maxTeamSize}"
                                      data-eligibility="${fn:toLowerCase(hack.userType)}"
                                      data-status="${hack.status}">
+                                     <!-- Updated badge logic for 4 statuses -->
                                     <span class="badge badge-status 
                                         ${hack.status == 'LIVE' ? 'bg-success' : 
                                           hack.status == 'UPCOMING' ? 'bg-warning' : 
+                                          hack.status == 'COMPLETED' ? 'bg-primary' : 
                                           'bg-secondary'} text-white">
                                         ${hack.status}
                                     </span>

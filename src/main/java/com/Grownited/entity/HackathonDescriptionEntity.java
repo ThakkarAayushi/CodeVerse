@@ -15,7 +15,7 @@ public class HackathonDescriptionEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer hackathon_description_id;
 	
-	@Column(columnDefinition = "TEXT")
+	@Column(name = "hackathon_details", length = 2000)
 	private String hackathonDetails;
 	private Integer hackathonId;
 	public Integer getHackathon_description_id() {

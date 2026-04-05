@@ -3,6 +3,7 @@ package com.Grownited.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,6 +34,19 @@ public interface HackathonRepository extends JpaRepository<HackathonEntity, Inte
 	    	       "ORDER BY participant_count DESC " +
 	    	       "LIMIT 5", nativeQuery = true)
 	    	List<Object[]> getTopHackathonsByParticipants(); 
+	    	
+
+	    	    @Query("SELECT h FROM HackathonEntity h WHERE " +
+	    	           "(:search IS NULL OR LOWER(h.title) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(h.location) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+	    	           "(:status IS NULL OR h.status = :status) AND " +
+	    	           "(:payment IS NULL OR h.payment = :payment) AND " +
+	    	           "(:eventType IS NULL OR h.eventType = :eventType)")
+	    	    Page<HackathonEntity> findAllWithFilters(@Param("search") String search,
+	    	                                             @Param("status") String status,
+	    	                                             @Param("payment") String payment,
+	    	                                             @Param("eventType") String eventType,
+	    	                                             org.springframework.data.domain.Pageable pageable);
+	    	}
 	 
 	    
-}
+
