@@ -431,7 +431,7 @@
                     <canvas id="registrationsChart"></canvas>
                 </div>
             </div>
-
+	<br>
             <!-- Remaining 6 charts in 2‑column grid -->
             <div class="chart-grid">
                 <!-- 1. Hackathon Status (Pie) -->
@@ -466,21 +466,6 @@
                     </div>
                 </div>
 
-                <!-- 5. Judge Workload (Horizontal bar) -->
-                <div class="chart-card">
-                    <h4><i class="fas fa-gavel"></i> Judge Workload</h4>
-                    <div class="chart-container">
-                        <canvas id="judgeWorkloadChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- 6. Top Hackathons by Participants (Horizontal bar) -->
-                <div class="chart-card">
-                    <h4><i class="fas fa-chart-simple"></i> Top Hackathons by Participants</h4>
-                    <div class="chart-container">
-                        <canvas id="topHackathonsChart"></canvas>
-                    </div>
-                </div>
             </div>
         </div>
         <footer class="footer">
@@ -513,10 +498,10 @@
     new Chart(document.getElementById('roleChart'), {
         type: 'bar',
         data: {
-            labels: ['Participants', 'Judges', 'Admins'],
+            labels: ['Participants', 'Judges', 'Admins','Organizer'],
             datasets: [{
                 label: 'Count',
-                data: [${totalParticipants}, ${totalJudges}, ${totalAdmins}],
+                data: [${totalParticipants}, ${totalJudges}, ${totalAdmins}, ${totalOrganizer}],
                 backgroundColor: '#3b82f6',
                 borderRadius: 8
             }]
@@ -556,20 +541,7 @@
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, stepSize: 1 } } }
     });
 
-    // 5. Judge Workload
-    new Chart(document.getElementById('judgeWorkloadChart'), {
-        type: 'bar',
-        data: {
-            labels: [<c:forEach items="${judgeNames}" var="name" varStatus="loop">'${name}'${!loop.last ? ',' : ''}</c:forEach>],
-            datasets: [{
-                label: 'Assigned Hackathons',
-                data: [<c:forEach items="${judgeWorkloads}" var="w" varStatus="loop">${w}${!loop.last ? ',' : ''}</c:forEach>],
-                backgroundColor: '#f59e0b',
-                borderRadius: 8
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, stepSize: 1 } } }
-    });
+  
 
     // 6. Registrations Trend (full‑width)
     new Chart(document.getElementById('registrationsChart'), {
@@ -588,20 +560,7 @@
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, callback: v => Number.isInteger(v) ? v : '' } } } }
     });
 
-    // 7. Top Hackathons by Participants
-    new Chart(document.getElementById('topHackathonsChart'), {
-        type: 'bar',
-        data: {
-            labels: [<c:forEach items="${topHackathonNames}" var="name" varStatus="loop">'${name}'${!loop.last ? ',' : ''}</c:forEach>],
-            datasets: [{
-                label: 'Participants',
-                data: [<c:forEach items="${topHackathonParticipants}" var="count" varStatus="loop">${count}${!loop.last ? ',' : ''}</c:forEach>],
-                backgroundColor: '#10b981',
-                borderRadius: 8
-            }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, stepSize: 1 } } }
-    });
+
 </script>
 
 <script>

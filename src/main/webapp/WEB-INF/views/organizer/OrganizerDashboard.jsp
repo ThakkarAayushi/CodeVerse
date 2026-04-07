@@ -96,7 +96,7 @@
             color: #1e293b;
         }
 
-        /* Status badges */
+        /* Status badges (used only in hackathon list) */
         .status-badge {
             display: inline-block;
             padding: 0.2rem 0.6rem;
@@ -199,7 +199,7 @@
                     <h3>Total Revenue</h3>
                     <div class="stat-number">$${totalRevenue}</div>
                 </div>
-                <div class="stat-card">
+               <%--  <div class="stat-card">
                     <h3>Avg Participants / Hackathon</h3>
                     <div class="stat-number">
                         <c:choose>
@@ -207,20 +207,16 @@
                             <c:otherwise>0</c:otherwise>
                         </c:choose>
                     </div>
-                </div>
+                </div> --%>
             </div>
 
             <!-- Status & Chart row -->
             <div class="row-2cols">
-                <!-- Status Breakdown -->
+                <!-- Status Breakdown as Doughnut Chart -->
                 <div class="card">
                     <h2><i class="fas fa-chart-pie"></i> Hackathon Status</h2>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div><span class="status-badge status-upcoming">UPCOMING</span> <strong>${upcomingCount}</strong> hackathons</div>
-                        <div><span class="status-badge status-live">LIVE / ONGOING</span> <strong>${liveCount}</strong> hackathons</div>
-                        <div><span class="status-badge status-completed">COMPLETED</span> <strong>${completedCount}</strong> hackathons</div>
-                        <div><span class="status-badge status-expired">EXPIRED</span> <strong>${expiredCount}</strong> hackathons</div>
-                    </div>
+                    <canvas id="statusChart" width="400" height="250"></canvas>
+                    <div id="statusFallback" class="chart-fallback" style="display:none;">No status data available</div>
                 </div>
 
                 <!-- Participants per Hackathon Chart -->
@@ -230,7 +226,12 @@
                     <div id="chartFallback" class="chart-fallback" style="display:none;">No participant data available</div>
                 </div>
             </div>
-            
+            <div class="card">
+			    <h2><i class="fas fa-chart-line"></i> Registration Trend (Last 30 Days)</h2>
+			    <canvas id="regTrendChart"></canvas>
+			</div>
+<br>
+
             <!-- My Hackathons List -->
             <div class="card">
                 <h2><i class="fas fa-calendar-alt"></i> My Hackathons</h2>
@@ -244,11 +245,11 @@
                                     <span class="status-badge status-${fn:toLowerCase(h.status)}">${h.status}</span>
                                 </div>
                             </div>
-                            <div class="hackathon-actions">
+                           <%--  <div class="hackathon-actions">
                                 <a href="/organizer/edit-hackathon?hackathonId=${h.hackathonId}">Edit</a>
                                 <a href="/organizer/manage-judges?hackathonId=${h.hackathonId}">Manage Judges</a>
                                 <a href="/organizer/delete-hackathon?hackathonId=${h.hackathonId}" onclick="return confirm('Delete?')">Delete</a>
-                            </div>
+                            </div> --%>
                         </div>
                     </c:forEach>
                     <c:if test="${empty hackathons}">
@@ -270,7 +271,46 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Build JavaScript arrays from JSTL
+    // ---- Status Doughnut Chart ----
+    const upcoming = ${upcomingCount != null ? upcomingCount : 0};
+    const live = ${liveCount != null ? liveCount : 0};
+    const completed = ${completedCount != null ? completedCount : 0};
+    const expired = ${expiredCount != null ? expiredCount : 0};
+    
+    if (upcoming + live + completed + expired === 0) {
+        document.getElementById('statusChart').style.display = 'none';
+        document.getElementById('statusFallback').style.display = 'block';
+    } else {
+        new Chart(document.getElementById('statusChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Upcoming', 'Live', 'Completed', 'Expired'],
+                datasets: [{
+                    data: [upcoming, live, completed, expired],
+                    backgroundColor: ['#fbbf24', '#10b981', '#3b82f6', '#94a3b8'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.label || '';
+                                var value = context.raw;
+                                return label + ': ' + value + ' hackathon' + (value !== 1 ? 's' : '');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // ---- Participants per Hackathon Bar Chart ----
     const hackathonNames = [
         <c:forEach items="${hackathonNames}" var="name" varStatus="loop">
             '${name}'${!loop.last ? ',' : ''}
@@ -303,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 maintainAspectRatio: true,
                 plugins: {
                     legend: { position: 'top' },
-                    tooltip: { callbacks: { label: (ctx) => `${ctx.raw} participants` } }
+                    tooltip: { callbacks: { label: (ctx) => ctx.raw + ' participants' } }
                 },
                 scales: {
                     y: { beginAtZero: true, title: { display: true, text: 'Participants' } }
@@ -312,6 +352,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+const regDates = [
+    <c:forEach items="${regDates}" var="date" varStatus="loop">
+        '<c:out value="${date}" />'${!loop.last ? ',' : ''}
+    </c:forEach>
+];
+const regCounts = [
+    <c:forEach items="${regCounts}" var="count" varStatus="loop">
+        ${count}${!loop.last ? ',' : ''}
+    </c:forEach>
+];
+if (regDates.length > 0) {
+    new Chart(document.getElementById('regTrendChart'), {
+        type: 'line',
+        data: { labels: regDates, datasets: [{ label: 'Registrations', data: regCounts, borderColor: '#3b82f6', fill: false }] }
+    });
+}
+
 </script>
 </body>
 </html>

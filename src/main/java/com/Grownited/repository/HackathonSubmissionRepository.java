@@ -28,5 +28,7 @@ public interface HackathonSubmissionRepository extends JpaRepository<HackathonSu
 	@Query("SELECT COUNT(DISTINCT s.hackathonSubmissionId) FROM HackathonSubmissionEntity s " +
 	       "WHERE EXISTS (SELECT 1 FROM HackathonResultEntity r WHERE r.hackathonId = s.hackathonId AND r.teamId = s.teamId)")
 	long getEvaluatedSubmissions();
+
+	long countByHackathonIdIn(List<Integer> hackathonIds);
 	
 }

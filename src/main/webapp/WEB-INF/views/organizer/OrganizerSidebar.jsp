@@ -162,12 +162,12 @@
                 <span>Create Hackathon</span>
             </a>
         </div>
-        <div class="menu-item">
+       <!--  <div class="menu-item">
             <a href="/organizer/newJudge">
                 <i class="fas fa-users"></i>
                 <span>Manage Judges</span>
             </a>
-        </div>
+        </div> -->
         <div class="menu-item">
             <a href="/organizer/profile">
                 <i class="fas fa-user-circle"></i>

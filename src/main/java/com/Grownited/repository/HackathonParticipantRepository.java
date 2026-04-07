@@ -1,5 +1,6 @@
 package com.Grownited.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,6 +45,12 @@ public interface HackathonParticipantRepository extends JpaRepository<HackathonP
 	               "WHERE hp.hackathon_id IN (SELECT hackathon_id FROM hackathon WHERE user_id = :organizerId) " +
 	               "GROUP BY hp.hackathon_id", nativeQuery = true)
 	List<Object[]> countRegistrationsGroupByHackathonNative(@Param("organizerId") Integer organizerId);
+	
+	 @Query("SELECT p.joinedDate, COUNT(p) FROM HackathonParticipantEntity p " +
+	           "WHERE p.hackathonId IN :hackathonIds AND p.joinedDate >= :startDate " +
+	           "GROUP BY p.joinedDate ORDER BY p.joinedDate ASC")
+	    List<Object[]> getDailyRegistrations(@Param("hackathonIds") List<Integer> hackathonIds,
+	                                         @Param("startDate") LocalDate startDate);
 	
 	
 	

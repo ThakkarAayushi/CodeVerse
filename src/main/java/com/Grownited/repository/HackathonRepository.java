@@ -54,7 +54,11 @@ public interface HackathonRepository extends JpaRepository<HackathonEntity, Inte
 	    	    	                                             @Param("status") String status,
 	    	    	                                             @Param("payment") String payment,
 	    	    	                                             @Param("eventType") String eventType,
-	    	    	                                             org.springframework.data.domain.Pageable pageable);	    
+	    	    	                                             org.springframework.data.domain.Pageable pageable);
+	   
+				// New method that returns only IDs
+			    @Query("SELECT h.hackathonId FROM HackathonEntity h WHERE h.userId = :userId")
+			    List<Integer> findIdsByUserId(@Param("userId") Integer userId);
 }
 	 
 	    

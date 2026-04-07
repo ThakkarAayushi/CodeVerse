@@ -57,6 +57,7 @@ public class AdminController {
 		    long totalParticipants = userRepository.countByRole("participant");
 		    long totalJudges = userRepository.countByRole("judge");
 		    long totalAdmins = userRepository.countByRole("admin");
+		    long totalOrganizer=userRepository.countByRole("organizer");
 		     
 	        model.addAttribute("totalHackathon", totalHackathon);
 	        model.addAttribute("upcomingHackathon", upcomingHackathon);
@@ -67,6 +68,7 @@ public class AdminController {
 	        model.addAttribute("totalParticipants",totalParticipants);
 	        model.addAttribute("totalJudges",totalJudges);
 	        model.addAttribute("totalAdmins",totalAdmins);
+	        model.addAttribute("totalOrganizer",totalOrganizer);
 	        
 	        long paymentSuccessCount = paymentRepository.countByPaymentStatus("SUCCESS");
 	        long paymentFailedCount = paymentRepository.countByPaymentStatus("FAILED");

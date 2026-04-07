@@ -19,6 +19,7 @@ import tools.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,13 @@ public class OrganizerController {
 	private HackathonParticipantRepository hackathonParticipantRepository;
 	@Autowired
 	private PaymentRepository paymentRepository;
+	
+	@Autowired
+	private HackathonSubmissionRepository hackathonSubmissionRepository;
+	@Autowired
+	private HackathonResultRepository hackathonResultRepository;
+	@Autowired
+	private HackathonTeamRepository hackathonTeamRepository;
 
 	// Dashboard – list only hackathons created by this organizer
 
@@ -70,11 +78,19 @@ public class OrganizerController {
 	    Double totalRevenue = paymentRepository.sumSuccessfulPaymentsByOrganizer(user.getUserId());
 	    totalRevenue = totalRevenue != null ? totalRevenue : 0.0;
 
-	    long upcomingCount = myHackathons.stream().filter(h -> "UPCOMING".equalsIgnoreCase(h.getStatus())).count();
+	    /*long upcomingCount = myHackathons.stream().filter(h -> "UPCOMING".equalsIgnoreCase(h.getStatus())).count();
 	    long liveCount = myHackathons.stream().filter(h -> "LIVE".equalsIgnoreCase(h.getStatus()) || "ONGOING".equalsIgnoreCase(h.getStatus())).count();
 	    long completedCount = myHackathons.stream().filter(h -> "COMPLETED".equalsIgnoreCase(h.getStatus())).count();
 	    long expiredCount = myHackathons.stream().filter(h -> "EXPIRED".equalsIgnoreCase(h.getStatus())).count();
-
+	 */   
+	    long upcomingCount = myHackathons.stream().filter(h -> "UPCOMING".equals(h.getStatus())).count();
+	    long liveCount = myHackathons.stream().filter(h -> "LIVE".equals(h.getStatus())).count();
+	    long completedCount = myHackathons.stream().filter(h -> "COMPLETED".equals(h.getStatus())).count();
+	    long expiredCount = myHackathons.stream().filter(h -> "EXPIRED".equals(h.getStatus())).count();
+	    model.addAttribute("upcomingCount", upcomingCount);
+	    model.addAttribute("liveCount", liveCount);
+	    model.addAttribute("completedCount", completedCount);
+	    model.addAttribute("expiredCount", expiredCount);
 	    // --- Participants per hackathon (for chart) ---
 	    List<Object[]> regsPerHack = hackathonParticipantRepository.countRegistrationsGroupByHackathonNative(user.getUserId());
 	    Map<Integer, Long> participantCountMap = new HashMap<>();
@@ -100,6 +116,23 @@ public class OrganizerController {
 	    model.addAttribute("completedCount", completedCount);
 	    model.addAttribute("expiredCount", expiredCount);
 
+	    List<HackathonEntity> hackathons = hackathonRepository.findByUserId(user.getUserId());
+	    List<Integer> hackathonIds = hackathons.stream()
+	            .map(HackathonEntity::getHackathonId)
+	            .collect(Collectors.toList());
+	 // Get all hackathon IDs owned by organizer
+	    // Query registration counts per day for those hackathons
+	    List<Object[]> regData = hackathonParticipantRepository.getDailyRegistrations(hackathonIds, LocalDate.now().minusDays(30));
+	    List<String> dates = new ArrayList<>();
+	    List<Integer> counts = new ArrayList<>();
+	    for (Object[] row : regData) {
+	        dates.add(row[0].toString()); // e.g., "2026-04-01"
+	        counts.add(((Number) row[1]).intValue());
+	    }
+	    model.addAttribute("regDates", dates);
+	    model.addAttribute("regCounts", counts);
+	
+	  
 	    return "organizer/OrganizerDashboard";
 	}
 	  
