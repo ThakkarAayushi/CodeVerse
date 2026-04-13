@@ -242,8 +242,21 @@
                                 <input type="file" name="profilePic" accept="image/*" required>
                             </div>
                         </div>
+                        <!-- ✅ ADD ROLE HERE -->
+<div class="form-group">
+    <label><i class="fas fa-user-tag"></i> I am a *</label>
+    <div class="input-group">
+        <span class="input-group-icon"><i class="fas fa-user-tag"></i></span>
+        <select name="role" required>
+            <option value="" disabled selected>Select your role</option>
+            <option value="participant">Participant – Join hackathons and form teams</option>
+            <option value="organizer">Organizer – Create and manage hackathons</option>
+        </select>
+    </div>
+</div>
                     </div>
-
+					
+					
                     <!-- Right column: Account & Location -->
                     <div>
                         <div class="section-title">
